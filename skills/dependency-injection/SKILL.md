@@ -5,8 +5,16 @@ description: Use this skill when wiring dependencies, configuring a DI container
 
 # Dependency Injection Best Practices for PHP
 
-## System Overview
-Dependency Injection (DI) allows for loosely coupled, easily testable PHP applications. The container should wire the application together at the edge, while the core remains ignorant of the container. This skill provides the rules for registering dependencies, migrating legacy locators, and injecting objects.
+## When to Use a DI Container (and When NOT to)
+A DI container is an infrastructure concern. Use it for applications that need flexible wiring, interface swapping, or framework integration. Libraries should use constructor injection directly and let the consumer resolve dependencies.
+
+| Use a DI Container For                            | Do Not Use a Container For               |
+|---------------------------------------------------|------------------------------------------|
+| Applications with many interchangeable services   | Libraries and packages                   |
+| Need to swap implementations (test vs production) | Simple scripts with one or two classes   |
+| Framework integration (Symfony, Laravel)          | Throwaway code or prototypes             |
+
+The container should wire the application together at the edge, while the core remains ignorant of the container. This skill provides the rules for registering dependencies, migrating legacy locators, and injecting objects.
 
 ## Numbered Workflows
 

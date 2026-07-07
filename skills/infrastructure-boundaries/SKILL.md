@@ -5,6 +5,18 @@ description: Use this skill when integrating third-party APIs, SDKs, or infrastr
 
 # Infrastructure & Integration Boundaries in PHP
 
+## When to Use Hexagonal Architecture (and When NOT to)
+Hexagonal architecture isolates the core via ports and adapters, but it is not universal. Use it for long-lived applications that need to swap infrastructure or require high test coverage. Skip it for libraries, simple CRUD APIs, or throwaway utilities.
+
+| Use Hexagonal For                                   | Use Simpler Patterns For                                  |
+|-----------------------------------------------------|-----------------------------------------------------------|
+| Long-lived application with evolving infrastructure | Libraries, packages, SDKs (PSR standards usually suffice) |
+| Need to swap DB, broker, or external API            | Fixed infrastructure, unlikely to change                  |
+| Multiple entry points (API, CLI, events)            | Single delivery channel                                   |
+| High test coverage required                         | Quick scripts, internal tools                             |
+
+For libraries, package your code with PSR-4 autoloading and clear namespacing. Let the consumer inject dependencies. Do not add a hexagonal adapter layer for a library.
+
 ## System Overview
 The Infrastructure layer contains everything that speaks to the outside world: databases, search engines, APIs, message queues, and the filesystem. It implements adapters (driven and driver) that fulfill ports defined by inner layers. This skill provides the rules for keeping infrastructure concerns separated from domain logic through adapters, ports, and proper placement.
 

@@ -5,6 +5,20 @@ description: Use this skill when deciding whether to use rich domain objects vs 
 
 # Domain Modeling for PHP Apps
 
+## When to Use (and When NOT to)
+DDD adds ceremony that must justify its cost. Use DDD when the project has a complex business domain with many rules and will be maintained for years by a team. Skip DDD for prototyping, MVPs, solo-developer projects, or simple CRUD with few business rules.
+
+| Use DDD For                                  | Use Simpler Patterns For                     |
+|----------------------------------------------|----------------------------------------------|
+| Complex business domain with many invariants | Simple CRUD, few business rules              |
+| Long-lived system (years of maintenance)     | Prototype, MVP, throwaway code               |
+| Team of multiple developers                  | Solo developer or tiny team (1-2)            |
+| Multiple entry points (API, CLI, events)     | Single entry point, simple API               |
+| Need to swap infrastructure (DB, broker)     | Fixed infrastructure, unlikely to change     |
+| High test coverage required                  | Quick scripts, internal tools                |
+
+**Start simple. Evolve complexity only when needed.** Most systems do not need full DDD. For libraries, packages, or SDKs that have no user-facing behavior, plain PSR-4 classes with clear names are usually sufficient. For simple CRUD, lean ORM entities are preferable to rich domain objects.
+
 ## System Overview
 Use Domain-Driven Design (DDD) to make business rules explicit, not to add ceremony. Every backend abstraction should justify itself by reducing complexity, protecting an invariant, improving locality, or making tests clearer. This skill guides the decision process for introducing rich domain objects and structuring business operations.
 

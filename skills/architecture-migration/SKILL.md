@@ -5,8 +5,19 @@ description: Use this skill when refactoring legacy PHP code toward a cleaner ar
 
 # Incremental Architecture Migration for PHP Apps
 
+## When to Migrate (and When NOT to)
+Big-bang rewrites are risky and halt product momentum. Migrate only when actively building a feature or fixing a complex bug in an area. Do not migrate code that has not been touched in years solely for aesthetic reasons.
+
+| Good Migration Trigger                     | Poor Migration Trigger                     |
+|--------------------------------------------|--------------------------------------------|
+| Actively building a new feature            | "Cleaning up" untouched code               |
+| Fixing a complex bug in legacy code        | Compliant refactor of inactive code        |
+| Exposing a web feature as an API endpoint  | Preference for architecture purity         |
+
+Evolutionary, touched-area migrations using vertical slices and temporary compatibility shims.
+
 ## System Overview
-Big-bang rewrites are risky and halt product momentum. This skill guides the process of moving PHP applications toward a cleaner architecture through incremental, touched-area migrations using vertical slices and temporary compatibility shims. When adopting layered DDD, follow this order: discover the domain, model aggregates and value objects, define ports, implement use cases, and add adapters last.
+This skill guides the process of moving PHP applications toward a cleaner architecture through incremental, touched-area migrations using vertical slices and temporary compatibility shims. When adopting layered DDD, follow this order: discover the domain, model aggregates and value objects, define ports, implement use cases, and add adapters last.
 
 ## Numbered Workflows
 

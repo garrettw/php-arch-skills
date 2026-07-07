@@ -5,6 +5,18 @@ description: Use this skill when introducing domain events, deciding how to deco
 
 # Domain Events in PHP Applications
 
+## When to Use Domain Events (and When NOT to)
+Domain Events add indirection that must justify its cost. Use them when you need eventual consistency, decoupled downstream reactions, or a history of changes. Skip them for single-action uses where direct method calls suffice.
+
+| Use Domain Events For                               | Use Direct Calls For                                  |
+|-----------------------------------------------------|-------------------------------------------------------|
+| Decoupled side effects (email, notifications, sync) | Single-step operations without downstream reactions   |
+| Cross-bounded-context communication                 | Same-context synchronous updates                      |
+| Audit trail or event replay requirements            | Stateless operations with no history needed           |
+| Multiple downstream triggers from one change        | One downstream reaction                               |
+
+**Start without events.** Introduce them only when coupling becomes a real maintenance or reliability problem.
+
 ## System Overview
 Domain Events represent facts that have already happened in the business. They decouple side effects from the primary transaction and serve as contracts between bounded contexts. This skill covers the implementation of the Record-Then-Publish pattern and the rules for defining events.
 

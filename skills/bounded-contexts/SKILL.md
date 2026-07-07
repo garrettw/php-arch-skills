@@ -5,6 +5,18 @@ description: Use this skill when designing system boundaries, discovering or def
 
 # Bounded Context Design for PHP Monoliths
 
+## When to Use Bounded Contexts (and When NOT to)
+Bounded contexts are appropriate for complex applications with multiple business capabilities. They are not needed for every project.
+
+| Use Bounded Contexts For                           | Do Not Use For                        |
+|----------------------------------------------------|---------------------------------------|
+| Complex business domain with multiple capabilities | Simple CRUD apps with one clear model |
+| Team of multiple developers owning different areas | Solo developer or small team          |
+| Long-lived system requiring clear ownership        | Prototypes, throwaway code            |
+| Application with multiple integration surfaces     | Libraries, packages, SDKs             |
+
+For libraries and packages, use standard PSR-4 namespacing to organize code. Bounded-context separation only applies when the project has multiple domain capabilities that different teams or subsystems must own independently.
+
 ## System Overview
 The backend north star for modular PHP applications is **business-capability-first bounded contexts**. Current folders, namespaces, controllers, database prefixes, and API route groups are supporting evidence, not the source of truth for ownership. This skill helps map out business boundaries and clarify cross-context integration patterns.
 

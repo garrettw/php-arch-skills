@@ -5,6 +5,17 @@ description: Use this skill when writing controllers, structuring use cases, or 
 
 # Application Layer & CQRS Patterns for PHP
 
+## When to Use CQRS (and When NOT to)
+CQRS separates read and write models, but adds complexity. Use CQRS only when a bounded context has genuinely divergent read/write workloads. Skip CQRS for simple CRUD, interfaces without complex reads, or early-stage projects where premature separation slows delivery.
+
+| Use CQRS For                                             | Use Simple Controller/Repository For         |
+|----------------------------------------------------------|----------------------------------------------|
+| Bounded contexts with divergent read/write workloads     | Simple CRUD, single operation per endpoint   |
+| A read model with 10+ projections or dedicated reporting | Single or few read paths                     |
+| Scaling reads and writes independently                   | Uniform access patterns                      |
+
+**Most systems do not need CQRS.** Start with simple controllers and repositories. Introduce CQRS only when a specific read path has become a clear performance or organizational bottleneck.
+
 ## System Overview
 The application layer orchestrates use cases while keeping framework adapters thin and domain rules explicit. It serves as the bridge between delivery mechanisms (HTTP, CLI, queues) and the core domain/infrastructure logic. This skill provides structural rules for controllers, handlers, and CQRS patterns.
 

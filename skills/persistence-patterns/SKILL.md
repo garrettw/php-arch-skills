@@ -5,6 +5,18 @@ description: Use this skill when implementing database persistence, managing rep
 
 # Persistence, Mappers & Repositories in PHP
 
+## When to Use Rich Persistence vs. Simple ORM
+Rich persistence (Mapper + Repository) is only worth the ceremony when the application has complex invariants or needs to swap storage. Use simple ORM for straightforward CRUD.
+
+| Use Rich Persistence (Mapper + Repository) | Use Simple ORM (Entity + Query Builder)  |
+|--------------------------------------------|------------------------------------------|
+| Complex business invariants to protect     | Single-table CRUD with few rules         |
+| Need to swap storage implementation        | Fixed database schema                    |
+| Tests must run without DB for domain logic | Schema changes hand-in-hand with feature |
+| Long-lived system, evolving requirements   | Prototype, MVP, throwaway code           |
+
+A library or package that simply exposes data objects should not include mappers or repository interfaces.
+
 ## System Overview
 A clear persistence strategy separates the domain model from database storage mechanisms when necessary, while avoiding boilerplate when it is not. This skill helps you decide when to use a full DDD persistence structure (Domain → Mapper → Repository → ORM) versus a lean ORM structure.
 
