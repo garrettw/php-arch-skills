@@ -22,6 +22,7 @@ If creating a new domain event class:
 1. **Name it in the past tense.** Use business terms (e.g., `OrderPlaced`, `EnrollmentCompleted`), not CRUD terms (`StudentRecordUpdated`).
 2. **Keep the payload lean.** The event should carry IDs and the specific facts that changed.
 3. **Ensure immutability.** Once created, the event cannot be changed. No setters.
+4. **Cross-Aggregate Consistency.** Use events to maintain eventual consistency between aggregates. One transaction changes one aggregate and raises an event; the event triggers an update in another aggregate in a later transaction.
 
 ### 3. Implementing the Record-Then-Publish Pattern
 If implementing an aggregate that produces events:

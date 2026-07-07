@@ -26,8 +26,9 @@ If creating a new repository:
 1. **Check for Multiple Implementations.** Do you expect multiple real implementations (e.g., SQL and API)?
 2. **Check for Boundary Inversion.** Is the implementation provided by a third-party package?
 3. **Check for Decorators.** Do you need caching or logging around the calls?
-4. **If Yes to any:** Introduce a `[Name]RepositoryInterface` in the Domain layer.
+4. **If Yes to any:** Introduce a `[Name]RepositoryInterface` in the Domain layer as a driven port.
 5. **If No to all:** Create only a concrete `[Name]Repository` class. An interface is not needed if there is only one implementation in the same context.
+6. **Per Aggregate.** Design repositories per aggregate root, not per database table. A single aggregate should be loaded and saved through one repository.
 
 ### 4. Splitting Large Repositories
 If a repository is growing too large:
@@ -46,3 +47,4 @@ If a repository is growing too large:
 
 ### Never Do
 - Never create a massive global repository (e.g., `UserRepository`) that serves multiple bounded contexts.
+- Never introduce CQRS before the application has divergent read/write workloads. Start with simple read/write and evolve only when needed.

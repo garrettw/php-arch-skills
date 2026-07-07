@@ -6,7 +6,7 @@ description: Use this skill when integrating third-party APIs, SDKs, or infrastr
 # Infrastructure & Integration Boundaries in PHP
 
 ## System Overview
-The Infrastructure layer contains everything that speaks to the outside world: databases, search engines, APIs, message queues, and the filesystem. This skill provides the rules for keeping infrastructure concerns separated from domain logic through adapters, ports, and proper placement.
+The Infrastructure layer contains everything that speaks to the outside world: databases, search engines, APIs, message queues, and the filesystem. It implements adapters (driven and driver) that fulfill ports defined by inner layers. This skill provides the rules for keeping infrastructure concerns separated from domain logic through adapters, ports, and proper placement.
 
 ## Numbered Workflows
 
@@ -15,6 +15,12 @@ If adding a new integration or third-party service:
 1. **Define the Port.** Create an interface in the Domain or Application layer that describes what the application needs in business terms.
 2. **Implement the Adapter.** Create the implementation class in the Infrastructure layer, using the specific vendor SDK.
 3. **Verify Imports.** Ensure the Domain/Application code only imports the interface, never the vendor SDK or HTTP client.
+
+### 1.5. Classifying the Adapter
+If determining where a new adapter belongs:
+1. **Driver Adapters.** Does the adapter receive external input and trigger application logic (e.g., HTTP controllers, CLI commands, message queue consumers)? Place it in `Infrastructure/Http` or the equivalent driver layer.
+2. **Driven Adapters.** Does the adapter implement an external concern called by the application (e.g., database repository, email sender, search engine client)? Place it in `Infrastructure/Persistence`, `Infrastructure/Messaging`, or the equivalent driven layer.
+3. **Composition Root.** Wire all adapter implementations to their ports in a single location (e.g., the DI configuration or the framework bootstrap) to keep the dependency rule intact.
 
 ### 2. Designing a Provider Adapter
 If building a new infrastructure adapter:
@@ -42,3 +48,4 @@ If building an endpoint to receive a vendor webhook:
 - Never let vendor-specific exceptions bubble up to the application layer.
 - Never pass the entire configuration object or framework container into an adapter. Inject only the specific credentials or clients the adapter needs.
 - Never mix Domain code with infrastructure SDKs.
+- Never violate the dependency rule: Domain must not import database, HTTP, or messaging libraries. If it does, the boundary is broken.

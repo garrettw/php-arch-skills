@@ -29,12 +29,20 @@ If you are writing an application service or handler:
 2. **Decide:** Pass the data to an active domain object to make the business decision.
 3. **Persist:** Save the result via the repository.
 
+### 4. Defining Aggregate Boundaries
+If deciding whether related entities belong in the same aggregate:
+1. **Transaction Consistency.** Must they be consistent together in a single transaction? If yes, place them in the same aggregate.
+2. **Reference by ID Only.** If they would be referenced directly (not by ID), they belong in the same aggregate.
+3. **Split Large Aggregates.** If an aggregate contains more than 10 entities, split it into smaller aggregates and use domain events for eventual consistency.
+4. **Rule:** One aggregate per transaction. Cross-aggregate consistency is handled via domain events, not distributed transactions.
+
 ## Boundaries
 
 ### Always Do
 - Always evaluate whether the abstraction justifies its cost before introducing a mapper or domain interface.
 - Always ensure active domain objects can be tested with plain PHP, without booting the framework.
 - Always read the [Decision Flowchart](references/decision-flowchart.md) before deciding on a structure.
+- Always use "unique identity that persists" → Entity, "defined only by attributes" → Value Object when deciding between the two.
 
 ### Ask First
 - Ask before extracting intermediate Command classes, Request DTOs, or "domain services" unless they carry meaningful domain data.
@@ -43,3 +51,4 @@ If you are writing an application service or handler:
 ### Never Do
 - Never chain services together (e.g., Service A calls Service B calls Service C). Each handler should own one complete business result.
 - Never place core business rules in framework controllers, ORM callbacks, or provider adapters.
+- Never build a repository per entity. Use one repository per aggregate root to preserve consistency boundaries.

@@ -6,14 +6,15 @@ description: Use this skill when refactoring legacy PHP code toward a cleaner ar
 # Incremental Architecture Migration for PHP Apps
 
 ## System Overview
-Big-bang rewrites are risky and halt product momentum. This skill guides the process of moving PHP applications toward a cleaner architecture through incremental, touched-area migrations using vertical slices and temporary compatibility shims.
+Big-bang rewrites are risky and halt product momentum. This skill guides the process of moving PHP applications toward a cleaner architecture through incremental, touched-area migrations using vertical slices and temporary compatibility shims. When adopting layered DDD, follow this order: discover the domain, model aggregates and value objects, define ports, implement use cases, and add adapters last.
 
 ## Numbered Workflows
 
 ### 1. Evaluating a Migration Trigger
 If considering refactoring legacy code into a new architecture:
 1. **Check the Motivation.** Are you actively building a new feature in this area, fixing a complex bug, or exposing an existing web feature as an API endpoint? If yes, it is a good trigger. Proceed.
-2. **Reject Poor Triggers.** Are you just doing it to "clean things up" or to fix a standard violation in code that hasn't been touched in years? If yes, halt the migration.
+2. **Evaluate Complexity Fit.** Is the domain complex enough to warrant full DDD? If the rules are mostly CRUD with few invariants, favor lean ORM entities over full DDD aggregates. Start simple and evolve only when needed.
+3. **Reject Poor Triggers.** Are you just doing it to "clean things up" or to fix a standard violation in code that hasn't been touched in years? If yes, halt the migration.
 
 ### 2. Executing a Vertical Slice Migration
 If migrating a specific use case (e.g., one API endpoint or queue job):

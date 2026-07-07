@@ -35,6 +35,7 @@ If modifying a legacy class that uses a service locator (`Container::getInstance
 ### Always Do
 - Always use constructor injection for services, handlers, repositories, adapters, and listeners.
 - Always keep the container wiring logic at the framework edge (composition roots, service providers).
+- Always keep the domain core free of framework dependencies. It should resolve from tests or a composition root with no framework boot.
 
 ### Ask First
 - Ask before introducing a legacy shim if it is feasible to simply update all callers instead.

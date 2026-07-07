@@ -31,6 +31,7 @@ If testing use case orchestration:
 If testing framework edges and infrastructure adapters:
 1. **For Controllers:** Write Feature/Integration tests. Assert on HTTP status codes, JSON response shapes, and validation error formats.
 2. **For Infrastructure Adapters:** Write integration tests hitting a sandbox API (if available) or unit tests mocking the vendor's HTTP client. Verify that vendor exceptions are caught and translated into domain exceptions.
+3. **For Architecture Boundaries:** Add automated architecture tests to enforce the dependency rule (e.g., using Pest, Deptrac, PHP Arkitect, or a custom script). Verify that the domain core has zero imports from infrastructure, HTTP, or database libraries.
 
 ## Boundaries
 

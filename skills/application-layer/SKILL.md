@@ -33,6 +33,7 @@ If deciding whether to introduce a new DTO or Command object:
 - Always keep controllers thin; they should act purely as HTTP adapters.
 - Always use the [Directory Structure Templates](references/directory-structure-templates.md) when implementing CQRS.
 - Always let the handler load data, call domain objects/policies, save state, and publish events.
+- Always treat the handler as an Application Service: it orchestrates the domain and manages side effects, but does not contain business rules itself.
 
 ### Ask First
 - Ask before introducing intermediate Command classes or Request DTOs if they do not add meaningful domain context.

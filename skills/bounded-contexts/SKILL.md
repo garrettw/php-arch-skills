@@ -40,3 +40,4 @@ If extracting code to share across multiple contexts:
 ### Never Do
 - Never mix infrastructure boundaries (like third-party APIs) with domain boundaries.
 - Never turn the Shared Kernel into a generic "utilities dump" or "common bucket".
+- Never skim DDD as just a directory structure. Bounded contexts are defined by a ubiquitous language and business capability, not by folders or namespaces.
