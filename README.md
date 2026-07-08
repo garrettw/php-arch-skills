@@ -6,11 +6,11 @@ A collection of redistributable AI agent skills designed to help you and your AI
 
 Install the skills using the skills.sh installer, which allows you to select the ones you want:
 
-`npx skills add https://github.com/garrettw/php-arch-skills`
+`npx skills add garrettw/php-arch-skills`
 
 Alternatively, install any single skill directly:
 
-`npx skills add https://github.com/garrettw/php-arch-skills --skill skill-name`
+`npx skills add garrettw/php-arch-skills --skill skill-name`
 
 ## The Problem
 
