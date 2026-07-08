@@ -24,13 +24,14 @@ By installing these skills into your AI agent's configuration, you teach the age
 
 ## The Skills
 
-The collection includes 10 modular skills, each focused on a specific architectural layer or concept:
+The collection includes 11 modular skills, each focused on a specific architectural layer or concept:
 - **`domain-modeling`**: Guides the agent to identify real business objects, determine when to use rich domain models versus lean ORM entities, and protect business invariants using pure PHP.
 - **`bounded-contexts`**: Teaches the agent to define system boundaries using business capabilities rather than code folders, establishing clear ownership and preventing tightly-coupled monoliths.
 - **`application-layer`**: Instructs the agent to orchestrate use cases via the Command/Query/Handler pattern, keeping framework controllers extremely thin.
 - **`persistence-patterns`**: Guides the agent on how to persist data across architectural boundaries, when to use mappers and repository interfaces, and how to apply CQRS at the database edge.
 - **`infrastructure-boundaries`**: Teaches the agent to isolate third-party APIs, vendor SDKs, and external systems behind clean adapters, preventing vendor lock-in.
 - **`domain-events`**: Shows the agent how to decouple side-effects and cross-context communication using the record-then-publish event pattern.
+- **`event-sourcing`**: Guides the agent through evaluating whether Event Sourcing is appropriate, modeling event-sourced aggregates, building projections and snapshots, and choosing PHP libraries (Ecotone, Prooph, EventSauce, Patchlevel).
 - **`testing-strategy`**: Forces the agent to write tests that verify behavior rather than internal implementations, spanning pure domain unit tests to database integration tests.
 - **`architecture-migration`**: Provides the agent with a playbook for incrementally refactoring legacy code into a clean architecture using vertical slices and temporary shims, avoiding big-bang rewrites.
 - **`dependency-injection`**: Ensures the agent relies on constructor injection over legacy service locators and correctly registers interfaces at the framework edge.
