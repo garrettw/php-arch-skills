@@ -25,7 +25,7 @@ By installing these skills into your AI agent's configuration, you teach the age
 ## The Skills
 
 The collection includes 11 modular skills, each focused on a specific architectural layer or concept:
-- **`domain-modeling`**: Guides the agent to identify real business objects, determine when to use rich domain models versus lean ORM entities, and protect business invariants using pure PHP.
+- **`domain-modeling`**: Guides the agent to identify real business objects, default to Transaction Script (or Table Module for row-set logic) for simple procedures, determine when to upgrade to rich domain models versus lean ORM entities, and protect business invariants using pure PHP.
 - **`bounded-contexts`**: Teaches the agent to define system boundaries using business capabilities rather than code folders, establishing clear ownership and preventing tightly-coupled monoliths.
 - **`application-layer`**: Instructs the agent to orchestrate use cases via the Command/Query/Handler pattern, keeping framework controllers extremely thin.
 - **`persistence-patterns`**: Guides the agent on how to persist data across architectural boundaries, when to use mappers and repository interfaces, and how to apply CQRS at the database edge.
