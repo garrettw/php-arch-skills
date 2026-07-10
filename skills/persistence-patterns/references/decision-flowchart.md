@@ -2,6 +2,19 @@
 
 Use this guide to determine the appropriate persistence structure for a new feature or aggregate.
 
+## Data Source Spectrum (pick the lightest that fits)
+
+There is a progression of separation between business logic and storage (see [data-source-patterns.md](data-source-patterns.md)):
+
+> Persistence should be isolated from business logic to whatever degree the application's complexity warrants. Active Record and Data Mapper are not competitors with a single winner — Active Record optimizes for throughput and simplicity; Data Mapper optimizes for longevity and domain isolation. Pick by the problem's complexity, not by fashion.
+
+- **[Table Data Gateway](table-data-gateway.md)** — one class per table; fetches/persists rows, returns recordsets. Lightest. For reporting, ETL, import/export, admin utilities, read models, CRUD where the schema *is* the model.
+- **[Row Data Gateway](row-data-gateway.md)** — one object per row; loads/updates/deletes itself but little business behavior. **Recommend against** in new code (faded pattern; an awkward middle ground) — use Table Data Gateway for raw row access, Active Record for row+behavior, or Data Mapper for full separation.
+- **[Active Record](active-record.md)** — a row object that also carries its behavior; database-coupled. Outstanding for CRUD-heavy apps with modest rules and small teams that value rapid iteration. Becomes a liability as the domain grows richer/interconnected (the class drifts from representing the business to representing the ORM). When it outgrows its limits, move persistence/mapping out into a Data Mapper.
+- **[Data Mapper](data-mapper.md)** — domain objects fully isolated from the DB; a Mapper moves data between them. Preferred for complex enterprise software (DDD, Hexagonal, Onion, Clean, CQRS writes). The real value is keeping DB concerns out of the domain, not easy DB swaps. Heaviest — only justified when persistence would otherwise compromise a rich domain model.
+
+**Gateway vs Repository:** a Gateway thinks in tables and returns rows; a Repository thinks in business concepts and returns domain objects. A Table Data Gateway is **not** a Repository even if named one. If a gateway starts growing business-flavored query methods, that is a Repository forming — move the behavior into the domain.
+
 ## Full DDD Persistence Structure
 
 **Use when**: The entity has rich behavior, complex state transitions, or cross-context policies that must be tested without the framework.

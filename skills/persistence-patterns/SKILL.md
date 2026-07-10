@@ -1,6 +1,6 @@
 ---
 name: persistence-patterns
-description: Use this skill when implementing database persistence, managing repository interfaces, writing mappers, or splitting large repositories. Assumes the decision between a rich domain model and a lean ORM model has already been made by the domain-modeling skill.
+description: Use this skill when implementing database persistence, choosing a data source pattern, managing repository interfaces, writing mappers, or splitting large repositories. Assumes the decision between a rich domain model and a lean ORM model has already been made by the domain-modeling skill.
 ---
 
 # Persistence, Mappers & Repositories in PHP
@@ -16,6 +16,15 @@ Rich persistence (Mapper + Repository) is only worth the ceremony when the appli
 | Long-lived system, evolving requirements   | Prototype, MVP, throwaway code           |
 
 A library or package that simply exposes data objects should not include mappers or repository interfaces.
+
+## Data Source Spectrum & Gateway vs Repository
+Persistence structure is a separate axis from domain-logic style. There is a progression of increasing separation between business logic and storage: **Table Data Gateway → Row Data Gateway → Active Record → Data Mapper** (see [data-source-patterns.md](references/data-source-patterns.md) for the spectrum, philosophy, and Gateway-vs-Repository distinction). The lightest end ([Table Data Gateway](references/table-data-gateway.md)) is one class per table that fetches/persists rows and nothing more; the heavy end ([Data Mapper](references/data-mapper.md)) fully isolates domain objects from the database. **Active Record** sits in the middle: one object per row that also carries its business behavior and knows how to persist itself. It is outstanding for CRUD-heavy apps with modest rules and small teams that value rapid iteration, but becomes a liability as the domain grows richer and more interconnected — the class drifts from representing the business to representing the ORM. Recognize when it has outgrown its limits and move persistence/mapping out into a Data Mapper. At the heavy end, **Data Mapper** fully isolates domain objects from the database (only the Mapper bridges the two); it is the preferred persistence model for complex enterprise software (DDD, Hexagonal/Onion/Clean, CQRS writes) because it keeps database concerns out of the domain. Its value is not easy database swaps — it is persistence ignorance for a rich domain model — and the extra indirection is only justified when a rich domain would otherwise be compromised by persistence concerns.
+
+The distinction between a **Gateway** and a **Repository** is subtle but critical:
+- A **Gateway thinks in tables**: "How do I fetch rows from this table?" It returns rows/recordsets and uses persistence language.
+- A **Repository thinks in business concepts**: "How do I retrieve domain objects?" It returns domain objects in the ubiquitous language.
+
+A Table Data Gateway is **not** a Repository, even when teams label it `CustomerRepository`. Modern equivalents (query services, table repositories, DAOs, SQL abstraction classes) are all gateways if they think in tables. A gateway accumulates procedural query methods (`findEligiblePremiumCustomers()`) as behavior grows; that is the signal you have started building a Repository without realizing it — move the behavior into the domain and let a true Repository return domain objects.
 
 ## System Overview
 A clear persistence strategy separates the domain model from database storage mechanisms when necessary, while avoiding boilerplate when it is not. This skill helps you decide when to use a full DDD persistence structure (Domain → Mapper → Repository → ORM) versus a lean ORM structure.
@@ -53,10 +62,14 @@ If a repository is growing too large:
 ### Always Do
 - Always use the hybrid approach: Full DDD for writes (to protect invariants) and lean ORM for reads (for performance and simplicity) when appropriate.
 - Always use specific repository interfaces per bounded context rather than a single massive repository shared across contexts.
+- Always distinguish a Gateway (thinks in tables, returns rows) from a Repository (thinks in business concepts, returns domain objects). A [Table Data Gateway](references/table-data-gateway.md) is the right tool at the lean/CRUD end of the spectrum.
 
 ### Ask First
 - Ask before introducing a repository interface if there is only one concrete implementation.
+- Ask whether a class named "Repository" is actually a Gateway in disguise (returns rows, uses persistence language). If so, call it what it is.
 
 ### Never Do
 - Never create a massive global repository (e.g., `UserRepository`) that serves multiple bounded contexts.
+- Never let a Table Data Gateway accumulate business-flavored query methods (`findEligiblePremiumCustomers()`); that is a Repository trying to form — move the behavior into the domain instead.
+- Never reach for Row Data Gateway in new code; it is a faded pattern that awkwardly mixes persistence, identity, and row state without business behavior. Use Table Data Gateway for raw row access, Active Record for row+behavior, or Data Mapper for full separation.
 - Never introduce CQRS before the application has divergent read/write workloads. Start with simple read/write and evolve only when needed.

@@ -88,7 +88,7 @@ final class ContractTableModule
 
 Notes:
 - One class per table; instantiate it once and call methods that take/return recordsets.
-- Pair it with a Table Data Gateway that returns the recordset, keeping SQL out of the module.
+- Pair it with a [Table Data Gateway](../persistence-patterns/references/data-source-patterns.md) that returns the recordset, keeping SQL out of the module.
 - Behavior is row-set-oriented. If you find yourself needing per-row identity, relationships, or polymorphic behavior, that is the signal to move to a Domain Model.
 
 ## Relationship to the Rest of This Skill Set
