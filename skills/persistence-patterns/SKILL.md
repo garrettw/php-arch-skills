@@ -26,6 +26,10 @@ The distinction between a **Gateway** and a **Repository** is subtle but critica
 
 A Table Data Gateway is **not** a Repository, even when teams label it `CustomerRepository`. Modern equivalents (query services, table repositories, DAOs, SQL abstraction classes) are all gateways if they think in tables. A gateway accumulates procedural query methods (`findEligiblePremiumCustomers()`) as behavior grows; that is the signal you have started building a Repository without realizing it — move the behavior into the domain and let a true Repository return domain objects.
 
+## Object-Relational Patterns (ORM Features, not to Implement)
+
+Beyond the data-source spectrum, ORMs implement a second family of Object-Relational patterns internally — behavioral (Unit of Work, Identity Map, Lazy Loading) and structural (Identity Field, Foreign Key Mapping, Association Table Mapping, Dependent Mapping, Embedded Value). Architects should understand these and their tradeoffs as **ORM features**, and make the architectural decision at the level of *ORM selection and configuration* rather than reimplementing them. See [orm-patterns.md](references/orm-patterns.md). The patterns that surround the ORM rather than live inside it — Metadata Mapping, Query Object, Repository, Value Object — are engaged with architecturally; see [orm-architecture-patterns.md](references/orm-architecture-patterns.md).
+
 ## System Overview
 A clear persistence strategy separates the domain model from database storage mechanisms when necessary, while avoiding boilerplate when it is not. This skill helps you decide when to use a full DDD persistence structure (Domain → Mapper → Repository → ORM) versus a lean ORM structure.
 

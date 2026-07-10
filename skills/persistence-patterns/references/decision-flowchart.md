@@ -4,7 +4,7 @@ Use this guide to determine the appropriate persistence structure for a new feat
 
 ## Data Source Spectrum (pick the lightest that fits)
 
-There is a progression of separation between business logic and storage (see [data-source-patterns.md](data-source-patterns.md)):
+There is a progression of separation between business logic and storage (see [data-source-patterns.md](data-source-patterns.md); for the ORM-internal behavioral/structural patterns, see [orm-patterns.md](orm-patterns.md); for the patterns surrounding the ORM — Metadata Mapping, Query Object, Repository, Value Object — see [orm-architecture-patterns.md](orm-architecture-patterns.md)):
 
 > Persistence should be isolated from business logic to whatever degree the application's complexity warrants. Active Record and Data Mapper are not competitors with a single winner — Active Record optimizes for throughput and simplicity; Data Mapper optimizes for longevity and domain isolation. Pick by the problem's complexity, not by fashion.
 

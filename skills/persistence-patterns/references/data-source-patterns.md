@@ -40,6 +40,13 @@ This is subtle but extremely important, and inexperienced developers routinely g
 
 Modern equivalents of a Table Data Gateway go by many names: **query services, table repositories, DAOs (Data Access Objects), SQL abstraction classes**. If it thinks in tables, it is a gateway regardless of the label.
 
+## Related: Object-Relational Patterns
+
+The patterns above are about *structure*. Once an ORM is in play, a second family of Object-Relational patterns appears:
+
+- **ORM-internal Behavioral & Structural patterns** — Unit of Work, Identity Map, Lazy Loading, Identity Field, Foreign Key Mapping, Association Table Mapping, Dependent Mapping, Embedded Value. You should understand these as **ORM features**, not implement them. See [Object-Relational Behavioral & Structural Patterns](orm-patterns.md).
+- **Patterns surrounding the ORM** — Metadata Mapping, Query Object, Repository, Value Object. These shape the *architecture* around persistence. See [Object-Relational Architecture Patterns](orm-architecture-patterns.md).
+
 ## The patterns
 
 - [Table Data Gateway](table-data-gateway.md) — the lightest. One class per table; fetches/persists rows and nothing more. For reporting, ETL, import/export, admin utilities, read models, and CRUD where the schema *is* the model.
