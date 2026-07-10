@@ -2,6 +2,8 @@
 
 When deciding whether to use a full Domain-Driven Design (DDD) structure (domain model, mapper, repository interface) or a lean ORM structure, use this decision flowchart.
 
+Apply this flowchart **per area of the system, not once for the whole codebase**. Different bounded contexts can legitimately use different styles: a simple CRUD context may be a Transaction Script, a reporting context a Table Module, and the rule-heavy core a Domain Model. Pick the lightest pattern that fits each area's rules and let each area evolve on its own (see the `bounded-contexts` skill for carving those boundaries).
+
 ## The Decision Rule
 
 Before adding a new mapped domain entity or full DDD structure, ask these questions:

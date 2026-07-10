@@ -19,6 +19,17 @@ DDD adds ceremony that must justify its cost. Use DDD when the project has a com
 
 **Start simple. Evolve complexity only when needed.** Most systems do not need full DDD. For libraries, packages, or SDKs that have no user-facing behavior, plain PSR-4 classes with clear names are usually sufficient. For simple CRUD, lean ORM entities are preferable to rich domain objects.
 
+Note: the choices below (Transaction Script, Table Module, Domain Model) are about *how business rules are organized*. The **Application (or Service) Layer** sits **above** this spectrum — it defines the application's boundary and coordinates whichever domain-logic style you pick. See the `application-layer` skill for Service Layer definition and the overuse anti-pattern (`Controller → Service → Repository → Entity` with an anemic domain).
+
+### You do not pick one style for the whole codebase
+An application does **not** have to commit to a single domain-modeling style everywhere. Different areas of a system have different complexity, and the right pattern varies by area:
+
+- A reporting/reporting-adjacent area may be best as a **Table Module** (set-oriented, data-centric).
+- A simple admin or CRUD feature may be best as a **Transaction Script**.
+- The core, rule-heavy part of the business (pricing, billing, entitlements) may warrant a rich **Domain Model**.
+
+Choose the lightest pattern that fits *that area's* rules, and let each area evolve independently toward a heavier pattern as its rules demand. This is exactly the job of **bounded contexts** (see the `bounded-contexts` skill): a context is a natural boundary inside which one domain-logic style can be the default without forcing it on the rest of the system. Do not let a heavy pattern leak from a complex context into a simple one, and do not force a simple pattern onto a context that clearly needs rich behavior.
+
 ### Transaction Script: the simpler default
 Before reaching for a rich Domain Model, consider a [Transaction Script](references/transaction-script.md). A Transaction Script is a single procedure per request that orchestrates the steps (validate → fetch → calculate → save) and talks to the database through a thin gateway. It is the lightest way to organize business logic and the right default for simple CRUD, linear request/response flows, and prototypes. Upgrade to a Domain Model only when the same rules start repeating across scripts and drifting out of sync.
 
