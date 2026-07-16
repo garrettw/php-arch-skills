@@ -78,3 +78,4 @@ The additional indirection is justified **only when it buys you something** — 
 ### See also
 - The [Data Source spectrum & core philosophy](../data-source-patterns.md) — pick by the problem's complexity, not fashion.
 - The write side of a CQRS split leans toward Data Mapper + Repository once invariants matter (see the [Decision Flowchart](decision-flowchart.md)).
+- A Data Mapper is the persistence-specific instance of a general [Mapper](../infrastructure-boundaries/references/mapper.md) — translate between representations, preserve meaning, no business rules.

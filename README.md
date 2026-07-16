@@ -37,3 +37,18 @@ The collection includes 11 modular skills, each focused on a specific architectu
 - **`architecture-migration`**: Provides the agent with a playbook for incrementally refactoring legacy code into a clean architecture using vertical slices and temporary shims, avoiding big-bang rewrites.
 - **`dependency-injection`**: Ensures the agent relies on constructor injection over legacy service locators and correctly registers interfaces at the framework edge.
 - **`framework-integration`**: Maps clean-architecture patterns to specific PHP frameworks, providing port-to-framework mappings, anti-patterns to avoid, and composition-root wiring guidance.
+
+## A Unifying Theme: Boundary-Protection Patterns
+
+The distribution and supporting patterns share one job — **protecting a boundary** so internals don't leak across a seam. Each answers a specific question (*which seam am I crossing, and what must not leak through it?*):
+
+| Pattern       | Boundary it protects                                      | Skill                       |
+|---------------|-----------------------------------------------------------|-----------------------------|
+| Remote Facade | Process / network (the *operation* contract)              | `distribution-patterns`     |
+| DTO           | Representation (the *data shape* on the wire)             | `distribution-patterns`     |
+| Gateway       | Infrastructure (talking to an external system)            | `infrastructure-boundaries` |
+| Mapper        | Model (translating between representations)               | `infrastructure-boundaries` |
+| Plugin        | Framework / extension (supplying variable behavior)       | `dependency-injection`      |
+| Special Case  | Behavioral (the valid "nothing here" / exceptional state) | `domain-modeling`           |
+
+These patterns have stayed relevant because they address enduring sources of complexity, not transient implementation details. They also form the **intellectual foundation of Ports & Adapters (Hexagonal) architecture**: a Gateway *is* an outbound Port+Adapter, a Remote Facade defines an inbound boundary, DTOs are the messages crossing those boundaries, and a Plugin is just a structured way to supply the Adapters. Hexagonal doesn't replace these ideas — it reframes and generalizes them. See [`distribution-patterns/references/boundary-protection-patterns.md`](skills/distribution-patterns/references/boundary-protection-patterns.md) for the full mapping.

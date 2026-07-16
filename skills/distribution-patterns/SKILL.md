@@ -38,7 +38,12 @@ A DTO is a simple structure for moving data across a boundary — deliberately *
 - Never leak ORM entities, domain objects, lazy-loading proxies, or persistence state across the boundary — send a DTO instead.
 - Never make many fine-grained remote calls where a single coarse-grained operation would do.
 
+## Boundary Protection (the bigger picture)
+Remote Facade and DTO are two members of a family of patterns whose job is to **protect a boundary** so internals don't leak across a seam. The same theme runs through Gateway (infrastructure), Mapper (model), Plugin (framework/extension), and Special Case (behavioral). See [boundary-protection-patterns.md](references/boundary-protection-patterns.md) for how these map onto Ports & Adapters / Hexagonal architecture — they are its intellectual foundation, not a rival to it.
+
 ## Related Skills
 - [application-layer](../application-layer/SKILL.md): a CQRS command/handler is the in-process expression of a use case; a Remote Facade is its remote-facing expression.
-- [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md): that skill is about *consuming* external systems behind adapters; this one is about *exposing* your own remote interface.
+- [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md): that skill is about *consuming* external systems behind adapters; this one is about *exposing* your own remote interface. It also covers Gateway and Mapper — two more boundary-protection patterns.
 - [bounded-contexts](../bounded-contexts/SKILL.md): DTOs are the common currency when translating between contexts.
+- [dependency-injection](../dependency-injection/SKILL.md): its Plugin pattern is the framework/extension boundary; Hexagonal "Adapter" is the generalization of these patterns.
+- [domain-modeling](../domain-modeling/SKILL.md): its Special Case pattern protects the behavioral boundary (no more `null` checks across the domain seam).

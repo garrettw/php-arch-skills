@@ -1,6 +1,6 @@
 ---
 name: infrastructure-boundaries
-description: Use this skill when integrating third-party APIs, SDKs, or infrastructure services (like search engines or email). Provides rules for designing provider adapters, handling webhooks, and preventing vendor lock-in.
+description: Use this skill when integrating third-party APIs, SDKs, or infrastructure services (like search engines or email). Provides rules for designing provider adapters/gateways, handling webhooks, and preventing vendor lock-in.
 ---
 
 # Infrastructure & Integration Boundaries in PHP
@@ -19,6 +19,12 @@ For libraries, package your code with PSR-4 autoloading and clear namespacing. L
 
 ## System Overview
 The Infrastructure layer contains everything that speaks to the outside world: databases, search engines, APIs, message queues, and the filesystem. It implements adapters (driven and driver) that fulfill ports defined by inner layers. This skill provides the rules for keeping infrastructure concerns separated from domain logic through adapters, ports, and proper placement.
+
+A [**Gateway**](references/gateway.md) is the classic name for exactly this seam: an object that encapsulates communication with one external system so the application knows *that* the call happened, not *how*. In modern terms a Gateway is a Port + Adapter. Name it after the business capability (`PaymentGateway`), never the transport or vendor (`StripeHttpWrapper`).
+
+A [**Mapper**](references/mapper.md) is the companion translation object at the same seam: it converts *between* two representations of the same fact (domain object ↔ DTO, domain ↔ external API model) while preserving meaning. It is not a Transformer — never put business rules in a mapper. The persistence-specific instance is the Data Mapper in [persistence-patterns](../persistence-patterns/references/data-mapper.md).
+
+These two are boundary-protection patterns: a **Gateway** protects the *infrastructure* boundary and a **Mapper** protects the *model* boundary. They sit alongside Remote Facade / DTO (process & representation), Plugin (framework/extension), and Special Case (behavioral) in a shared family — see [boundary-protection-patterns.md](../distribution-patterns/references/boundary-protection-patterns.md) for how they map onto Hexagonal architecture.
 
 ## Numbered Workflows
 
@@ -50,7 +56,9 @@ If building an endpoint to receive a vendor webhook:
 ## Boundaries
 
 ### Always Do
-- Always treat third-party integrations (like a CRM) and infrastructure systems (like a search engine) as infrastructure adapters, not bounded contexts.
+- Always treat third-party integrations (like a CRM) and infrastructure systems (like a search engine) as infrastructure adapters (Gateways), not bounded contexts.
+- Always name a Gateway after the business capability it provides (`PaymentGateway`, `SearchIndex`, `Mailer`), never the vendor or transport (`StripeHttpWrapper`, `ElasticsearchHttpClient`).
+- Always limit a Mapper to representation conversion only — preserve meaning, never embed business rules or derivation (that belongs in the domain or an application-layer operation).
 - Always inject configuration values (like feature flags) into domain objects as simple scalar values (e.g., `bool $isNewFeatureEnabled`) via constructors.
 
 ### Ask First

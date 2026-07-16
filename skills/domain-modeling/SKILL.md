@@ -70,6 +70,13 @@ If deciding whether related entities belong in the same aggregate:
 3. **Split Large Aggregates.** If an aggregate contains more than 10 entities, split it into smaller aggregates and use domain events for eventual consistency.
 4. **Rule:** One aggregate per transaction. Cross-aggregate consistency is handled via domain events, not distributed transactions.
 
+### 5. Modeling Exceptional-but-Valid States
+If a query or method might return "nothing" or a degenerate state (`null` customer, empty cart, no discount):
+1. **Prefer a Special Case over `null`.** Return an object implementing the same interface as the real one — `GuestUser`, `AnonymousCustomer`, `EmptyCart`, `NoDiscount` — so callers skip the `if ($x !== null)` ceremony (see [special-case.md](references/special-case.md)).
+2. **Name the state, don't hide absence.** `NoDiscount` is a real, named business state; model it as a first-class object, not a missing value.
+3. **Don't hide errors.** Only use a Special Case for a *valid* domain outcome. If the situation is a failure (lookup failed, invariant broken, timeout), surface it as an exception or error result — never mask it behind a Special Case.
+- **Bigger picture:** Special Case protects the *behavioral* boundary — one of a family of boundary-protection patterns (with Gateway, Mapper, Remote Facade, DTO, Plugin) that underlie Hexagonal architecture. See [boundary-protection-patterns.md](../distribution-patterns/references/boundary-protection-patterns.md).
+
 ## Boundaries
 
 ### Always Do
@@ -79,6 +86,7 @@ If deciding whether related entities belong in the same aggregate:
 - Always consider a [Transaction Script](references/transaction-script.md) before reaching for a rich Domain Model; it is the lighter default for simple, linear procedures.
 - Always consider a [Table Module](references/table-module.md) when logic operates over sets of rows in a single table, before paying for a full Domain Model's O/R mapping.
 - Always use "unique identity that persists" → Entity, "defined only by attributes" → Value Object when deciding between the two.
+- Always model an exceptional-but-valid state as a Special Case object ([special-case.md](references/special-case.md)) instead of returning `null`, but never use a Special Case to mask a genuine error.
 
 ### Ask First
 - Ask before extracting intermediate Command classes, Request DTOs, or "domain services" unless they carry meaningful domain data.

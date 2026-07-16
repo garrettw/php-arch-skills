@@ -1,6 +1,6 @@
 ---
 name: dependency-injection
-description: Use this skill when wiring dependencies, configuring a DI container, or migrating away from legacy service locators in PHP. Triggers on questions about constructor injection, interface registration, or testing without booting the container.
+description: Use this skill when wiring dependencies, configuring a DI container, designing plugin/extension points, or migrating away from legacy service locators in PHP. Triggers on questions about constructor injection, interface registration, swapping implementations, or testing without booting the container.
 ---
 
 # Dependency Injection Best Practices for PHP
@@ -15,6 +15,8 @@ A DI container is an infrastructure concern. Use it for applications that need f
 | Framework integration (Symfony, Laravel)          | Throwaway code or prototypes             |
 
 The container should wire the application together at the edge, while the core remains ignorant of the container. This skill provides the rules for registering dependencies, migrating legacy locators, and injecting objects.
+
+A [**Plugin**](references/plugin.md) is the purpose this wiring serves: define extension points (Ports) so new behavior is added by plugging in implementations (Adapters) at the composition root, without modifying the core. A plugin must *extend* the existing abstractions, never bypass them. It protects the **framework / extension boundary** — one of a family of boundary-protection patterns (with Gateway, Mapper, Remote Facade, DTO, and Special Case) that form the foundation of Hexagonal architecture; see [boundary-protection-patterns.md](../distribution-patterns/references/boundary-protection-patterns.md).
 
 ## Numbered Workflows
 
@@ -44,9 +46,11 @@ If modifying a legacy class that uses a service locator (`Container::getInstance
 - Always use constructor injection for services, handlers, repositories, adapters, and listeners.
 - Always keep the container wiring logic at the framework edge (composition roots, service providers).
 - Always keep the domain core free of framework dependencies. It should resolve from tests or a composition root with no framework boot.
+- Always treat a plugin as a first-class architectural citizen: it implements a defined Port and obeys the same dependency rule and invariants as core code (see [plugin.md](references/plugin.md)).
 
 ### Ask First
 - Ask before introducing a legacy shim if it is feasible to simply update all callers instead.
 
 ### Never Do
 - Never use service locators inside domain objects, application handlers, or policies. They hide dependencies and couple core code to the framework.
+- Never let a plugin become a backdoor: it must not reach into core internals, write to the database directly, or skip domain invariants. Plug in via the defined Port only.
