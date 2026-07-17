@@ -37,6 +37,7 @@ The collection includes 11 modular skills, each focused on a specific architectu
 - **`architecture-migration`**: Provides the agent with a playbook for incrementally refactoring legacy code into a clean architecture using vertical slices and temporary shims, avoiding big-bang rewrites.
 - **`dependency-injection`**: Ensures the agent relies on constructor injection over legacy service locators and correctly registers interfaces at the framework edge.
 - **`framework-integration`**: Maps clean-architecture patterns to specific PHP frameworks, providing port-to-framework mappings, anti-patterns to avoid, and composition-root wiring guidance.
+- **`web-presentation-patterns`**: Corrects the "Web MVC" misnomer (it's really Sun's Model 2, not Smalltalk MVC), reframes the framework controller as a thin Action-Domain-Responder, and keeps HTTP/framework concerns out of the domain.
 
 ## A Unifying Theme: Boundary-Protection Patterns
 

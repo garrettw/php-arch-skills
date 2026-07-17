@@ -143,3 +143,6 @@ If testing event-sourced aggregates:
 | `domain-modeling` | Event-sourced aggregates are still aggregates. The same rules apply: one aggregate per transaction, invariants protected at the aggregate root, reference by ID only. |
 | `persistence-patterns` | The event store is an infrastructure adapter. Repository interfaces for event-sourced aggregates look different (find by stream, append events), but the dependency rule still applies. |
 | `application-layer` | Command handlers for event-sourced aggregates follow the same pattern: load aggregate, execute command, persist events, publish. The difference is in the repository implementation. |
+
+## Related Patterns
+- The **Memento** pattern (capture/restore state; snapshots vs event replay) is covered in [memento-pattern.md](references/memento-pattern.md).

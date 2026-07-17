@@ -71,6 +71,10 @@ If a repository is growing too large:
 ### Ask First
 - Ask before introducing a repository interface if there is only one concrete implementation.
 - Ask whether a class named "Repository" is actually a Gateway in disguise (returns rows, uses persistence language). If so, call it what it is.
+- Ask whether a workflow that "needs the row to exist now" is a signal for an outbox/domain-event pattern rather than a mid-request flush.
+
+### Transaction & Flush Boundaries
+The ORM's default request-end flush is **not** your only transaction boundary. Transaction boundaries are a business decision owned by the application layer, not the ORM. Default to one flush per use case for atomicity; flush explicitly mid-request only when a later step depends on the row already existing; prefer an outbox/domain-event over piecemeal flushing when downstream consumers need the data. See [transaction-boundaries.md](references/transaction-boundaries.md).
 
 ### Never Do
 - Never create a massive global repository (e.g., `UserRepository`) that serves multiple bounded contexts.

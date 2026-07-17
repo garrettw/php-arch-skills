@@ -54,3 +54,6 @@ If modifying a legacy class that uses a service locator (`Container::getInstance
 ### Never Do
 - Never use service locators inside domain objects, application handlers, or policies. They hide dependencies and couple core code to the framework.
 - Never let a plugin become a backdoor: it must not reach into core internals, write to the database directly, or skip domain invariants. Plug in via the defined Port only.
+
+## Related Patterns
+- The **Factory** pattern (variant selection, composition-root wiring, Singleton as anti-pattern) is covered in [creation-patterns.md](references/creation-patterns.md).

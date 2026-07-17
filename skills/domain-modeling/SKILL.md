@@ -96,3 +96,6 @@ If a query or method might return "nothing" or a degenerate state (`null` custom
 - Never chain services together (e.g., Service A calls Service B calls Service C). Each handler should own one complete business result.
 - Never place core business rules in framework controllers, ORM callbacks, or provider adapters.
 - Never build a repository per entity. Use one repository per aggregate root to preserve consistency boundaries.
+
+## Related Patterns
+- Behavioral/structural patterns used in the domain — Strategy, Builder, Composite, State, Visitor, Observer — are catalogued in [behavioral-structural-patterns.md](references/behavioral-structural-patterns.md).

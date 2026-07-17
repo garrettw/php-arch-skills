@@ -63,3 +63,5 @@ Read the relevant reference file for framework-specific anti-patterns and guidan
 - Never treat a framework's default persistence model (Eloquent AR, Doctrine, Cake Table) as your aggregate root. It is an adapter, not the domain.
 - Never assume that "the framework does it" is a reason to skip clean-architecture boundaries in a complex, long-lived application.
 - Never put business logic directly in a framework controller, even for lighter patterns. Delegate to a Transaction Script or Table Module and keep the controller as a thin adapter.
+
+For the web/HTTP layer specifically — how the framework "controller" maps onto Action-Domain-Responder, and how to extract a true Responder that owns the whole HTTP response — see the [web-presentation-patterns](../web-presentation-patterns/SKILL.md) skill and its [adr-by-framework.md](../web-presentation-patterns/references/adr-by-framework.md) guide.

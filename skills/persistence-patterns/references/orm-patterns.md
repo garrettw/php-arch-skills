@@ -16,6 +16,7 @@ Tracks all objects affected by a business transaction and orders the writes (and
 
 - **ORM feature:** Doctrine's `UnitOfWork` computes the change set and flushes in one transaction; Eloquent does per-model dirty tracking but relies on you wrapping writes in a DB transaction.
 - **Tradeoff:** centralizes write ordering and transactional boundaries (good), but couples "what changed" to the ORM's identity tracking. The architectural decision is whether your ORM's unit-of-work semantics match your transaction boundaries — not whether to build your own.
+- **Flush timing is a business decision:** the ORM's default end-of-request flush is not your only boundary. See [transaction-boundaries.md](transaction-boundaries.md) for when to flush explicitly and when to use an outbox instead of piecemeal writes.
 
 ### Identity Map
 Guarantees that a row fetched twice within a session returns the *same* object instance, so in-memory changes stay consistent.
