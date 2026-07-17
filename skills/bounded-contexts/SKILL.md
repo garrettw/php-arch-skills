@@ -39,6 +39,15 @@ If extracting code to share across multiple contexts:
 2. **If it is an identity reference** (`UserId`), a core value object (`Money`), or a domain event contract, place it in the Shared Kernel.
 3. **If it is generic utility code** (e.g., array helpers), do not place it in the Shared Kernel.
 
+## Recognizing Boundary Problems in an Existing Codebase
+
+When analyzing an established codebase, these are signals of misplaced or missing boundaries (judge against real business capabilities; do not reshuffle folders for tidiness):
+
+- **"Infrastructure" contexts.** A context named after a transport or vendor — `Webhooks`, `Email`, `Salesforce` — instead of a business capability. Webhooks/integrations are infrastructure, not contexts; re-home them to the capability that owns the fact (e.g., a payment webhook belongs to Billing).
+- **Shared Kernel as a util dump.** The "common" namespace holds array helpers, base classes, and generic traits rather than identity references, core value objects, or event contracts.
+- **Structure-by-layer, not by-capability.** Code is sliced by technical layer (`Controllers/`, `Models/`, `Repositories/`) across the whole app rather than grouped by business capability, so a single feature's logic is scattered.
+- **Hidden ownership.** No context map or glossary; the same term means different things in different areas, or facts are owned by the consumer rather than their source.
+
 ## Boundaries
 
 ### Always Do

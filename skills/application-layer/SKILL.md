@@ -51,6 +51,16 @@ If deciding whether to introduce a new DTO or Command object:
 1. **Evaluate Intent.** Does the object carry meaningful business intent across a boundary? If yes, create it.
 2. **Evaluate Necessity.** Does the object merely mirror the request body or exist just to satisfy a generic pattern rule? If yes, skip it and use scalar arguments or arrays.
 
+## Recognizing Problems in an Existing Codebase
+
+When analyzing an established codebase, look for these application-layer smells (signals, not automatic defects — fix them only when you next touch the area, per the `architecture-migration` trigger rule):
+
+- **Fat controller.** The controller contains business logic, DB queries, or large response/DTO building instead of delegating to a handler.
+- **Anemic domain behind a service.** The service holds all the decisions and the entity is a data shell — a Transaction Script wearing extra indirection.
+- **Service chaining.** `Service A → Service B → Service C`, so no single handler owns a complete business result and failures/transactions become hard to reason about.
+- **Framework globals in handlers.** The handler pulls `request`, `session`, or the container singleton instead of receiving plain inputs, making it untestable without the framework.
+- **Business rules living in the service.** Decisions, invariants, or calculations sit in the orchestrator rather than in domain objects or policies.
+
 ## Boundaries
 
 ### Always Do

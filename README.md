@@ -4,27 +4,38 @@ A collection of redistributable AI agent skills designed to help you and your AI
 
 ## How to Use
 
-Install the skills using the skills.sh installer, which allows you to select the ones you want:
+**Install all the skills.** They are designed to inter-relate and cross-link heavily — a migration decision in one skill points to a boundary pattern in another, and an application-layer use case relies on concepts from the domain-modeling and persistence skills. Installing the full set gives your agent the complete mental model rather than a fragment of it:
 
 `npx skills add garrettw/php-arch-skills`
 
-Alternatively, install any single skill directly:
+If you must install selectively, you can add a single skill directly:
 
 `npx skills add garrettw/php-arch-skills --skill skill-name`
 
-## The Problem
+**Install globally if you prefer.** Add a `-g` flag to install the skills machine-wide instead of into the current repo — useful when you want the same architectural guidance across every project you work on:
 
-Out of the box, AI coding assistants tend to default to the simplest, most tightly-coupled framework patterns. If you ask an agent to build a new feature in PHP, it will usually write a massive controller, couple your core business logic to the database ORM, and tightly bind third-party APIs directly into your application flow.
+`npx skills add garrettw/php-arch-skills -g`
 
-## The Solution
+### Pairing with the Matt Pocock skills
 
-This repository contains a suite of **framework-agnostic architecture skills** extracted from real-world, large-scale PHP applications. 
+These architecture skills pair well with Matt Pocock's agent-skills collection, especially the **grill-with-docs** skill (stress-tests a plan against your project's domain language and documented decisions, updating CONTEXT.md and ADRs inline as choices crystallize). Install his collection with:
 
-By installing these skills into your AI agent's configuration, you teach the agent how to apply Domain-Driven Design (DDD), Command/Query Responsibility Segregation (CQRS), and proper inversion of control. The agent will proactively ask you about boundaries, invariants, and testability *before* it writes the code.
+`npx skills add mattpocock/skills`
+
+If you want to use **grill-with-docs** (or any skill from that repo), you should also install and run the **setup-matt-pocock-skills** skill from that same repo — it wires up the issue tracker, triage labels, and domain-doc layout those skills expect.
+
+## When to Use These Skills
+
+This collection helps in two distinct situations:
+
+1. **Architecting a greenfield project.** When starting something new, the skills steer the agent to make deliberate boundary, layering, and persistence decisions up front — so the codebase begins clean rather than drifting into a tangle of massive controllers, ORM-coupled logic, and vendor SDKs wired straight into the flow.
+2. **Analyzing and improving an established codebase.** Point the agent at an existing project to map its architecture, surface architectural problems and code smells, and plan improvements. The skills direct this toward **high-impact, low-effort** changes and — critically — treat refactoring as something to do *only when a trigger is encountered* (an active feature, a complex bug, an exposed endpoint), never as aesthetic cleanup of untouched code. The `architecture-migration` skill is the playbook for this incremental, touched-area approach.
+
+In both cases the value is the same: the agent applies Domain-Driven Design (DDD), Command/Query Responsibility Segregation (CQRS), and proper inversion of control, and proactively raises questions about boundaries, invariants, and testability *before* writing code.
 
 ## The Skills
 
-The collection includes 11 modular skills, each focused on a specific architectural layer or concept:
+The collection includes 13 modular skills, each focused on a specific architectural layer or concept:
 - **`domain-modeling`**: Guides the agent to identify real business objects, default to Transaction Script (or Table Module for row-set logic) for simple procedures, determine when to upgrade to rich domain models versus lean ORM entities, and protect business invariants using pure PHP.
 - **`bounded-contexts`**: Teaches the agent to define system boundaries using business capabilities rather than code folders, establishing clear ownership and preventing tightly-coupled monoliths.
 - **`application-layer`**: Defines the Application (or Service) Layer as the boundary above the domain-logic spectrum, instructing the agent to orchestrate use cases via the Command/Query/Handler pattern, keep framework controllers extremely thin, and avoid the anemic-domain overuse anti-pattern.
@@ -34,7 +45,7 @@ The collection includes 11 modular skills, each focused on a specific architectu
 - **`domain-events`**: Shows the agent how to decouple side-effects and cross-context communication using the record-then-publish event pattern.
 - **`event-sourcing`**: Guides the agent through evaluating whether Event Sourcing is appropriate, modeling event-sourced aggregates, building projections and snapshots, and choosing PHP libraries (Ecotone, Prooph, EventSauce, Patchlevel).
 - **`testing-strategy`**: Forces the agent to write tests that verify behavior rather than internal implementations, spanning pure domain unit tests to database integration tests.
-- **`architecture-migration`**: Provides the agent with a playbook for incrementally refactoring legacy code into a clean architecture using vertical slices and temporary shims, avoiding big-bang rewrites.
+- **`architecture-migration`**: Provides the agent with a playbook for incrementally refactoring legacy code into a clean architecture using the Strangler Fig approach — vertical slices, temporary shims, and clearly-named transitional architecture — and only when a trigger point (active feature, complex bug, new endpoint) is encountered, never as aesthetic cleanup.
 - **`dependency-injection`**: Ensures the agent relies on constructor injection over legacy service locators and correctly registers interfaces at the framework edge.
 - **`framework-integration`**: Maps clean-architecture patterns to specific PHP frameworks, providing port-to-framework mappings, anti-patterns to avoid, and composition-root wiring guidance.
 - **`web-presentation-patterns`**: Corrects the "Web MVC" misnomer (it's really Sun's Model 2, not Smalltalk MVC), reframes the framework controller as a thin Action-Domain-Responder, and keeps HTTP/framework concerns out of the domain.

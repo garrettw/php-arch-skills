@@ -77,6 +77,16 @@ If a query or method might return "nothing" or a degenerate state (`null` custom
 3. **Don't hide errors.** Only use a Special Case for a *valid* domain outcome. If the situation is a failure (lookup failed, invariant broken, timeout), surface it as an exception or error result — never mask it behind a Special Case.
 - **Bigger picture:** Special Case protects the *behavioral* boundary — one of a family of boundary-protection patterns (with Gateway, Mapper, Remote Facade, DTO, Plugin) that underlie Hexagonal architecture. See [boundary-protection-patterns.md](../distribution-patterns/references/boundary-protection-patterns.md).
 
+## Recognizing Problems in an Existing Model
+
+When analyzing an established codebase, these are the domain-modeling smells to look for. Each is a *signal*, not an automatic defect — judge it against the area's real complexity before recommending change:
+
+- **Anemic domain with logic in services.** Entities are data shells; all rules live in `Service → Repository → Entity` flows. Migrate the rules down only when you next touch that area (see the `architecture-migration` skill's trigger rule — never refactor untouched code for tidiness).
+- **Business logic in ORM callbacks / model events.** Rules fire inside `saving`, `created`, or entity lifecycle hooks, where they can't be tested without the framework and bypass the application layer's transaction/side-effect control.
+- **`null` returned for a valid absence.** A missing customer, empty cart, or no discount is modeled as `null`, forcing `if ($x !== null)` at every call site. Replace with a Special Case object.
+- **Wrong pattern for the area's complexity.** A rich Domain Model forced onto simple CRUD (ceremony without payoff), or a Transaction Script stretched far past its useful life (the same validation/rule duplicated across many scripts, drifting out of sync).
+- **Repository per entity.** One repo per entity instead of per aggregate root, which lets callers bypass aggregate consistency boundaries.
+
 ## Boundaries
 
 ### Always Do

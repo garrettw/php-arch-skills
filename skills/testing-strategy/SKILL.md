@@ -33,6 +33,14 @@ If testing framework edges and infrastructure adapters:
 2. **For Infrastructure Adapters:** Write integration tests hitting a sandbox API (if available) or unit tests mocking the vendor's HTTP client. Verify that vendor exceptions are caught and translated into domain exceptions.
 3. **For Architecture Boundaries:** Add automated architecture tests to enforce the dependency rule (e.g., using Pest, Deptrac, PHP Arkitect, or a custom script). Verify that the domain core has zero imports from infrastructure, HTTP, or database libraries.
 
+## Using Tests to Analyze an Existing Codebase
+
+Tests are also the fastest way to *characterize and probe* a legacy codebase before planning changes:
+
+- **Run architecture tests first.** A Deptrac/PHP Arkitect rule that the domain core imports nothing from infrastructure is a one-command smell detector — it maps exactly which layers are leaking before you read a line of business logic.
+- **Write characterization tests before refactoring.** Lock current behavior with a high-level integration test (per the `architecture-migration` playbook) so you can prove a Strangler-Fig slice hasn't changed anything. This is the safe on-ramp to any change.
+- **Prefer real test databases over mock chains.** For handlers and repositories, an integration test against a real (test) DB gives higher confidence with less brittle setup — and doubles as documentation of what the code actually does today.
+
 ## Boundaries
 
 ### Always Do
