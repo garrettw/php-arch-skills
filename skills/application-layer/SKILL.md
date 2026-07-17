@@ -81,6 +81,6 @@ When analyzing an established codebase, look for these application-layer smells 
 - Never let controllers contain persistence orchestration or cross-context policies.
 
 ## Related Skills
-- [web-presentation-patterns](../web-presentation-patterns/SKILL.md): the framework "controller" is an ADR **Action** that delegates to this Application Layer (the **Domain** in ADR) and hands off to a Responder. That skill corrects the "Web MVC" misnomer.
+- [action-domain-responder](../action-domain-responder/SKILL.md): the framework "controller" is an ADR **Action** that delegates to this Application Layer (the **Domain** in ADR) and hands off to a Responder. That skill corrects the "Web MVC" misnomer.
 - [distribution-patterns](../distribution-patterns/SKILL.md): the same use case exposed remotely as a coarse-grained Remote Facade.
 - [coordination-patterns.md](references/coordination-patterns.md): the **Template Method** and **Mediator** patterns as they shape use-case flows and inter-object coordination (Mediator realized as domain events).

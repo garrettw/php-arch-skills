@@ -1,5 +1,5 @@
 ---
-name: web-presentation-patterns
+name: action-domain-responder
 description: Use this skill when building server-side web/HTTP request handling, controllers, views, or templates in PHP frameworks, or when a framework's "MVC" terminology causes confusion about where logic belongs. Triggers on questions about controllers, the Web MVC pattern, Action-Domain-Responder, view/template separation, or keeping HTTP and framework concerns out of the domain.
 ---
 

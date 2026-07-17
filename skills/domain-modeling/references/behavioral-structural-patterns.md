@@ -31,7 +31,7 @@ Treats individual objects and compositions of objects uniformly through a common
 Allows an object to alter its behavior when its internal state changes, by delegating to a current state object that encapsulates both the behavior and the transitions.
 
 - **When:** an entity's valid actions and transitions depend on a well-defined lifecycle — order status (pending → paid → shipped → refunded), subscription state, job state.
-- **Related:** distinct from **Application Controller** ([web-presentation-patterns](../../web-presentation-patterns/references/classic-web-patterns.md)), which decides *which screen/step comes next* (presentation flow). State is about *how a domain object behaves* in a given condition. A wizard flow may use State internally and an Application Controller for navigation — different concerns.
+- **Related:** distinct from **Application Controller** ([action-domain-responder](../../action-domain-responder/references/classic-web-patterns.md)), which decides *which screen/step comes next* (presentation flow). State is about *how a domain object behaves* in a given condition. A wizard flow may use State internally and an Application Controller for navigation — different concerns.
 - **Watch:** prefer modeling explicit states (often as a small set of classes or a typed enum with transition methods) over a tangle of `if ($status === ...)` checks scattered through the entity. Keep transitions in one place.
 
 ## Visitor
@@ -46,11 +46,11 @@ Lets you define new operations over a heterogeneous object structure without cha
 
 Defines a one-to-many dependency so that when one object changes state, its dependents are notified automatically.
 
-- **In this skill set:** this is the *original* MVC mechanism (the model broadcasts changes to views/controllers) — see [web-presentation-patterns](../../web-presentation-patterns/references/web-mvc-is-not-mvc.md). In server-side PHP we rarely use live in-memory observers for UI; instead we use **domain events** ([domain-events](../domain-events/SKILL.md)) to achieve the same decoupling across a request or asynchronously. Treat Observer as the conceptual ancestor of the domain-event pattern.
+- **In this skill set:** this is the *original* MVC mechanism (the model broadcasts changes to views/controllers) — see [action-domain-responder](../../action-domain-responder/references/web-mvc-is-not-mvc.md). In server-side PHP we rarely use live in-memory observers for UI; instead we use **domain events** ([domain-events](../domain-events/SKILL.md)) to achieve the same decoupling across a request or asynchronously. Treat Observer as the conceptual ancestor of the domain-event pattern.
 - **Watch:** an in-process Observer list inside a domain entity is fine for pure domain reactions, but cross-boundary side effects belong in the domain-event publisher, not a registered listener inside the entity.
 
 ## How these relate to the surrounding skills
 - **Strategy / State / Observer variants are Ports** wired at the composition root ([dependency-injection](../dependency-injection/SKILL.md)).
 - **Composite / State** often pair with [Special Case](special-case.md) (a degenerate node implements the same interface).
-- **Observer** is realized as **domain events** ([domain-events](../domain-events/SKILL.md)); the live-observer form is the original MVC idea ([web-presentation-patterns](../../web-presentation-patterns/references/web-mvc-is-not-mvc.md)).
+- **Observer** is realized as **domain events** ([domain-events](../domain-events/SKILL.md)); the live-observer form is the original MVC idea ([action-domain-responder](../../action-domain-responder/references/web-mvc-is-not-mvc.md)).
 - **Builder / Composite** are creation/structure concerns kept in the domain as plain PHP.
