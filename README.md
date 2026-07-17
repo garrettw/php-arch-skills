@@ -24,6 +24,14 @@ These architecture skills pair well with Matt Pocock's agent-skills collection, 
 
 If you want to use **grill-with-docs** (or any skill from that repo), you should also install and run the **setup-matt-pocock-skills** skill from that same repo — it wires up the issue tracker, triage labels, and domain-doc layout those skills expect.
 
+### How these skills are invoked
+
+These PHP architecture skills are designed to be **proactive and auto-triggered**, rather than run on command. Each skill's `description` is written with explicit trigger phrases (e.g., "Triggers on questions about thin controllers, handler responsibilities…"), so your agent's skill loader fires the right one automatically as you work — you describe the situation in plain language and the agent consults the relevant skill. You generally would not call these skills explicitly; installing the full set is what makes that automatic selection work.
+
+This is different from a skill like **grill-with-docs**, which is an **explicit, on-demand** workflow you deliberately launch to stress-test a plan.
+
+Because they operate at different moments, they complement each other: let the architecture skills keep the code clean as you go, and pull in `grill-with-docs` when you hit a design decision worth challenging against your project's documented language.
+
 ## When to Use These Skills
 
 This collection helps in two distinct situations:
@@ -48,7 +56,7 @@ The collection includes 13 modular skills, each focused on a specific architectu
 - **`architecture-migration`**: Provides the agent with a playbook for incrementally refactoring legacy code into a clean architecture using the Strangler Fig approach — vertical slices, temporary shims, and clearly-named transitional architecture — and only when a trigger point (active feature, complex bug, new endpoint) is encountered, never as aesthetic cleanup.
 - **`dependency-injection`**: Ensures the agent relies on constructor injection over legacy service locators and correctly registers interfaces at the framework edge.
 - **`framework-integration`**: Maps clean-architecture patterns to specific PHP frameworks, providing port-to-framework mappings, anti-patterns to avoid, and composition-root wiring guidance.
-- **`web-presentation-patterns`**: Corrects the "Web MVC" misnomer (it's really Sun's Model 2, not Smalltalk MVC), reframes the framework controller as a thin Action-Domain-Responder, and keeps HTTP/framework concerns out of the domain.
+- **`action-domain-responder`**: Corrects the "Web MVC" misnomer (it's really Sun's Model 2, not Smalltalk MVC), reframes the framework controller as a thin Action-Domain-Responder, and keeps HTTP/framework concerns out of the domain.
 
 ## A Unifying Theme: Boundary-Protection Patterns
 
