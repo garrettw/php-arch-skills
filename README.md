@@ -72,3 +72,14 @@ The distribution and supporting patterns share one job — **protecting a bounda
 | Special Case  | Behavioral (the valid "nothing here" / exceptional state) | `domain-modeling`           |
 
 These patterns have stayed relevant because they address enduring sources of complexity, not transient implementation details. They also form the **intellectual foundation of Ports & Adapters (Hexagonal) architecture**: a Gateway *is* an outbound Port+Adapter, a Remote Facade defines an inbound boundary, DTOs are the messages crossing those boundaries, and a Plugin is just a structured way to supply the Adapters. Hexagonal doesn't replace these ideas — it reframes and generalizes them. See [`distribution-patterns/references/boundary-protection-patterns.md`](skills/distribution-patterns/references/boundary-protection-patterns.md) for the full mapping.
+
+## Sources
+
+These skills distill established, framework-agnostic software-design literature — they are a curated synthesis for AI agents, not original research. The primary sources are:
+
+- **Martin Fowler, *Patterns of Enterprise Application Architecture* (PoEAA / the "EAA Catalog")** — the foundation for the boundary-protection patterns (Remote Facade, DTO, Gateway, Mapper, Special Case, Plugin), the data-source spectrum (Table/Row Data Gateway, Active Record, Data Mapper), and the Object-Relational patterns (Unit of Work, Identity Map, etc.).
+- **Martin Fowler's bliki & articles** — used for the modernization patterns: [Strangler Fig Application](https://martinfowler.com/bliki/StranglerFigApplication.html), [Patterns of Legacy Displacement](https://martinfowler.com/articles/patterns-legacy-displacement/) (Transitional Architecture, Event Interception, Legacy Mimic, Divert the Flow, Revert to Source, Feature Parity, Legacy Seam, Conway's Law), and [uncovering mainframe seams](https://martinfowler.com/articles/uncovering-mainframe-seams.html).
+- **Gamma, Helm, Johnson & Vlissides, *Design Patterns: Elements of Reusable Object-Oriented Software* (the "Gang of Four")** — the basis for the GoF pattern references included in the domain, application-layer, persistence, dependency-injection, and event-sourcing skills (Strategy, Factory, Builder, Template Method, Composite, State, Memento, Visitor, Mediator, Observer).
+- **Paul M. Jones, Action-Domain-Responder** — the basis for the `action-domain-responder` skill, including the "Web MVC is really Model 2" correction. Distilled from [MVC-MODEL-2 (Action-Domain-Responder)](https://github.com/pmjones/adr/blob/master/MVC-MODEL-2.md) and the ADR write-ups.
+
+Where a skill references a specific page, that link appears in the relevant `references/` file.
