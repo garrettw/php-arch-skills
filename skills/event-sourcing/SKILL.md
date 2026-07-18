@@ -108,10 +108,9 @@ If testing event-sourced aggregates:
 
 | Library                         | Approach                                | Notes                                                                                   |
 |---------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------|
-| **Ecotone + Prooph**            | Annotation-driven                       | Good for DDD practitioners. Lowers ceremony. Uses Prooph EventStore.                    |
+| **Ecotone**                     | Annotation-driven                       | Good for DDD practitioners. Lowers ceremony. Uses Prooph EventStore.                    |
 | **EventSauce**                  | Explicit, compositional interfaces      | Focuses only on event sourcing, not CQRS or buses. Pragmatic. Copy-able implementation. |
-| **Prooph components**           | Standalone event sourcing + event store | More control, more wiring. Foundation for Ecotone.                                      |
-| **Patchlevel Event Sourcing**   | Doctrine-based, Laravel-friendly        | Good for teams already on Doctrine/Laravel. Uses Doctrine DBAL for event storage.       |
+| **Patchlevel Event Sourcing**   | Framework-agnostic + integrations       | Batteries-included: subscription engine, process managers, crypto shredding, migrations, CLI, admin UI. Interface-based store (Doctrine DBAL ships as the built-in backend). |
 
 ## Boundaries
 
