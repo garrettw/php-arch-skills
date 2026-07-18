@@ -4,17 +4,16 @@ A collection of redistributable AI agent skills designed to help you and your AI
 
 ## How to Use
 
-**Install all the skills.** They are designed to inter-relate and cross-link heavily — a migration decision in one skill points to a boundary pattern in another, and an application-layer use case relies on concepts from the domain-modeling and persistence skills. Installing the full set gives your agent the complete mental model rather than a fragment of it:
+To install, run:
 
 `npx skills add garrettw/php-arch-skills`
 
-If you must install selectively, you can add a single skill directly:
+**Install all the skills.** They are designed to inter-relate and cross-link heavily — a migration decision in one skill points to a boundary pattern in another, and an application-layer use case relies on concepts from the domain-modeling and persistence skills. Installing the full set gives your agent the complete mental model rather than a fragment of it.
 
-`npx skills add garrettw/php-arch-skills --skill skill-name`
+And **don't forget to periodically update your skills**, by running:
+`npx skills update`
 
-**Install globally if you prefer.** Add a `-g` flag to install the skills machine-wide instead of into the current repo — useful when you want the same architectural guidance across every project you work on:
-
-`npx skills add garrettw/php-arch-skills -g`
+(Optionally, add the skill repo name to only update that skill set, e.g. `npx skills update garrettw/php-arch-skills`)
 
 ### Pairing with the Matt Pocock skills
 
