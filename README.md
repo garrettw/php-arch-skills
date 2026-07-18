@@ -18,17 +18,17 @@ If you must install selectively, you can add a single skill directly:
 
 ### Pairing with the Matt Pocock skills
 
-These architecture skills pair well with Matt Pocock's agent-skills collection, especially the **grill-with-docs** skill (stress-tests a plan against your project's domain language and documented decisions, updating CONTEXT.md and ADRs inline as choices crystallize). Install his collection with:
+These architecture skills pair well with Matt Pocock's agent-skills collection, especially the `grill-with-docs` skill (stress-tests a plan against your project's domain language and documented decisions, updating CONTEXT.md and ADRs inline as choices crystallize). Install his collection with:
 
 `npx skills add mattpocock/skills`
 
-If you want to use **grill-with-docs** (or any skill from that repo), you should also install and run the **setup-matt-pocock-skills** skill from that same repo — it wires up the issue tracker, triage labels, and domain-doc layout those skills expect.
+If you want to use `grill-with-docs` (or any skill from that repo), you should also install and run the `setup-matt-pocock-skills` skill from that same repo — it wires up the issue tracker, triage labels, and domain-doc layout those skills expect.
 
 ### How these skills are invoked
 
 These PHP architecture skills are designed to be **proactive and auto-triggered**, rather than run on command. Each skill's `description` is written with explicit trigger phrases (e.g., "Triggers on questions about thin controllers, handler responsibilities…"), so your agent's skill loader fires the right one automatically as you work — you describe the situation in plain language and the agent consults the relevant skill. You generally would not call these skills explicitly; installing the full set is what makes that automatic selection work.
 
-This is different from a skill like **grill-with-docs**, which is an **explicit, on-demand** workflow you deliberately launch to stress-test a plan.
+This is different from a skill like `grill-with-docs`, which is an **explicit, on-demand** workflow you deliberately launch to stress-test a plan.
 
 Because they operate at different moments, they complement each other: let the architecture skills keep the code clean as you go, and pull in `grill-with-docs` when you hit a design decision worth challenging against your project's documented language.
 
