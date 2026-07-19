@@ -81,3 +81,17 @@ The ORM's default request-end flush is **not** your only transaction boundary. T
 - Never let a Table Data Gateway accumulate business-flavored query methods (`findEligiblePremiumCustomers()`); that is a Repository trying to form — move the behavior into the domain instead.
 - Never reach for Row Data Gateway in new code; it is a faded pattern that awkwardly mixes persistence, identity, and row state without business behavior. Use Table Data Gateway for raw row access, Active Record for row+behavior, or Data Mapper for full separation.
 - Never introduce CQRS before the application has divergent read/write workloads. Start with simple read/write and evolve only when needed.
+- Never strictly create one repository per entity. Reaching for an entity-level repository bypasses aggregate consistency and scatters persistence logic; design one repository per aggregate root instead.
+
+### Recognizing Persistence Problems in an Existing Codebase
+
+When analyzing persistence code, these are the smells to look for (signals, not automatic defects — fix only when you next touch the area):
+
+- **N+1 query load.** A list endpoint issues one query per row to fetch related data, so request cost grows linearly with row count. Fix with eager joins, a batch fetch, or a projection. This is the most common *performance debt* in PHP backends.
+- **Unbounded result sets.** A list endpoint returns every row with no limit/offset or cursor pagination, so response size and query time grow without bound. Always paginate collection endpoints.
+- **Schema drift.** Production schema has diverged from the migration history, so a fresh migration does not reproduce production. Migrations must be the only source of schema change.
+- **Missing indexes / orphaned records.** Hot query columns lack indexes (sequential scans) or foreign keys are not enforced, leaving orphaned children. Enforce referential integrity and index frequently-queried columns.
+- **Repository per entity.** One repo per entity instead of per aggregate root, which lets callers bypass aggregate consistency boundaries.
+- **Gateway wearing a Repository's name.** A class called `XRepository` that returns rows and speaks persistence language is really a Table Data Gateway. Call it what it is and keep business behavior in the domain.
+
+The Repository pattern is DRY applied to data access (one authoritative place knows how to load/save an aggregate) and an expression of Separation of Concerns; see [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md).

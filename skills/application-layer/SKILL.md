@@ -25,6 +25,17 @@ CQRS separates read and write models, but adds complexity. Use CQRS only when a 
 ## System Overview
 The application layer orchestrates use cases while keeping framework adapters thin and domain rules explicit. It serves as the bridge between delivery mechanisms (HTTP, CLI, queues) and the core domain/infrastructure logic. This skill provides structural rules for controllers, handlers, and CQRS patterns.
 
+## Principles That Shape This Layer
+
+These cross-cutting principles explain *why* the rules below exist. Full detail in the `domain-modeling` references.
+
+- **Dependency Inversion (DI).** High-level use-case code depends on ports (interfaces), never on concrete databases, mailers, or gateways. Concrete adapters are supplied at the composition root. This is what lets a handler run against in-memory doubles in a test and is the backbone of Hexagonal architecture.
+- **Single Responsibility (SRP) + Separation of Concerns.** A handler owns *one* use case; it coordinates, it does not decide. Business rules belong in the domain, persistence in a repository, delivery in the controller. A class with 5+ unrelated collaborators usually violates this.
+- **Interface Segregation.** Ports should be narrow and role-specific (e.g., `PaymentGateway` exposes only what the use case needs), so adapters stay thin and clients are not forced to depend on methods they ignore.
+- **Layer direction.** Dependencies point inward: delivery → application → domain; infrastructure implements domain ports but is never depended on by domain. Reversing this direction (framework types leaking into the domain) is the core *design debt* smell — see below.
+
+See [solid-principles.md](../domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md).
+
 ## Numbered Workflows
 
 ### 0. Defining a Service / Use Case
@@ -60,6 +71,9 @@ When analyzing an established codebase, look for these application-layer smells 
 - **Service chaining.** `Service A → Service B → Service C`, so no single handler owns a complete business result and failures/transactions become hard to reason about.
 - **Framework globals in handlers.** The handler pulls `request`, `session`, or the container singleton instead of receiving plain inputs, making it untestable without the framework.
 - **Business rules living in the service.** Decisions, invariants, or calculations sit in the orchestrator rather than in domain objects or policies.
+- **Leaky abstractions / reversed layer direction.** Framework or ORM types (Request, Eloquent models, DB rows) cross into the domain or application layer; infrastructure is depended on by the domain instead of implementing a port. This is the central *design debt* smell.
+- **Shotgun surgery.** A single business change forces edits in 5+ files because one responsibility is scattered. Consolidate the behavior into one object/handler.
+- **Circular dependencies between modules.** Two handlers or services import each other to get the job done; break the cycle by introducing a port or moving the shared logic down into the domain.
 
 ## Boundaries
 
@@ -84,3 +98,4 @@ When analyzing an established codebase, look for these application-layer smells 
 - [action-domain-responder](../action-domain-responder/SKILL.md): the framework "controller" is an ADR **Action** that delegates to this Application Layer (the **Domain** in ADR) and hands off to a Responder. That skill corrects the "Web MVC" misnomer.
 - [distribution-patterns](../distribution-patterns/SKILL.md): the same use case exposed remotely as a coarse-grained Remote Facade.
 - [coordination-patterns.md](references/coordination-patterns.md): the **Template Method** and **Mediator** patterns as they shape use-case flows and inter-object coordination (Mediator realized as domain events).
+- [solid-principles.md](../domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md): the SOLID and clean-code lenses that motivate the boundaries above.

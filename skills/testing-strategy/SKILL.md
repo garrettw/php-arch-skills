@@ -8,6 +8,16 @@ description: Use this skill when writing tests for a PHP application. Provides l
 ## System Overview
 Different architectural layers have different responsibilities, and tests should be structured to verify those specific responsibilities without over-specifying internal implementation details. This skill provides rules for matching the right testing style (unit, integration, feature) to the correct layer.
 
+## Principles Behind Good Tests
+
+- **Arrange, Act, Assert (AAA).** One logical flow per test: set up the scenario, perform the one action under test, assert the outcome. Keep the "Given" visibly in the test body.
+- **Isolation.** Each test owns its data and runs independently of others, in any order. No shared mutable state, no order dependence. Deterministic tests are the only ones worth having.
+- **Mock only at boundaries.** Replace slow or non-deterministic collaborators (databases, HTTP, queues) with doubles. Do not mock the database inside a repository test (test the repository against a real test DB) and do not mock the very object under test. Mocking everything while asserting on call order verifies the implementation, not the behavior — a brittle test that breaks on every refactor.
+- **Assert behavior, not internals.** Assert on the resulting state, returned value, or recorded events — not on private methods or the exact internal call sequence. A test that survives a legitimate refactor is a test worth keeping.
+- **Coverage is a guide, not a target.** Aim for meaningful coverage of business logic and unhappy paths; 100% is not the goal and can incentivize worthless assertions.
+
+See [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md) for the encapsulation/DRY lenses that apply here.
+
 ## Numbered Workflows
 
 ### 1. Testing the Domain Layer
@@ -40,6 +50,7 @@ Tests are also the fastest way to *characterize and probe* a legacy codebase bef
 - **Run architecture tests first.** A Deptrac/PHP Arkitect rule that the domain core imports nothing from infrastructure is a one-command smell detector — it maps exactly which layers are leaking before you read a line of business logic.
 - **Write characterization tests before refactoring.** Lock current behavior with a high-level integration test (per the `architecture-migration` playbook) so you can prove a Strangler-Fig slice hasn't changed anything. This is the safe on-ramp to any change.
 - **Prefer real test databases over mock chains.** For handlers and repositories, an integration test against a real (test) DB gives higher confidence with less brittle setup — and doubles as documentation of what the code actually does today.
+- **Look for test debt.** When auditing, watch for: critical paths with no tests; flaky tests that pass or fail non-deterministically; skipped/disabled tests with no linked issue or removal date; and suites so slow they discourage running them. These are *test debt* — they erode confidence and slow every engineer.
 
 ## Boundaries
 
@@ -47,6 +58,7 @@ Tests are also the fastest way to *characterize and probe* a legacy codebase bef
 - Always use the [Test Patterns by Layer](references/test-patterns-by-layer.md) to structure your tests correctly.
 - Always create small, specific fixtures for the test scenario rather than relying on massive global state.
 - Always make the test setup (the "Given") explicitly visible in the test method.
+- Always keep tests independent and deterministic — each test sets up its own data and cleans up after itself.
 
 ### Ask First
 - Ask before introducing complex mock chains in a handler test if a real test database would be simpler and more robust.
@@ -54,3 +66,4 @@ Tests are also the fastest way to *characterize and probe* a legacy codebase bef
 ### Never Do
 - Never over-specify tests. Do not assert on private methods or the exact sequence of internal calls if the external contract is met.
 - Never mock the database inside a repository test.
+- Never write tests that only "don't throw" without asserting meaningful behavior, or that re-encode the implementation's logic instead of verifying the outcome — those tests pass even when the behavior is broken.

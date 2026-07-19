@@ -86,6 +86,10 @@ When analyzing an established codebase, these are the domain-modeling smells to 
 - **`null` returned for a valid absence.** A missing customer, empty cart, or no discount is modeled as `null`, forcing `if ($x !== null)` at every call site. Replace with a Special Case object.
 - **Wrong pattern for the area's complexity.** A rich Domain Model forced onto simple CRUD (ceremony without payoff), or a Transaction Script stretched far past its useful life (the same validation/rule duplicated across many scripts, drifting out of sync).
 - **Repository per entity.** One repo per entity instead of per aggregate root, which lets callers bypass aggregate consistency boundaries.
+- **Concerns tangled in one object.** An entity or handler that parses the request, validates, runs rules, writes SQL, and sends mail (SRP / Separation of Concerns). Split responsibilities into entity + repository + handler.
+- **Reaching through object chains.** `$a->getB()->getC()->doSomething()` across aggregates or value objects (Law of Demeter) — ask the owning object to do the work instead.
+- **Public state with no protection.** Entities with public/settable fields that let external code break an invariant instead of going through a method (Encapsulation).
+- **Premature abstraction.** Interfaces, base classes, or strategy hierarchies with a single implementation and no second use case on the horizon (YAGNI) — see [clean-code-foundations.md](references/clean-code-foundations.md).
 
 ## Boundaries
 
@@ -97,6 +101,7 @@ When analyzing an established codebase, these are the domain-modeling smells to 
 - Always consider a [Table Module](references/table-module.md) when logic operates over sets of rows in a single table, before paying for a full Domain Model's O/R mapping.
 - Always use "unique identity that persists" → Entity, "defined only by attributes" → Value Object when deciding between the two.
 - Always model an exceptional-but-valid state as a Special Case object ([special-case.md](references/special-case.md)) instead of returning `null`, but never use a Special Case to mask a genuine error.
+- Always name classes and methods for the responsibility or business capability they carry (`InvoiceCalculator`, `PaymentGateway`), and name values for what they *mean* (`invoice`, `pendingOrders`) rather than their type (`data`, `result`, `list`).
 
 ### Ask First
 - Ask before extracting intermediate Command classes, Request DTOs, or "domain services" unless they carry meaningful domain data.
@@ -109,3 +114,6 @@ When analyzing an established codebase, these are the domain-modeling smells to 
 
 ## Related Patterns
 - Behavioral/structural patterns used in the domain — Strategy, Builder, Composite, State, Visitor, Observer — are catalogued in [behavioral-structural-patterns.md](references/behavioral-structural-patterns.md).
+- The five SOLID principles as applied to PHP domain and application design are in [solid-principles.md](references/solid-principles.md). DI is the backbone of Hexagonal / Ports-and-Adapters; Open/Closed is the Plugin/Strategy pattern.
+- Cross-cutting clean-code foundations — Separation of Concerns, Law of Demeter, Encapsulation, Fail Fast, YAGNI, Composition over Inheritance, KISS, DRY — are in [clean-code-foundations.md](references/clean-code-foundations.md). These are the review lenses to apply while writing or analyzing backend code.
+- [code-taste.md](references/code-taste.md) turns common AI-generated "slop" patterns (narration comments, generic naming, premature interfaces, defensive overdose, mock-everything tests) into positive instructions for writing tasteful, human-maintainable code.

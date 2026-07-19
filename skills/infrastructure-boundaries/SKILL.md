@@ -26,6 +26,15 @@ A [**Mapper**](references/mapper.md) is the companion translation object at the 
 
 These two are boundary-protection patterns: a **Gateway** protects the *infrastructure* boundary and a **Mapper** protects the *model* boundary. They sit alongside Remote Facade / DTO (process & representation), Plugin (framework/extension), and Special Case (behavioral) in a shared family — see [boundary-protection-patterns.md](../distribution-patterns/references/boundary-protection-patterns.md) for how they map onto Hexagonal architecture.
 
+## Principles Behind the Boundary
+
+- **Dependency Inversion (DI).** The inner layers define the port; the infrastructure layer implements it. Domain code never imports the vendor SDK — that inversion is what keeps the core swappable and testable.
+- **Interface Segregation.** A port should expose exactly the capability the application uses, named in business terms (`PaymentGateway`), not a vendor grab-bag. Narrow ports keep adapters thin and keep vendor surface area out of the core.
+- **Single Responsibility (SRP) + Separation of Concerns.** A Gateway owns "talk to this one external system"; a Mapper owns "translate between two representations." Keep them separate and free of business rules.
+- **No premature abstraction.** A single vendor today does not require an interface "in case we switch." Add the port when a second implementation or a test double actually appears; until then a concrete adapter wired at the composition root is enough.
+
+See [solid-principles.md](../domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md).
+
 ## Numbered Workflows
 
 ### 1. Placing Code in the Right Layer
@@ -63,9 +72,11 @@ If building an endpoint to receive a vendor webhook:
 
 ### Ask First
 - Ask before passing a `ConfigResolver` or `FeatureFlagClient` directly into a domain object or application handler.
+- Ask before introducing a vendor-type wrapper class that only delegates to the SDK once. Name the adapter after the business capability and inject the SDK directly unless a second implementation or a test double is real.
 
 ### Never Do
 - Never let vendor-specific exceptions bubble up to the application layer.
 - Never pass the entire configuration object or framework container into an adapter. Inject only the specific credentials or clients the adapter needs.
 - Never mix Domain code with infrastructure SDKs.
-- Never violate the dependency rule: Domain must not import database, HTTP, or messaging libraries. If it does, the boundary is broken.
+- Never violate the dependency rule: Domain must not import database, HTTP, or messaging libraries. If it does, the boundary is broken (this is the classic *leaky abstraction* design-debt smell).
+- Never name an adapter after the transport or vendor (`StripeHttpWrapper`, `ElasticsearchHttpClient`); name it after the business capability it provides.

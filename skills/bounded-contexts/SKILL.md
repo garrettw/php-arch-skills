@@ -47,6 +47,9 @@ When analyzing an established codebase, these are signals of misplaced or missin
 - **Shared Kernel as a util dump.** The "common" namespace holds array helpers, base classes, and generic traits rather than identity references, core value objects, or event contracts.
 - **Structure-by-layer, not by-capability.** Code is sliced by technical layer (`Controllers/`, `Models/`, `Repositories/`) across the whole app rather than grouped by business capability, so a single feature's logic is scattered.
 - **Hidden ownership.** No context map or glossary; the same term means different things in different areas, or facts are owned by the consumer rather than their source.
+- **Circular dependencies between contexts.** Two contexts import each other to get a job done. Break the cycle with a port, an event, or by moving the shared concept into a Shared Kernel or down into the domain. Cyclic context coupling is a core *design debt* smell.
+- **Shotgun surgery.** One business change forces edits across many contexts because a single responsibility is scattered. Consolidate that responsibility into the context that owns the capability (this is Separation of Concerns at the context scale).
+- **Premature context extraction.** A context carved out "in case we need to scale it later" before the capability actually exists. Don't split until there is a real, distinct business capability and a real owner (YAGNI at the architecture scale).
 
 ## Boundaries
 

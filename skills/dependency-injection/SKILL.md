@@ -18,6 +18,12 @@ The container should wire the application together at the edge, while the core r
 
 A [**Plugin**](references/plugin.md) is the purpose this wiring serves: define extension points (Ports) so new behavior is added by plugging in implementations (Adapters) at the composition root, without modifying the core. A plugin must *extend* the existing abstractions, never bypass them. It protects the **framework / extension boundary** — one of a family of boundary-protection patterns (with Gateway, Mapper, Remote Facade, DTO, and Special Case) that form the foundation of Hexagonal architecture; see [boundary-protection-patterns.md](../distribution-patterns/references/boundary-protection-patterns.md).
 
+## Principles Behind the Wiring
+
+- **Dependency Inversion (DI).** High-level modules depend on abstractions, not on low-level details. The application defines ports (interfaces); infrastructure supplies the adapters. This is the principle that makes a DI container useful and is the backbone of Hexagonal / Ports-and-Adapters architecture. See [solid-principles.md](../domain-modeling/references/solid-principles.md).
+- **Narrow ports (Interface Segregation).** Each port should expose only the behavior its clients actually use. A port with methods no caller needs forces adapters to implement dead code and couples clients to irrelevant surface area. Keep ports role-specific.
+- **Interface segregation vs. premature abstraction.** Create an interface when there is a real second implementation, a boundary to invert, or a decorator to add. Do **not** introduce an interface for a single concrete class just "for flexibility" (or even just for testing, because mocks and stubs are usually fine) — that is premature abstraction (YAGNI). The workflow below encodes this check.
+
 ## Numbered Workflows
 
 ### 1. Registering Dependencies
@@ -26,7 +32,7 @@ If deciding whether to create an interface and register it in the DI container:
 2. **Check for Boundary Inversion.** Is the application defining a port that the infrastructure implements?
 3. **Check for Decorators.** Do you need to wrap the class with caching or logging?
 4. **If Yes to any:** Create an interface and register the binding in the container configuration.
-5. **If No to all:** Depend on the concrete class directly and let the container autowire it. Do not blindly create interfaces for every class.
+5. **If No to all:** Depend on the concrete class directly and let the container autowire it. Do not blindly create interfaces for every class — one interface with exactly one implementation and no second on the roadmap is dead weight.
 
 ### 2. Testing with Constructor Injection
 If writing tests for classes that use constructor injection:
@@ -50,10 +56,14 @@ If modifying a legacy class that uses a service locator (`Container::getInstance
 
 ### Ask First
 - Ask before introducing a legacy shim if it is feasible to simply update all callers instead.
+- Ask before adding an abstraction that a concrete class would serve just as well. Reach for an interface only when a second implementation, a boundary to invert, or a decorator genuinely exists — not "in case we need it later."
+- Ask before wrapping a single dependency in a one-method delegating class; prefer passing the dependency directly or as a named function.
 
 ### Never Do
 - Never use service locators inside domain objects, application handlers, or policies. They hide dependencies and couple core code to the framework.
 - Never let a plugin become a backdoor: it must not reach into core internals, write to the database directly, or skip domain invariants. Plug in via the defined Port only.
+- Never add a new dependency when an existing one already does the job; reuse before reaching for a package.
 
 ## Related Patterns
 - The **Factory** pattern (variant selection, composition-root wiring, Singleton as anti-pattern) is covered in [creation-patterns.md](references/creation-patterns.md).
+- The five SOLID principles and the clean-code foundations that motivate this wiring are in [solid-principles.md](../domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md).
