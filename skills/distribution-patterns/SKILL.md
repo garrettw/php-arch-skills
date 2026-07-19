@@ -20,6 +20,10 @@ A Remote Facade is a coarse-grained facade over a web of fine-grained objects, a
 
 A DTO is a simple structure for moving data across a boundary — deliberately *not* a domain object. It keeps the API contract independent from the persistence/domain model so each can evolve for its own reasons. See [dto.md](references/dto.md) for the full treatment, why domain objects don't belong on the wire, and the CQRS angle (Commands/Queries/Responses/Events are explicit DTOs).
 
+## HTTP/REST contract
+
+When a Remote Facade is exposed as a REST/HTTP interface, it also takes on a concrete contract beyond its operation shape — resource naming, method semantics, status codes, a consistent error envelope, pagination/versioning conventions, and transport security. Those HTTP-level details live in [http-api-contract.md](references/http-api-contract.md). The facade still holds no domain logic; the contract is about *how the surface speaks HTTP* so clients integrate predictably.
+
 ## Boundaries
 
 ### Always Do
@@ -47,3 +51,4 @@ Remote Facade and DTO are two members of a family of patterns whose job is to **
 - [bounded-contexts](../bounded-contexts/SKILL.md): DTOs are the common currency when translating between contexts.
 - [dependency-injection](../dependency-injection/SKILL.md): its Plugin pattern is the framework/extension boundary; Hexagonal "Adapter" is the generalization of these patterns.
 - [domain-modeling](../domain-modeling/SKILL.md): its Special Case pattern protects the behavioral boundary (no more `null` checks across the domain seam).
+- [domain-modeling/references/clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md): input validation at the boundary and Fail Fast are what the API contract's validation and error rules operationalize.
