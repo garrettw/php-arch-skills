@@ -42,8 +42,8 @@ In both cases the value is the same: the agent applies Domain-Driven Design (DDD
 
 ## The Skills
 
-The collection includes 13 modular skills, each focused on a specific architectural layer or concept:
-- **`domain-modeling`**: Guides the agent to identify real business objects, default to Transaction Script (or Table Module for row-set logic) for simple procedures, determine when to upgrade to rich domain models versus lean ORM entities, and protect business invariants using pure PHP.
+The collection includes 14 modular skills, each focused on a specific architectural layer or concept:
+- **`domain-modeling`**: Guides the agent to identify real business objects, default to Transaction Script (or Table Module for row-set logic) for simple procedures, determine when to upgrade to rich domain models versus lean ORM entities, and protect business invariants using pure PHP. Its [php-domain-idioms.md](skills/domain-modeling/references/php-domain-idioms.md) reference covers optional PHP idioms that serve the domain — enums as value objects, the Result pattern as a typed alternative to exceptions, and using traits for cross-cutting concerns.
 - **`bounded-contexts`**: Teaches the agent to define system boundaries using business capabilities rather than code folders, establishing clear ownership and preventing tightly-coupled monoliths.
 - **`application-layer`**: Defines the Application (or Service) Layer as the boundary above the domain-logic spectrum, instructing the agent to orchestrate use cases via the Command/Query/Handler pattern, keep framework controllers extremely thin, and avoid the anemic-domain overuse anti-pattern.
 - **`distribution-patterns`**: Guides the agent to design remote interfaces as coarse-grained Remote Facades (REST/GraphQL/gRPC/CQRS commands) shaped around consumer needs rather than the internal object model, and to carry data across boundaries with DTOs — keeping ORM entities and domain objects off the wire.
@@ -56,6 +56,7 @@ The collection includes 13 modular skills, each focused on a specific architectu
 - **`dependency-injection`**: Ensures the agent relies on constructor injection over legacy service locators and correctly registers interfaces at the framework edge.
 - **`framework-integration`**: Maps clean-architecture patterns to specific PHP frameworks, providing port-to-framework mappings, anti-patterns to avoid, and composition-root wiring guidance.
 - **`action-domain-responder`**: Corrects the "Web MVC" misnomer (it's really Sun's Model 2, not Smalltalk MVC), reframes the framework controller as a thin Action-Domain-Responder, and keeps HTTP/framework concerns out of the domain.
+- **`architecture-patterns`**: Guides the system-level choice (monolith, modular monolith, microservices, event-driven, serverless, clean/hexagonal, DDD) with a decision guide and the common pitfalls — premature microservices, distributed monolith, ignored data boundaries, forced DDD, and big-bang rewrites — that cause teams to regret an architecture move.
 
 ## A Unifying Theme: Boundary-Protection Patterns
 
