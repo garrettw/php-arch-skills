@@ -42,6 +42,9 @@ If introducing a temporary class to bridge old and new code (e.g., a legacy faca
 1. **Mark Clearly.** Name it clearly as temporary (e.g., `LegacyUserAdapter`).
 2. **Define Removal Conditions.** Add comments specifying what must happen before it can be removed (e.g., "@todo Remove once all Controllers are migrated to Handlers"). These shims are **transitional architecture** — they exist only so new and legacy coexist, and you delete them when migration completes (see [strangler-fig.md](references/strangler-fig.md) and the delivery patterns in [legacy-displacement-patterns.md](references/legacy-displacement-patterns.md)).
 
+### 4. Rolling Out Production Schema Changes
+If application versions overlap during deployment or a table is too large for a blocking migration, use an expand-migrate-contract rollout. Keep old and new code compatible while data is backfilled in bounded, restartable batches, and delay destructive schema changes until rollback is no longer needed. See [production-schema-rollout.md](references/production-schema-rollout.md).
+
 ## Boundaries
 
 ### Always Do

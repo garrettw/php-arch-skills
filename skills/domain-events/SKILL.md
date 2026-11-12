@@ -61,3 +61,7 @@ If passing events between bounded contexts:
 - Never pass ORM entities or framework request objects inside an event payload.
 - Never allow a listener to modify the event payload.
 - Never attempt to cancel or roll back the primary transaction that emitted the event from within a listener.
+
+## Related Skills
+- [reliable-messaging](../reliable-messaging/SKILL.md): transactional outbox, duplicate delivery, retries, and consumer idempotency.
+- [persistence transaction boundaries](../persistence-patterns/references/transaction-boundaries.md): commit ownership and outbox motivation.

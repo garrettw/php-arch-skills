@@ -24,6 +24,8 @@ A DTO is a simple structure for moving data across a boundary — deliberately *
 
 When a Remote Facade is exposed as a REST/HTTP interface, it also takes on a concrete contract beyond its operation shape — resource naming, method semantics, status codes, a consistent error envelope, pagination/versioning conventions, and transport security. Those HTTP-level details live in [http-api-contract.md](references/http-api-contract.md). The facade still holds no domain logic; the contract is about *how the surface speaks HTTP* so clients integrate predictably.
 
+For authentication, authorization, tenant isolation, and sensitive-data handling across HTTP, queue, and infrastructure boundaries, see [security-architecture](../security-architecture/SKILL.md). The HTTP reference covers transport-level API practices, not the full authorization model.
+
 ## Boundaries
 
 ### Always Do

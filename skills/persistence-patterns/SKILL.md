@@ -76,12 +76,16 @@ If a repository is growing too large:
 ### Transaction & Flush Boundaries
 The ORM's default request-end flush is **not** your only transaction boundary. Transaction boundaries are a business decision owned by the application layer, not the ORM. Default to one flush per use case for atomicity; flush explicitly mid-request only when a later step depends on the row already existing; prefer an outbox/domain-event over piecemeal flushing when downstream consumers need the data. See [transaction-boundaries.md](references/transaction-boundaries.md).
 
+### Performance & Caching
+Measure query count, plans, latency, and data volume before optimizing. Prefer the simplest read shape that meets the need; introduce caching only with explicit staleness, invalidation, key-scope, and outage behavior. See [performance-and-caching.md](references/performance-and-caching.md).
+
 ### Never Do
 - Never create a massive global repository (e.g., `UserRepository`) that serves multiple bounded contexts.
 - Never let a Table Data Gateway accumulate business-flavored query methods (`findEligiblePremiumCustomers()`); that is a Repository trying to form — move the behavior into the domain instead.
 - Never reach for Row Data Gateway in new code; it is a faded pattern that awkwardly mixes persistence, identity, and row state without business behavior. Use Table Data Gateway for raw row access, Active Record for row+behavior, or Data Mapper for full separation.
 - Never introduce CQRS before the application has divergent read/write workloads. Start with simple read/write and evolve only when needed.
 - Never strictly create one repository per entity. Reaching for an entity-level repository bypasses aggregate consistency and scatters persistence logic; design one repository per aggregate root instead.
+- Never add a cache without defining its staleness, invalidation, and tenant/authorization key scope.
 
 ### Recognizing Persistence Problems in an Existing Codebase
 

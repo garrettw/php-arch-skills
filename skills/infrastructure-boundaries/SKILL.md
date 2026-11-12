@@ -62,6 +62,9 @@ If building an endpoint to receive a vendor webhook:
 2. **Parse.** Extract the relevant data from the vendor-specific payload into a generic DTO or array.
 3. **Hand Off.** Pass the domain-neutral facts to an application handler to execute the business use case.
 
+### 4. Operational Signals
+Emit logs, metrics, and traces at delivery and infrastructure boundaries, where request, dependency, and failure context is available. Propagate correlation through queued work, keep telemetry out of domain dependencies, and redact secrets and unnecessary personal data. See [operational-signals.md](references/operational-signals.md).
+
 ## Boundaries
 
 ### Always Do
