@@ -11,11 +11,11 @@ Bounded contexts are appropriate for complex applications with multiple business
 | Use Bounded Contexts For                           | Do Not Use For                        |
 |----------------------------------------------------|---------------------------------------|
 | Complex business domain with multiple capabilities | Simple CRUD apps with one clear model |
-| Team of multiple developers owning different areas | Solo developer or small team          |
+| Distinct languages or lifecycles in one system     | One model with one vocabulary         |
 | Long-lived system requiring clear ownership        | Prototypes, throwaway code            |
 | Application with multiple integration surfaces     | Libraries, packages, SDKs             |
 
-For libraries and packages, use standard PSR-4 namespacing to organize code. Bounded-context separation only applies when the project has multiple domain capabilities that different teams or subsystems must own independently.
+For libraries and packages, use standard PSR-4 namespacing to organize code. Bounded-context separation applies when the project has multiple domain capabilities with their own language and lifecycle, whether one developer or several teams own them. Team structure is useful evidence of where a boundary lies (Conway’s law), but it does not create or remove one. A small team mainly changes how formally the boundaries are documented and enforced, not whether they exist.
 
 ## System Overview
 The backend north star for modular PHP applications is **business-capability-first bounded contexts**. Current folders, namespaces, controllers, database prefixes, and API route groups are supporting evidence, not the source of truth for ownership. This skill helps map out business boundaries and clarify cross-context integration patterns.
