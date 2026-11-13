@@ -18,7 +18,7 @@ The universal goal, regardless of framework:
 ## Symfony
 
 - **Action.** A controller method or invokable controller. Symfony's structure already fits ADR: thin controllers whose "only job is to convert request → handler input → response" (see [symfony.md](../../framework-integration/references/symfony.md)). Prefer one invokable controller per route.
-- **Domain.** Application Services / handlers receive validated DTOs or command objects built from the `Request`. Doctrine entities stay persistence-aware; invariants live in the application/domain layer.
+- **Domain.** Application Services / handlers receive validated DTOs or command objects built from the `Request`, then delegate the decision to the domain. In rule-heavy areas that’s a Doctrine entity acting as the aggregate (see [symfony.md](../../framework-integration/references/symfony.md)). Invariants never live in the controller or the handler.
 - **Responder.** `AbstractController` helpers (`$this->render()`, `$this->json()`) tempt you to build the response in the controller. Move response construction into a Responder that returns a `Response` (set status, headers, cookies, and the rendered body). For APIs, a Responder that serializes a DTO and sets the content-type keeps the Action free of presentation.
 
 ## Slim

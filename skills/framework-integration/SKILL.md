@@ -60,7 +60,7 @@ Read the relevant reference file for framework-specific anti-patterns and guidan
 ### Never Do
 - Never import framework base classes, facades, or static service locators into domain or application code.
 - Never use framework-specific exceptions or response objects as return types from handlers.
-- Never treat a framework's default persistence model (Eloquent AR, Doctrine, Cake Table) as your aggregate root. It is an adapter, not the domain.
+- Never treat an Active Record model (Eloquent, CakePHP Table/Entity, Yii ActiveRecord) as your aggregate root; it is an adapter, not the domain. A Data Mapper ORM entity (Doctrine, etc.) may serve as the aggregate if its mapping stays outside the domain logic and its invariants live in its own methods. See [symfony.md](references/symfony.md).
 - Never assume that "the framework does it" is a reason to skip clean-architecture boundaries in a complex, long-lived application.
 - Never put business logic directly in a framework controller, even for lighter patterns. Delegate to a Transaction Script or Table Module and keep the controller as a thin adapter.
 
