@@ -66,6 +66,11 @@ If implementing an event-sourced aggregate:
 4. **Expose a stream identity.** Every aggregate has a unique identifier that becomes the event stream key.
 5. **Protect invariants in the aggregate.** Business rules that must always hold belong in the aggregate's command/action methods, not in the event store or projections.
 
+**There are two equivalent styles.** Choose one of the following per aggregate; the rules above apply to both.
+
+- **Object aggregate:** a class that records events internally (`recordThat()`), exposes them (`releaseEvents()`), and rebuilds itself with `apply()`/`when…()`. It is familiar, and suits most aggregates.
+- **Decider:** three pure functions: `initialState()`, `decide(command, state) → events` (makes the decision and enforces invariants), and `evolve(state, event) → state` (folds an event into state, with no decisions). The handler loads events, folds them with `evolve`, calls `decide`, and appends the result. Decisions and rebuilding are side-effect free by construction, so it suits rule-heavy cores and engines. See [decider-pattern.md](references/decider-pattern.md).
+
 ### 2.5. Designing Event Granularity
 If designing the events for an event-sourced aggregate:
 1. **Cut along decisions, not rows or columns.** Ask "what did the user or business actually do?" and let the answer name the event. If you cannot describe an event without saying "and", it might be two events.

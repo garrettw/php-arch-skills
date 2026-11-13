@@ -62,6 +62,8 @@ final class OrderTest extends TestCase
 }
 ```
 
+For deciders, the same three tests become one shape: given events (folded with evolve), when a command (decide), then the expected events or refusal. See [decider-pattern.md](decider-pattern.md).
+
 ## Key Rules
 
 - Construct aggregates directly with `new` for command tests.

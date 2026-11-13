@@ -38,7 +38,7 @@ If creating a new domain event class:
 
 ### 3. Implementing the Record-Then-Publish Pattern
 If implementing an aggregate that produces events:
-1. **Record.** The domain object creates the event and holds it internally in an array of pending events.
+1. **Record.** The domain object creates the event and holds it internally in an array of pending events. In the decider style, the domain function returns the new events instead of holding them; the handler then persists and publishes them exactly as below.
 2. **Persist.** The application handler tells the repository to persist the aggregate.
 3. **Release & Publish.** If the transaction commits, the application handler pulls the recorded events from the aggregate and passes them to an Event Dispatcher.
 4. **Reference Examples.** See [Event Examples](references/event-examples.md) for structural patterns.
