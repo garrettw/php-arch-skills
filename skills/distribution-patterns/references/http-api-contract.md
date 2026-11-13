@@ -22,9 +22,19 @@ When a Remote Facade ([remote-facade.md](remote-facade.md)) is exposed as a REST
 
 ## Error handling
 
-- **One consistent error format everywhere.** Pick a single envelope — e.g. `{ "error": { "code": "user_not_found", "message": "No user with id 123", "requestId": "…" } }` — and use it on every endpoint. Inconsistent shapes (`{ "error": … }` vs `{ "message": …, "status": … }`) force clients to special-case each call.
-- **Machine-readable `code` + human `message`.** The `code` is a stable string clients branch on; the `message` is for humans and may change. Never recycle HTTP status as the only signal.
-- **Field-level validation details.** On `422`, return which fields failed and why (`errors: { "email": ["must be a valid address"] }`) so the client can map back to the form.
+- **One consistent error format everywhere: RFC 9457 problem details.** Serve errors as `application/problem+json` with `type` (a URI identifying the problem), `title`, `status`, and `detail`, plus extension members for anything else. Use it on every endpoint; inconsistent shapes force clients to special-case each call.
+  ```json
+  {
+    "type": "https://api.example.com/problems/user-not-found",
+    "title": "User not found",
+    "status": 404,
+    "detail": "No user with id 123",
+    "code": "user_not_found",
+    "requestId": "…"
+  }
+  ```
+- **Machine-readable `code` + human `message`.** `type` (or a `code` extension member) is the stable value clients branch on; `title` and `detail` are for humans and may change. Never recycle the HTTP status as the only signal.
+- **Field-level validation details.** On `422`, return an `errors` extension member listing which fields failed and why so the client can map back to the form.
 - **Include a `requestId`** in every error response (and log it) so support can correlate a client report with server logs.
 - **Never leak stack traces, internal paths, or secret state** in production error bodies. Return a safe message plus the `requestId`; log the detail server-side.
 

@@ -1,4 +1,4 @@
-# ADR by Framework
+# Action-Domain-Responder by Framework
 
 How to get as close to a proper **Action-Domain-Responder** implementation as each PHP framework allows. This is the web-presentation companion to the [framework-integration](../framework-integration/SKILL.md) skill: that skill covers ports/adapters and thin controllers in general; this one focuses on the three ADR roles (Action, Domain, Responder) and how each framework's native pieces map onto them.
 

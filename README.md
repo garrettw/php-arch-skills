@@ -17,7 +17,7 @@ And **don't forget to periodically update your skills**, by running:
 
 ### Pairing with the Matt Pocock skills
 
-These architecture skills pair well with Matt Pocock's agent-skills collection, especially the `grill-with-docs` skill (stress-tests a plan against your project's domain language and documented decisions, updating CONTEXT.md and ADRs inline as choices crystallize). Install his collection with:
+These architecture skills pair well with Matt Pocock's agent-skills collection, especially the `grill-with-docs` skill (stress-tests a plan against your project's domain language and documented decisions, updating `GLOSSARY.md` and the ADRs in `docs/adr/` inline as choices crystallize). Install his collection with:
 
 `npx skills add mattpocock/skills`
 

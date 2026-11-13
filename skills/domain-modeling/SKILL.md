@@ -54,9 +54,9 @@ If you are deciding how to organize a feature's business logic:
 2. **Watch for duplication.** If the same validation, calculation, or policy already appears in more than one script (or is about to), that behavior belongs on a shared domain object, not copied across scripts. Upgrade then.
 3. **Consider a Table Module for row-set logic.** If the feature computes over many rows of one table (totals, summaries, batch updates) or backs a data-grid/report UI, use a Table Module: one class per table operating on a recordset, paired with a thin gateway. Move to a Domain Model once the rules become individualized per row (per-customer pricing, tax exemptions, regional rules, contract terms, subscriptions).
 4. **Otherwise evaluate Domain Behavior.** Does the feature have meaningful invariants, business rules, state transitions, or cross-context policy that need object identity and relationships?
-2. **Evaluate Testability.** Would the core rule be easier to test in-memory without booting the framework or database?
-3. **If Yes to either:** Propose building an active domain object. Note that this will require separating persistence into mappers and repositories (see the `persistence-patterns` skill).
-4. **If No to both:** Propose using lean ORM entities directly. Do not build a separate pure PHP domain object.
+5. **Evaluate Testability.** Would the core rule be easier to test in-memory without booting the framework or database?
+6. **If Yes to either 4 or 5:** Propose building an active domain object. Note that this will require separating persistence into mappers and repositories (see the `persistence-patterns` skill).
+7. **If No to both:** Propose using lean ORM entities directly. Do not build a separate pure PHP domain object.
 
 ### 3. Structuring Services and Handlers
 If you are writing an application service or handler:

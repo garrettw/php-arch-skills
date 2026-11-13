@@ -32,7 +32,7 @@ So "Web MVC" prescribes putting **business logic in the Controller** — a UI co
 
 This is the root of the "fat controller" anti-pattern: the pattern itself tells you to put processing logic in the controller.
 
-## The better redefinition: Action-Domain-Responder (ADR)
+## The better redefinition: Action-Domain-Responder
 
 If MVC doesn't fit and Model 2 mislabels the parts, the cleaner server-side pattern is **Action-Domain-Responder** (Paul M. Jones):
 
@@ -40,18 +40,18 @@ If MVC doesn't fit and Model 2 mislabels the parts, the cleaner server-side patt
 - **Domain** — the application and business logic, independent of HTTP. (This is where the real work goes, not in the Action.)
 - **Responder** — builds the *entire* HTTP Response: status, headers, cookies, content-type, and body. A view or template is only one mechanism the Responder may use for the body; the Responder itself owns all HTTP-response construction, not just rendering.
 
-ADR maps more honestly than "MVC" onto what frameworks actually do: the framework "controller" is really an **Action + Responder** pair, and the "model" is really the **Domain** plus the persistence/ORM behind it. In effect, ADR is "Web MVC" with the names and responsibilities corrected.
+Action-Domain-Responder maps more honestly than "MVC" onto what frameworks actually do: the framework "controller" is really an **Action + Responder** pair, and the "model" is really the **Domain** plus the persistence/ORM behind it. In effect, Action-Domain-Responder is "Web MVC" with the names and responsibilities corrected.
 
-### Caveat: not every "MVC" framework is cleanly ADR
+### Caveat: not every "MVC" framework is cleanly Action-Domain-Responder
 
-Do not assume a framework claiming MVC (or ADR) actually separates the pieces:
+Do not assume a framework claiming MVC (or Action-Domain-Responder) actually separates the pieces:
 
-- Many frameworks' "controller" still mixes Action and Responder concerns (rendering happens inside the controller method) — closer to Model 2 than ADR.
+- Many frameworks' "controller" still mixes Action and Responder concerns (rendering happens inside the controller method) — closer to Model 2 than Action-Domain-Responder.
 - Some lump Domain work into the "model" layer that is really just an Active Record / ORM entity tied to the database, not a separated domain.
-- Laravel/Symfony controllers, for example, are closer to ADR *Actions* only if you keep them thin and push logic into a service/application layer and a separate Responder that owns the full HTTP response. The framework does not enforce this for you.
+- Laravel/Symfony controllers, for example, are closer to Action-Domain-Responder *Actions* only if you keep them thin and push logic into a service/application layer and a separate Responder that owns the full HTTP response. The framework does not enforce this for you.
 
-Use ADR as the **mental model** for how to place code, not as a guarantee of what the framework scaffold gives you. When the framework's "controller" bundles request handling, domain calls, and response building together, treat splitting those out as the refactor target — not as something already done.
+Use Action-Domain-Responder as the **mental model** for how to place code, not as a guarantee of what the framework scaffold gives you. When the framework's "controller" bundles request handling, domain calls, and response building together, treat splitting those out as the refactor target — not as something already done.
 
 ## Why this matters here
 
-This repository's other skills already forbid the fat-controller style: the [application-layer](../application-layer/SKILL.md) skill puts orchestration in a Service/Handler, and the [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md) skill keeps the domain free of framework and HTTP concerns. "Web MVC" as commonly practiced fights those rules. Reframing the framework controller as an ADR **Action** (thin, HTTP-only) that delegates to the **Domain** (your Application/Service layer *and* the DDD domain layer — entities, policies, invariants) and hands off to a **Responder** — which builds the entire HTTP response, using a view/template only as its body mechanism — aligns the web layer with the rest of the architecture instead of contradicting it.
+This repository's other skills already forbid the fat-controller style: the [application-layer](../application-layer/SKILL.md) skill puts orchestration in a Service/Handler, and the [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md) skill keeps the domain free of framework and HTTP concerns. "Web MVC" as commonly practiced fights those rules. Reframing the framework controller as an Action-Domain-Responder **Action** (thin, HTTP-only) that delegates to the **Domain** (your Application/Service layer *and* the DDD domain layer — entities, policies, invariants) and hands off to a **Responder** — which builds the entire HTTP response, using a view/template only as its body mechanism — aligns the web layer with the rest of the architecture instead of contradicting it.
