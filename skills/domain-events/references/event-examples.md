@@ -71,65 +71,81 @@ class Subscription
 
 ## 3. Releasing and Publishing (Application Layer)
 
-The application handler orchestrates loading, acting, saving, and then publishing.
+The handler orchestrates: load, act, then save and record the events in the outbox in one transaction. A relay publishes them after commit.
 
 ```php
 namespace App\Application\Billing\Handler;
 
 use App\Domain\Billing\SubscriptionRepositoryInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use App\Platform\Outbox\Outbox;
+use App\Platform\Transaction\TransactionManager;
+use Psr\Clock\ClockInterface;
 
-class ProcessPaymentHandler
+final class ProcessPaymentHandler
 {
     public function __construct(
         private SubscriptionRepositoryInterface $repository,
-        private EventDispatcherInterface $dispatcher
+        private Outbox $outbox,
+        private TransactionManager $transactions,
+        private ClockInterface $clock,
     ) {}
 
     public function handle(string $subscriptionId): void
     {
-        $subscription = $this->repository->get($subscriptionId);
-        
-        // 1. Act
-        $subscription->markAsPaid(new \DateTimeImmutable());
-        
-        // 2. Persist
-        $this->repository->save($subscription);
-        
-        // 3. Publish (only happens if save() did not throw)
-        foreach ($subscription->releaseEvents() as $event) {
-            $this->dispatcher->dispatch($event);
-        }
+        $this->transactions->run(function () use ($subscriptionId): void {
+            $subscription = $this->repository->get($subscriptionId);
+
+            // 1. Act: the domain decides and records the event
+            $subscription->markAsPaid($this->clock->now());
+
+            // 2. Persist state and events atomically
+            $this->repository->save($subscription);
+            $this->outbox->record(...$subscription->releaseEvents());
+        });
+        // 3. The outbox relay publishes after commit; nothing is dispatched here
     }
 }
 ```
 
-## 4. The Listener (Cross-Context Integration)
+## 4. Crossing to Another Context
 
-Another context listens to the event. In a modular monolith, this often means adapting the event into a Command for the local context.
+Billing translates its internal `SubscriptionPaid` into a published contract (for example, in the outbox relay or a small translator). Entitlements consumes only that contract, asynchronously and idempotently.
 
 ```php
-namespace App\Application\Entitlements\Listener;
+namespace App\SharedKernel\Contract\Billing;
 
-use App\Domain\Billing\Event\SubscriptionPaid;
-use App\Application\Entitlements\Command\GrantAccessCommand;
-use App\Application\Entitlements\Handler\GrantAccessHandler;
-
-class GrantAccessOnSubscriptionPaidListener
+/** Published contract, version 1. Change only by adding a new version. */
+final class SubscriptionPaidV1
 {
     public function __construct(
-        private GrantAccessHandler $handler
+        public readonly string $messageId,
+        public readonly string $accountId,
+        public readonly string $tierName,
+        public readonly string $paidAt, // ISO 8601
     ) {}
+}
+```
 
-    public function __invoke(SubscriptionPaid $event): void
+```php
+namespace App\Entitlements\Interface\Messaging;
+
+use App\Entitlements\Application\Command\GrantAccessCommand;
+use App\Entitlements\Application\Handler\GrantAccessHandler;
+use App\SharedKernel\Contract\Billing\SubscriptionPaidV1;
+
+final class GrantAccessOnSubscriptionPaid
+{
+    public function __construct(private GrantAccessHandler $handler) {}
+
+    public function __invoke(SubscriptionPaidV1 $message): void
     {
-        // Translate the remote fact into a local command
-        $command = new GrantAccessCommand(
-            accountId: $event->accountId,
-            tierName: $event->tierName
-        );
-        
-        $this->handler->handle($command);
+        // Translate the published fact into a local command. The handler runs its own
+        // transaction and records $message->messageId in the inbox, so redelivery is a no-op.
+        $this->handler->handle(new GrantAccessCommand(
+            accountId: $message->accountId,
+            tierName: $message->tierName,
+            causationId: $message->messageId,
+        ));
     }
 }
 ```

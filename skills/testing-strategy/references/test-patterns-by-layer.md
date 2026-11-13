@@ -96,8 +96,8 @@ class ProcessPaymentHandlerTest extends TestCase // or Framework integration bas
         $updatedRecord = $this->fetchFromDatabase('subscriptions', ['id' => $subscriptionId]);
         $this->assertEquals('paid', $updatedRecord['status']);
         
-        // Verify event was dispatched (using a test event dispatcher spy)
-        $this->assertEventDispatched(SubscriptionPaid::class);
+        // Verify event was recorded in outbox (using a test event outbox spy)
+        $this->assertEventRecordedInOutbox(SubscriptionPaid::class);
     }
 }
 ```

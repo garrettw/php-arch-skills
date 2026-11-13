@@ -39,14 +39,15 @@ If creating a new domain event class:
 ### 3. Implementing the Record-Then-Publish Pattern
 If implementing an aggregate that produces events:
 1. **Record.** The domain object creates the event and holds it internally in an array of pending events. In the decider style, the domain function returns the new events instead of holding them; the handler then persists and publishes them exactly as below.
-2. **Persist.** The application handler tells the repository to persist the aggregate.
-3. **Release & Publish.** If the transaction commits, the application handler pulls the recorded events from the aggregate and passes them to an Event Dispatcher.
+2. **Persist with the outbox.** In one transaction, the application handler saves the aggregate and writes its released events to an outbox table. A separate relay publishes outbox entries after commit (see `reliable-messaging`).
+3. **Publish only committed facts.** Never publish before the commit, and never commit and then publish without an outbox when a lost event would matter. Dispatching in-process after commit is acceptable only for best-effort reactions inside the same context, where losing one is harmless.
 4. **Reference Examples.** See [Event Examples](references/event-examples.md) for structural patterns.
 
 ### 4. Handling Cross-Context Ownership
 If passing events between bounded contexts:
 1. **Define in Source Context.** The bounded context that owns the source fact defines the domain event contract. (e.g., `Billing` defines `SubscriptionPaid`).
 2. **Listen in Target Context.** The consuming context listens to the event and translates it into a local command. (e.g., `Entitlements` listens to `SubscriptionPaid`).
+3. **Publish a contract, not the domain event.** The source context translates its internal domain event into a published, versioned contract that lives in the SharedKernel or a `Contracts` namespace. Consumers depend only on that contract, never on the source context’s domain classes.
 
 ## Boundaries
 
@@ -61,6 +62,7 @@ If passing events between bounded contexts:
 - Never pass ORM entities or framework request objects inside an event payload.
 - Never allow a listener to modify the event payload.
 - Never attempt to cancel or roll back the primary transaction that emitted the event from within a listener.
+- Never let one context import another context’s domain classes to consume its events.
 
 ## Related Skills
 - [reliable-messaging](../reliable-messaging/SKILL.md): transactional outbox, duplicate delivery, retries, and consumer idempotency.
