@@ -20,7 +20,7 @@ Event Sourcing adds significant complexity. Use it only when you need its specif
 | Audit requirements (complete history of every change)         | Simple audit logs or domain events           |
 | Temporal queries (state at any point in time)                 | Current-state-only queries                   |
 | Event replay for debugging or parallel testing                | Standard integration tests                   |
-| Retrocactive corrections (fix past events and replay)         | Direct data corrections                      |
+| Corrections that keep history (compensating events, rebuilt projections after a bug fix, upcasting) | Direct data corrections |
 | Parallel models / multiple read projections from one stream   | Single read model                            |
 | High scalability with event-driven architecture               | Standard request/response                    |
 
@@ -54,7 +54,7 @@ Event Sourcing adds significant complexity. Use it only when you need its specif
 If considering whether an aggregate should be event-sourced:
 1. **Check for audit needs.** Do you need a complete, immutable history of every state change? If yes, Event Sourcing provides this by design.
 2. **Check for temporal queries.** Do you need to know the state at a past point in time? If yes, Event Sourcing enables this without custom history tables.
-3. **Check for replay value.** Would you benefit from replaying events into a test environment, or reprocessing after a bug fix? If yes, Event Sourcing makes this safe and repeatable.
+3. **Check for replay value.** Would you benefit from replaying events into a test environment, or reprocessing after a bug fix? If yes, Event Sourcing makes this safe and repeatable. (see workflow 7)
 4. **Check aggregate size.** Does the aggregate have a high event frequency (thousands of events)? If yes, plan for snapshots from the start.
 5. **If No to all:** Use a regular repository with CRUD operations. Event Sourcing is not needed.
 
@@ -92,10 +92,11 @@ If the aggregate stream grows large:
 3. **Rebuild snapshots asynchronously.** Snapshots can be rebuilt in the background without blocking the write path.
 
 ### 5. Managing External Interactions
-If the aggregate calls external systems (payment gateways, email services, other APIs):
-1. **Use gateways.** Wrap all external calls behind gateway interfaces.
-2. **Disable during replay.** The gateway must detect when events are being replayed (rebuild, temporal query, test) and suppress external calls. The domain logic should never know whether it is in replay mode.
-3. **Cache external query results.** If the aggregate queries an external system during event processing, cache the response keyed by the event being processed. Replay must return the same cached value, not a fresh call.
+If the aggregate’s decisions need external data, or its events should trigger external effects:
+1. **Keep rebuilding pure.** Applying events (`apply()`, `when…()`, projections) never performs I/O, so replaying a stream can never reach a gateway. There is no “replay mode” to detect.
+2. **Capture external data in the event.** When a decision needs an external answer (a rate, a credit check, a lookup), fetch it through a gateway while handling the command, _before_ deciding, and record the answer in the event’s payload. Replay then reads it from the event, with no cache and no repeated call.
+3. **Run side effects in subscribers, not during rebuilds.** Emails, webhooks, payments, and calls to other systems belong in reactors or process managers fed by the outbox or a live subscription. Configure side-effect subscribers so they never run when projections are rebuilt or streams are replayed; for example, start them from the current position when deployed.
+4. **Make those subscribers idempotent.** At-least-once delivery means they can still see an event twice; deduplicate durably (see `reliable-messaging`).
 
 ### 6. Testing Event-Sourced Aggregates
 If testing event-sourced aggregates:
@@ -103,6 +104,14 @@ If testing event-sourced aggregates:
 2. **Test event application.** Given a stream of events, assert the aggregate reaches the expected state.
 3. **Test in-memory.** No event store or database is needed. Construct the aggregate, apply events, assert state.
 4. **Use the reference implementation.** See `references/testing-event-sourced-aggregates.md` for PHP test examples.
+
+### 7. Correcting Mistakes
+If something recorded or derived from events is wrong:
+1. **A projection is wrong:** fix the projection code and rebuild it from the events. The stored events do not change.
+2. **A business outcome was wrong:** append a correcting or compensating event (`InvoiceAmountCorrected`, `PaymentRefunded`), so the stream records both the mistake and the fix, with who made it and why.
+3. **An event’s shape is wrong or outdated:** add a new schema version and an upcaster that converts old events as they are read. Never rewrite the stored payload.
+4. **Personal data must be erased:** use crypto-shredding (encrypt per person; delete the key), so the data becomes unreadable while the stream stays intact.
+5. **Last resort, when a stream is unusable:** an explicit, audited stream migration copies and transforms events into a new stream and keeps the old one. Ask before doing this.
 
 ## PHP Libraries
 
@@ -119,17 +128,19 @@ If testing event-sourced aggregates:
 - Always make events immutable and past-tense. No setters, no mutable state.
 - Always design aggregates to be replayable from their event stream.
 - Always make projections rebuildable from scratch.
-- Always isolate external system calls behind gateways that can be disabled during replay.
+- Always keep event application and projections free of I/O; capture external answers in event payloads at decision time, and trigger external effects only from subscribers that do not run during rebuilds.
 - Always write domain logic inside the aggregate, not in the event store or projection.
 
 ### Ask First
 - Ask before introducing Event Sourcing for a single aggregate in an otherwise CRUD application. The operational complexity (event store, projections, snapshots, replay infrastructure) is hard to justify for one stream.
 - Ask before coupling Event Sourcing to a specific framework or event bus. Keep the event store interface minimal.
 - Ask before storing large payloads in events. Store IDs and facts, not whole objects.
+- Ask before any stream migration that copies and transforms stored events into a new stream.
+- Ask before giving a subscriber external side effects without deciding how it behaves when projections are rebuilt or the subscriber is redeployed.
 
 ### Never Do
 - Never treat a projection or snapshot as the source of truth. If it is lost or corrupted, rebuild it from the event stream.
-- Never allow event handlers to modify past events. Events are immutable facts.
+- Never edit or delete stored events, by handler, migration, or hand-written SQL. Correct with new events, projection rebuilds, upcasters, or crypto-shredding (workflow 7).
 - Never let external side effects (email, HTTP calls) fire during event replay.
 - Never put business logic in projections. Projections transform events into read shapes; they do not enforce invariants.
 - Never conflate Event Sourcing with CQRS by default. Event Sourcing can exist without CQRS. Use CQRS only when read and write models genuinely diverge.
