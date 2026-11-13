@@ -48,12 +48,9 @@ If you must map between a rich domain object and an ORM entity:
 
 ### 3. Introducing Repository Interfaces
 If creating a new repository:
-1. **Check for Multiple Implementations.** Do you expect multiple real implementations (e.g., SQL and API)?
-2. **Check for Boundary Inversion.** Is the implementation provided by a third-party package?
-3. **Check for Decorators.** Do you need caching or logging around the calls?
-4. **If Yes to any:** Introduce a `[Name]RepositoryInterface` in the Domain layer as a driven port.
-5. **If No to all:** Create only a concrete `[Name]Repository` class. An interface is not needed if there is only one implementation in the same context.
-6. **Per Aggregate.** Design repositories per aggregate root, not per database table. A single aggregate should be loaded and saved through one repository.
+1. **Apply the interface rule** in `dependency-injection` (workflow 1). In a layered or hexagonal area, an Application handler depends on the repository while its implementation lives in Infrastructure. Introduce `[Name]RepositoryInterface` in the Domain layer as a driven port, even with one implementation.
+2. **In a lean area** (Transaction Script, lean ORM, no ports and adapters), create only a concrete `[Name]Repository`.
+3. **Per Aggregate.** Design repositories per aggregate root, not per database table. A single aggregate should be loaded and saved through one repository.
 
 ### 4. Splitting Large Repositories
 If a repository is growing too large:
@@ -69,7 +66,7 @@ If a repository is growing too large:
 - Always distinguish a Gateway (thinks in tables, returns rows) from a Repository (thinks in business concepts, returns domain objects). A [Table Data Gateway](references/table-data-gateway.md) is the right tool at the lean/CRUD end of the spectrum.
 
 ### Ask First
-- Ask before introducing a repository interface if there is only one concrete implementation.
+- Ask before introducing a repository interface in a lean area that does not use ports and adapters.
 - Ask whether a class named "Repository" is actually a Gateway in disguise (returns rows, uses persistence language). If so, call it what it is.
 - Ask whether a workflow that "needs the row to exist now" is a signal for an outbox/domain-event pattern rather than a mid-request flush.
 

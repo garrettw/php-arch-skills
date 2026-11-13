@@ -31,7 +31,7 @@ These two are boundary-protection patterns: a **Gateway** protects the *infrastr
 - **Dependency Inversion (DI).** The inner layers define the port; the infrastructure layer implements it. Domain code never imports the vendor SDK — that inversion is what keeps the core swappable and testable.
 - **Interface Segregation.** A port should expose exactly the capability the application uses, named in business terms (`PaymentGateway`), not a vendor grab-bag. Narrow ports keep adapters thin and keep vendor surface area out of the core.
 - **Single Responsibility (SRP) + Separation of Concerns.** A Gateway owns "talk to this one external system"; a Mapper owns "translate between two representations." Keep them separate and free of business rules.
-- **No premature abstraction.** A single vendor today does not require an interface "in case we switch." Add the port when a second implementation or a test double actually appears; until then a concrete adapter wired at the composition root is enough.
+- **No speculative abstraction, but honor the dependency rule.** You never need an interface “in case we switch vendors”. You do need one when application or domain code calls the adapter, because the port must belong to the inner layer (see `dependency-injection`, workflow 1). In a lean area without ports and adapters, inject the concrete adapter at the composition root.
 
 See [solid-principles.md](../domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md).
 

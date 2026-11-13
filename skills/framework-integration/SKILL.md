@@ -45,6 +45,8 @@ Read the relevant reference file for framework-specific anti-patterns and guidan
 | Event Bus | Laravel Events (native) | Symfony EventDispatcher | Third-party (e.g., `opis/event`) | CakePHP EventManager | CakePHP EventManager | Events class (manual) | Yii Event / yii2-event | Yii 3 Event | Laminas EventManager | Laminas EventManager |
 | Domain Dispatcher | `Event::dispatch` in handler | Publish via `EventDispatcher` | Manual dispatch | `EventManager->dispatch` | `EventManager->dispatch` | Manual publish | Publish via event class | Publish via event class | Publish via `EventManager` | Publish via `EventManager` |
 
+Repository Port rows apply where an area uses ports and adapters. Lean areas inject the concrete repository.
+
 ## Boundaries
 
 ### Always Do

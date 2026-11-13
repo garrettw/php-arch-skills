@@ -16,7 +16,7 @@ The following are phrased as what to do, so that the unwanted patterns fall out 
 
 ## Structure & abstraction
 - Make a class the right size for its one job; if it would wrap a single function called from one place, write the function instead.
-- Introduce an interface only when a second implementation, a boundary to invert, or a decorator is real — not "for flexibility." One interface with one implementation is dead weight.
+- Introduce an interface only when inner-layer code depends on an outer-layer implementation, a second implementation is real, or a decorator is needed. Never add one “for flexibility”. One interface with one implementation is dead weight within a layer, not across one. See `dependency-injection`, workflow 1.
 - Reuse an existing dependency before adding a new one that does the same job.
 - Split a change so each class/file has a clear, single reason to change; if editing five files for one behavior, that responsibility is scattered.
 

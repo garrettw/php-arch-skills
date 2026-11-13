@@ -22,17 +22,19 @@ A [**Plugin**](references/plugin.md) is the purpose this wiring serves: define e
 
 - **Dependency Inversion (DI).** High-level modules depend on abstractions, not on low-level details. The application defines ports (interfaces); infrastructure supplies the adapters. This is the principle that makes a DI container useful and is the backbone of Hexagonal / Ports-and-Adapters architecture. See [solid-principles.md](../domain-modeling/references/solid-principles.md).
 - **Narrow ports (Interface Segregation).** Each port should expose only the behavior its clients actually use. A port with methods no caller needs forces adapters to implement dead code and couples clients to irrelevant surface area. Keep ports role-specific.
-- **Interface segregation vs. premature abstraction.** Create an interface when there is a real second implementation, a boundary to invert, or a decorator to add. Do **not** introduce an interface for a single concrete class just "for flexibility" (or even just for testing, because mocks and stubs are usually fine) — that is premature abstraction (YAGNI). The workflow below encodes this check.
+- **Interface segregation vs. premature abstraction.** Create an interface when inner-layer code depends on an outer-layer implementation, when there is a real second implementation (including a widely shared fake), or when there is a decorator to add. Do not introduce one for a concrete class in the same layer “for flexibility” or for a single mock. See workflow 1.
 
 ## Numbered Workflows
 
-### 1. Registering Dependencies
+### 1. Deciding Whether a Dependency Needs an Interface
+This is the one rule for interfaces across these skills; others link here.
+
 If deciding whether to create an interface and register it in the DI container:
-1. **Check for Multiple Implementations.** Are there multiple implementations (e.g., `StripeAdapter` and `PayPalAdapter`)?
-2. **Check for Boundary Inversion.** Is the application defining a port that the infrastructure implements?
-3. **Check for Decorators.** Do you need to wrap the class with caching or logging?
+1. **Check the dependency direction.** Does code in an inner layer (Domain or Application) depend on something whose implementation lives in an outer layer (Infrastructure: database, mail, HTTP clients, vendor SDKs)? If yes, the inner layer must own an interface (a port), even with exactly one implementation. This is Dependency Inversion: without it, the dependency rule is broken.
+2. **Check for real second implementations.** Is there another production implementation, or an in-memory fake shared by many tests?
+3. **Check for Decorators.** Do you need to wrap it with caching, logging, or retries?
 4. **If Yes to any:** Create an interface and register the binding in the container configuration.
-5. **If No to all:** Depend on the concrete class directly and let the container autowire it. Do not blindly create interfaces for every class — one interface with exactly one implementation and no second on the roadmap is dead weight.
+5. **If No to all:** Depend on the concrete class directly and let the container autowire it. This covers dependencies within one layer, dependencies pointing inward, and areas that don’t use ports and adapters (Transaction Script, lean ORM). A single implementation behind an interface there is premature abstraction. Neither “in case we switch” nor a one-off mock is a valid reason for an interface.
 
 ### 2. Testing with Constructor Injection
 If writing tests for classes that use constructor injection:
