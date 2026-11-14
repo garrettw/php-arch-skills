@@ -55,20 +55,20 @@ If you are deciding how to organize a feature's business logic:
 3. **Consider a Table Module for row-set logic.** If the feature computes over many rows of one table (totals, summaries, batch updates) or backs a data-grid/report UI, use a Table Module: one class per table operating on a recordset, paired with a thin gateway. Move to a Domain Model once the rules become individualized per row (per-customer pricing, tax exemptions, regional rules, contract terms, subscriptions).
 4. **Otherwise evaluate Domain Behavior.** Does the feature have meaningful invariants, business rules, state transitions, or cross-context policy that need object identity and relationships?
 5. **Evaluate Testability.** Would the core rule be easier to test in-memory without booting the framework or database?
-6. **If Yes to either 4 or 5:** Propose building an active domain object. Note that this will require separating persistence into mappers and repositories (see the `persistence-patterns` skill).
+6. **If Yes to either 4 or 5:** Propose building a rich domain object. Note that this will require separating persistence into mappers and repositories (see the `persistence-patterns` skill).
 7. **If No to both:** Propose using lean ORM entities directly. Do not build a separate pure PHP domain object.
 
 ### 3. Structuring Services and Handlers
 If you are writing an application service or handler:
 1. **Load data:** Retrieve required state from repositories or adapters.
-2. **Decide:** Pass the data to an active domain object to make the business decision.
+2. **Decide:** Pass the data to a rich domain object to make the business decision.
 3. **Persist:** Save the result via the repository.
 
 ### 4. Defining Aggregate Boundaries
 If deciding whether related entities belong in the same aggregate:
 1. **Transaction Consistency.** Must they be consistent together in a single transaction? If yes, place them in the same aggregate.
-2. **Reference by ID Only.** If they would be referenced directly (not by ID), they belong in the same aggregate.
-3. **Split Large Aggregates.** If an aggregate contains more than 10 entities, split it into smaller aggregates and use domain events for eventual consistency.
+2. **Reference other aggregates by ID only.** Inside an aggregate, objects may hold direct references to each other. Across aggregates, hold only the other root's ID. If one entity seems to need a direct object reference to another, either they belong in the same aggregate or the reference should become an ID.
+3. **Keep aggregates small.** If loading an aggregate pulls in many entities to protect only a few invariants, or concurrent users keep conflicting on it, split it into smaller aggregates and use domain events for eventual consistency.
 4. **Rule:** One aggregate per transaction. Cross-aggregate consistency is handled via domain events, not distributed transactions.
 
 ### 5. Modeling Exceptional-but-Valid States
@@ -96,7 +96,7 @@ When analyzing an established codebase, these are the domain-modeling smells to 
 
 ### Always Do
 - Always evaluate whether the abstraction justifies its cost before introducing a mapper or domain interface.
-- Always ensure active domain objects can be tested with plain PHP, without booting the framework.
+- Always ensure rich domain objects can be tested with plain PHP, without booting the framework.
 - Always read the [Decision Flowchart](references/decision-flowchart.md) before deciding on a structure.
 - Always consider a [Transaction Script](references/transaction-script.md) before reaching for a rich Domain Model; it is the lighter default for simple, linear procedures.
 - Always consider a [Table Module](references/table-module.md) when logic operates over sets of rows in a single table, before paying for a full Domain Model's O/R mapping.

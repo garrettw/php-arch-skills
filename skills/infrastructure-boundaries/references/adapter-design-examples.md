@@ -15,7 +15,7 @@ namespace App\Billing\Application\Port;
 
 use App\Billing\Domain\ValueObject\Money;
 
-interface PaymentGatewayInterface
+interface PaymentGateway
 {
     /**
      * @throws PaymentDeclinedException
@@ -32,7 +32,7 @@ Implement the interface using the specific vendor SDK. Catch their exceptions an
 ```php
 namespace App\Billing\Infrastructure\Payment;
 
-use App\Billing\Application\Port\PaymentGatewayInterface;
+use App\Billing\Application\Port\PaymentGateway;
 use App\Billing\Application\Port\PaymentDeclinedException;
 use App\Billing\Application\Port\GatewayUnavailableException;
 use App\Billing\Domain\ValueObject\Money;
@@ -40,20 +40,26 @@ use Stripe\StripeClient;
 use Stripe\Exception\CardException;
 use Stripe\Exception\ApiConnectionException;
 
-class StripePaymentAdapter implements PaymentGatewayInterface
+class StripePaymentAdapter implements PaymentGateway
 {
     public function __construct(private StripeClient $client) {}
 
     public function chargeCreditCard(string $token, Money $amount): string
     {
         try {
-            $charge = $this->client->charges->create([
+            $intent = $this->client->paymentIntents->create([
                 'amount' => $amount->getInCents(),
                 'currency' => $amount->getCurrency(),
-                'source' => $token,
+                'payment_method' => $token,
+                'confirm' => true,
+                'automatic_payment_methods' => ['enabled' => true, 'allow_redirects' => 'never'],
             ]);
-            
-            return $charge->id;
+
+            if ($intent->status !== 'succeeded') {
+                throw new PaymentDeclinedException("Payment not completed: {$intent->status}");
+            }
+
+            return $intent->id;
         } catch (CardException $e) {
             throw new PaymentDeclinedException($e->getMessage(), 0, $e);
         } catch (ApiConnectionException $e) {

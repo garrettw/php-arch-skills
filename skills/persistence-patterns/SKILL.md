@@ -6,19 +6,19 @@ description: Use this skill when implementing database persistence, choosing a d
 # Persistence, Mappers & Repositories in PHP
 
 ## When to Use Rich Persistence vs. Simple ORM
-Rich persistence (Mapper + Repository) is only worth the ceremony when the application has complex invariants or needs to swap storage. Use simple ORM for straightforward CRUD.
+Rich persistence (Mapper + Repository) is only worth the ceremony when the application has complex invariants that persistence concerns would otherwise compromise. Easy storage swaps are rarely the real benefit (see [data-mapper.md](references/data-mapper.md)). Use simple ORM for straightforward CRUD.
 
 | Use Rich Persistence (Mapper + Repository) | Use Simple ORM (Entity + Query Builder)  |
 |--------------------------------------------|------------------------------------------|
 | Complex business invariants to protect     | Single-table CRUD with few rules         |
-| Need to swap storage implementation        | Fixed database schema                    |
+| Domain must stay free of persistence code  | The schema *is* the model                |
 | Tests must run without DB for domain logic | Schema changes hand-in-hand with feature |
 | Long-lived system, evolving requirements   | Prototype, MVP, throwaway code           |
 
 A library or package that simply exposes data objects should not include mappers or repository interfaces.
 
 ## Data Source Spectrum & Gateway vs Repository
-Persistence structure is a separate axis from domain-logic style. There is a progression of increasing separation between business logic and storage: **Table Data Gateway → Row Data Gateway → Active Record → Data Mapper** (see [data-source-patterns.md](references/data-source-patterns.md) for the spectrum, philosophy, and Gateway-vs-Repository distinction). The lightest end ([Table Data Gateway](references/table-data-gateway.md)) is one class per table that fetches/persists rows and nothing more; the heavy end ([Data Mapper](references/data-mapper.md)) fully isolates domain objects from the database. **Active Record** sits in the middle: one object per row that also carries its business behavior and knows how to persist itself. It is outstanding for CRUD-heavy apps with modest rules and small teams that value rapid iteration, but becomes a liability as the domain grows richer and more interconnected — the class drifts from representing the business to representing the ORM. Recognize when it has outgrown its limits and move persistence/mapping out into a Data Mapper. At the heavy end, **Data Mapper** fully isolates domain objects from the database (only the Mapper bridges the two); it is the preferred persistence model for complex enterprise software (DDD, Hexagonal/Onion/Clean, CQRS writes) because it keeps database concerns out of the domain. Its value is not easy database swaps — it is persistence ignorance for a rich domain model — and the extra indirection is only justified when a rich domain would otherwise be compromised by persistence concerns.
+Persistence structure is a separate axis from domain-logic style. There is a progression of increasing separation between business logic and storage: **Table Data Gateway → Row Data Gateway → Active Record → Data Mapper**. Pick the lightest one that fits the area: a [Table Data Gateway](references/table-data-gateway.md) for rows with no behavior, [Active Record](references/active-record.md) for CRUD-heavy areas with modest rules, and a [Data Mapper](references/data-mapper.md) when a rich domain model must stay free of persistence concerns. Avoid Row Data Gateway in new code. [data-source-patterns.md](references/data-source-patterns.md) is the full treatment of the spectrum, its philosophy, and when Active Record has outgrown its limits.
 
 The distinction between a **Gateway** and a **Repository** is subtle but critical:
 - A **Gateway thinks in tables**: "How do I fetch rows from this table?" It returns rows/recordsets and uses persistence language.
@@ -35,11 +35,13 @@ A clear persistence strategy separates the domain model from database storage me
 
 ## Numbered Workflows
 
-### 1. Implementing CQRS Read vs Write Persistence
+### 1. Separating Read and Write Paths
 If implementing persistence for a use case:
 1. **For Writes (Commands):** If the feature uses a rich domain model, use a Mapper and a Repository to load the aggregate, mutate it, and save it. This protects invariants.
 2. **For Reads (Queries):** Bypass mappers entirely. Use the ORM, Query Builder, or raw SQL to fetch data directly into lean DTOs or arrays for performance and simplicity.
 3. **For Lean Features:** If the `domain-modeling` skill determined the feature is just CRUD, use the ORM directly for both reads and writes.
+
+This split is not CQRS: it reads and writes the same model and store, and is fine from the start. CQRS (separate read and write models, often projections) is a later, opt-in step; see `application-layer`.
 
 ### 2. Implementing Mappers
 If you must map between a rich domain object and an ORM entity:
@@ -48,7 +50,7 @@ If you must map between a rich domain object and an ORM entity:
 
 ### 3. Introducing Repository Interfaces
 If creating a new repository:
-1. **Apply the interface rule** in `dependency-injection` (workflow 1). In a layered or hexagonal area, an Application handler depends on the repository while its implementation lives in Infrastructure. Introduce `[Name]RepositoryInterface` in the Domain layer as a driven port, even with one implementation.
+1. **Apply the interface rule** in `dependency-injection` (workflow 1). In a layered or hexagonal area, an Application handler depends on the repository while its implementation lives in Infrastructure. Introduce a `[Name]Repository` interface in the Domain layer as a driven port, even with one implementation, and name the implementation after its technology (`Doctrine[Name]Repository`, `Pdo[Name]Repository`); see the naming note in `dependency-injection`, workflow 1.
 2. **In a lean area** (Transaction Script, lean ORM, no ports and adapters), create only a concrete `[Name]Repository`.
 3. **Per Aggregate.** Design repositories per aggregate root, not per database table. A single aggregate should be loaded and saved through one repository.
 
@@ -58,33 +60,13 @@ If a repository is growing too large:
 2. **Analyze Return Types.** Do methods return raw DTOs instead of Domain models?
 3. **Refactor.** If yes, split the repository or extract dedicated Query services.
 
-## Boundaries
+## Transaction & Flush Boundaries
+The ORM's default request-end flush is **not** your only transaction boundary. Transaction boundaries are a business decision owned by the application layer, not the ORM. Default to one flush and one commit per use case for atomicity. A flush is not a commit: flush mid-transaction only for same-connection needs (a generated ID, a later query in the same transaction); anything outside the transaction (queued jobs, other contexts) learns about the change through the outbox after commit. See [transaction-boundaries.md](references/transaction-boundaries.md).
 
-### Always Do
-- Always use the hybrid approach: Full DDD for writes (to protect invariants) and lean ORM for reads (for performance and simplicity) when appropriate.
-- Always use specific repository interfaces per bounded context rather than a single massive repository shared across contexts.
-- Always distinguish a Gateway (thinks in tables, returns rows) from a Repository (thinks in business concepts, returns domain objects). A [Table Data Gateway](references/table-data-gateway.md) is the right tool at the lean/CRUD end of the spectrum.
-
-### Ask First
-- Ask before introducing a repository interface in a lean area that does not use ports and adapters.
-- Ask whether a class named "Repository" is actually a Gateway in disguise (returns rows, uses persistence language). If so, call it what it is.
-- Ask whether a workflow that "needs the row to exist now" is a signal for an outbox/domain-event pattern rather than a mid-request flush.
-
-### Transaction & Flush Boundaries
-The ORM's default request-end flush is **not** your only transaction boundary. Transaction boundaries are a business decision owned by the application layer, not the ORM. Default to one flush per use case for atomicity; flush explicitly mid-request only when a later step depends on the row already existing; prefer an outbox/domain-event over piecemeal flushing when downstream consumers need the data. See [transaction-boundaries.md](references/transaction-boundaries.md).
-
-### Performance & Caching
+## Performance & Caching
 Measure query count, plans, latency, and data volume before optimizing. Prefer the simplest read shape that meets the need; introduce caching only with explicit staleness, invalidation, key-scope, and outage behavior. See [performance-and-caching.md](references/performance-and-caching.md).
 
-### Never Do
-- Never create a massive global repository (e.g., `UserRepository`) that serves multiple bounded contexts.
-- Never let a Table Data Gateway accumulate business-flavored query methods (`findEligiblePremiumCustomers()`); that is a Repository trying to form — move the behavior into the domain instead.
-- Never reach for Row Data Gateway in new code; it is a faded pattern that awkwardly mixes persistence, identity, and row state without business behavior. Use Table Data Gateway for raw row access, Active Record for row+behavior, or Data Mapper for full separation.
-- Never introduce CQRS before the application has divergent read/write workloads. Start with simple read/write and evolve only when needed.
-- Never strictly create one repository per entity. Reaching for an entity-level repository bypasses aggregate consistency and scatters persistence logic; design one repository per aggregate root instead.
-- Never add a cache without defining its staleness, invalidation, and tenant/authorization key scope.
-
-### Recognizing Persistence Problems in an Existing Codebase
+## Recognizing Persistence Problems in an Existing Codebase
 
 When analyzing persistence code, these are the smells to look for (signals, not automatic defects — fix only when you next touch the area):
 
@@ -96,3 +78,23 @@ When analyzing persistence code, these are the smells to look for (signals, not 
 - **Gateway wearing a Repository's name.** A class called `XRepository` that returns rows and speaks persistence language is really a Table Data Gateway. Call it what it is and keep business behavior in the domain.
 
 The Repository pattern is DRY applied to data access (one authoritative place knows how to load/save an aggregate) and an expression of Separation of Concerns; see [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md).
+
+## Boundaries
+
+### Always Do
+- Always consider the hybrid approach in rich areas: write through aggregates (to protect invariants) and read through lean queries (for performance and simplicity).
+- Always use specific repository interfaces per bounded context rather than a single massive repository shared across contexts.
+- Always distinguish a Gateway (thinks in tables, returns rows) from a Repository (thinks in business concepts, returns domain objects). A [Table Data Gateway](references/table-data-gateway.md) is the right tool at the lean/CRUD end of the spectrum.
+
+### Ask First
+- Ask before introducing a repository interface in a lean area that does not use ports and adapters.
+- Ask whether a class named "Repository" is actually a Gateway in disguise (returns rows, uses persistence language). If so, call it what it is.
+- Ask whether a workflow that "needs the row to exist now" is a signal for an outbox/domain-event pattern rather than a mid-request flush.
+
+### Never Do
+- Never create a massive global repository (e.g., `UserRepository`) that serves multiple bounded contexts.
+- Never let a Table Data Gateway accumulate business-flavored query methods (`findEligiblePremiumCustomers()`); that is a Repository trying to form — move the behavior into the domain instead.
+- Never reach for Row Data Gateway in new code; it is a faded pattern that awkwardly mixes persistence, identity, and row state without business behavior. Use Table Data Gateway for raw row access, Active Record for row+behavior, or Data Mapper for full separation.
+- Never introduce CQRS (separate read and write models or stores) before the application has divergent read/write workloads. Lean queries alongside aggregate writes do not count as CQRS and need no such justification.
+- Never strictly create one repository per entity. Reaching for an entity-level repository bypasses aggregate consistency and scatters persistence logic; design one repository per aggregate root instead.
+- Never add a cache without defining its staleness, invalidation, and tenant/authorization key scope.

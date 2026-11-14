@@ -11,7 +11,7 @@ A service (or handler, or operation) is one business use case. It:
 
 - **Orchestrates and coordinates** work across the domain, persistence, and side effects.
 - **Defines a clear entry point** for the use case — one well-named operation that clients call.
-- **Controls transactions** and **manages side effects** (publishing events, sending messages).
+- **Controls transactions** and **manages side effects** (recording events in the outbox, sending messages after commit).
 - **Isolates presentation technology** — the same service is called by HTTP controllers, CLI commands, and queue workers.
 
 ### A Service is NOT the business rules
@@ -21,7 +21,7 @@ The single most useful thing to understand about a service: **it does not make b
 These all name the same concept (a use-case-level coordinator) in different dialects:
 
 - **Service Layer** / **Application Layer** — this skill.
-- **Command Handler / Query Handler** — the CQRS dialect (one handler per command/query).
+- **Command Handler / Query Handler** — the command/query dialect (one handler per command or query; this alone is not CQRS).
 - **Operation**, **Action**, **Interactor**, **Use Case** — minor naming variations on the same idea.
 
 ## What a Service Layer Provides

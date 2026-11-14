@@ -108,5 +108,5 @@ class ProcessPaymentHandlerTest extends TestCase // or Framework integration bas
 When testing domain events, test them where they matter:
 
 1. **In the Domain Test**: Assert that the aggregate recorded the correct event in memory.
-2. **In the Handler Test**: Assert that the framework's Event Dispatcher actually received the event after persistence.
-3. **In the Listener Test**: Pass a manually constructed Event to the Listener and assert it performs the expected side effect (like dispatching a new Command or queueing a job).
+2. **In the Handler Test**: Assert that the event was written to the outbox in the same transaction as the state change (and that nothing is recorded when the transaction rolls back).
+3. **In the Consumer Test**: Pass a manually constructed message to the consumer and assert it performs the expected effect (like calling a local command handler), and that delivering the same message twice has the effect only once.

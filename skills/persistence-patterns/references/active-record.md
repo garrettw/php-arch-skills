@@ -49,5 +49,5 @@ At that point the class stops representing the **business** and starts represent
 At that point, move the persistence/mapping out into a **[Data Mapper](data-mapper.md)** and let the domain objects focus on behavior.
 
 ### See also
-- [Data Source spectrum & core philosophy](../data-source-patterns.md) — Active Record optimizes for throughput and simplicity; [Data Mapper](data-mapper.md) for longevity and domain isolation. Neither is universally superior.
+- [Data Source spectrum & core philosophy](data-source-patterns.md) — Active Record optimizes for throughput and simplicity; [Data Mapper](data-mapper.md) for longevity and domain isolation. Neither is universally superior.
 - For raw row access without per-row objects, a [Table Data Gateway](table-data-gateway.md) is simpler.

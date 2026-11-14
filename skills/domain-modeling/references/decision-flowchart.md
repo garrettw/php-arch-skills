@@ -28,7 +28,7 @@ Use a **Table Module** — the middle option between Transaction Script and Doma
 
 ### If YES to #2-#5 (behavior outweighs procedure):
 Use the **Full DDD Structure**. The entity has rich behavior that justifies the cost of separation.
-- Create an active domain object that protects its invariants.
+- Create a rich domain object that protects its invariants.
 - Keep it pure PHP, free from framework ORM dependencies.
 
 ### If NO to all (no procedure complexity, no behavior):
@@ -38,7 +38,7 @@ Use the **Lean ORM Structure**. The object is likely a data bag, a report projec
 
 ## When to Upgrade from Transaction Script or Table Module to a Domain Model
 
-A Transaction Script is fine until the same rule appears in more than one script and starts drifting. When a validation, calculation, or policy recurs across procedures, lift it into a shared active domain object or policy and keep the script as the orchestrator. This is the main trigger to move from the Transaction Script path toward the Full DDD path.
+A Transaction Script is fine until the same rule appears in more than one script and starts drifting. When a validation, calculation, or policy recurs across procedures, lift it into a shared rich domain object or policy and keep the script as the orchestrator. This is the main trigger to move from the Transaction Script path toward the Full DDD path.
 
 A Table Module is fine while its rules stay table-wide. It stops scaling once rules become **individualized per row** — pricing policies, tax exemptions, regional regulations, contract terms, and subscription behavior are properties of each record, not of the table as a whole. When those per-record rules pile up, give each row its own object with identity and move the rules onto it. That is the trigger to move from the Table Module path toward the Full DDD path.
 

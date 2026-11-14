@@ -22,7 +22,7 @@ A [**Plugin**](references/plugin.md) is the purpose this wiring serves: define e
 
 - **Dependency Inversion (DI).** High-level modules depend on abstractions, not on low-level details. The application defines ports (interfaces); infrastructure supplies the adapters. This is the principle that makes a DI container useful and is the backbone of Hexagonal / Ports-and-Adapters architecture. See [solid-principles.md](../domain-modeling/references/solid-principles.md).
 - **Narrow ports (Interface Segregation).** Each port should expose only the behavior its clients actually use. A port with methods no caller needs forces adapters to implement dead code and couples clients to irrelevant surface area. Keep ports role-specific.
-- **Interface segregation vs. premature abstraction.** Create an interface when inner-layer code depends on an outer-layer implementation, when there is a real second implementation (including a widely shared fake), or when there is a decorator to add. Do not introduce one for a concrete class in the same layer “for flexibility” or for a single mock. See workflow 1.
+- **When an interface is warranted.** Create an interface when inner-layer code depends on an outer-layer implementation, when there is a real second implementation (including a widely shared fake), or when there is a decorator to add. Do not introduce one for a concrete class in the same layer “for flexibility” or for a single mock. See workflow 1.
 
 ## Numbered Workflows
 
@@ -35,6 +35,8 @@ If deciding whether to create an interface and register it in the DI container:
 3. **Check for Decorators.** Do you need to wrap it with caching, logging, or retries?
 4. **If Yes to any:** Create an interface and register the binding in the container configuration.
 5. **If No to all:** Depend on the concrete class directly and let the container autowire it. This covers dependencies within one layer, dependencies pointing inward, and areas that don’t use ports and adapters (Transaction Script, lean ORM). A single implementation behind an interface there is premature abstraction. Neither “in case we switch” nor a one-off mock is a valid reason for an interface.
+
+**Naming.** Name the interface after the role it plays, with no `Interface` suffix (`PaymentGateway`, `SubscriptionRepository`), so callers read in business terms. Name each implementation after what makes it specific: its technology or vendor (`DoctrineSubscriptionRepository`, `StripePaymentAdapter`) or its purpose (`InMemorySubscriptionRepository`). Keep a suffix only for a good reason, such as matching an external standard or framework contract (`Psr\Clock\ClockInterface`) or avoiding a clash with an existing class of the same name.
 
 ### 2. Testing with Constructor Injection
 If writing tests for classes that use constructor injection:
@@ -63,6 +65,7 @@ If modifying a legacy class that uses a service locator (`Container::getInstance
 
 ### Never Do
 - Never use service locators inside domain objects, application handlers, or policies. They hide dependencies and couple core code to the framework.
+- Never implement a service as a Singleton or static global instance (`::getInstance()`). Register it in the container (shared, if one instance is needed) and inject it.
 - Never let a plugin become a backdoor: it must not reach into core internals, write to the database directly, or skip domain invariants. Plug in via the defined Port only.
 - Never add a new dependency when an existing one already does the job; reuse before reaching for a package.
 

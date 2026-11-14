@@ -21,11 +21,11 @@ Therefore: don't expose your entire object model remotely. **Expose larger opera
 - `RenewSubscription()`
 - `SubmitOrder()`
 
-This pattern appears almost everywhere today: REST endpoints, GraphQL mutations, CQRS commands, gRPC methods, RPC services, even message handlers. **Different transport, same architectural idea.**
+This pattern appears almost everywhere today: REST endpoints, GraphQL mutations, command endpoints, gRPC methods, RPC services, even message handlers. **Different transport, same architectural idea.**
 
 ## Rules
 
-- **The Remote Facade contains no domain logic.** It is a thin translator: it only translates coarse-grained method calls onto the underlying fine-grained objects. Business decisions stay in the domain layer; orchestration/coordination belongs to the [application-layer](../application-layer/SKILL.md). A Remote Facade is not a service with behavior.
+- **The Remote Facade contains no domain logic.** It is a thin translator: it only translates coarse-grained method calls onto the underlying fine-grained objects. Business decisions stay in the domain layer; orchestration/coordination belongs to the [application-layer](../../application-layer/SKILL.md). A Remote Facade is not a service with behavior.
 - **Only the facade is remote.** None of the underlying fine-grained objects have a remote interface. The facade sits on top of a web of in-process objects.
 - **Design the contract around consumer needs**, not the internal object model.
 
@@ -41,6 +41,6 @@ Coarse-graining forces you to give up the intention-revealing naming and fine-gr
 Many developers accidentally expose ORM entities through APIs. That's exactly what Fowler warned against. A Remote Facade returns purpose-built responses — usually [DTOs](dto.md) — not hydrated domain or ORM objects.
 
 ## Related
-- A Remote Facade is the remote-facing expression of a use case — see the [application-layer](../application-layer/SKILL.md) skill (CQRS commands *are* remote facades).
+- A Remote Facade is the remote-facing expression of a use case — see the [application-layer](../../application-layer/SKILL.md) skill. A command handled in-process is not a Remote Facade; the endpoint that accepts that command over the network is.
 - The data crossing the wire is usually a [DTO](dto.md), covered in this skill.
-- Distinct from [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md), which is about *consuming* external systems behind adapters, not *exposing* your own remote interface.
+- Distinct from [infrastructure-boundaries](../../infrastructure-boundaries/SKILL.md), which is about *consuming* external systems behind adapters, not *exposing* your own remote interface.

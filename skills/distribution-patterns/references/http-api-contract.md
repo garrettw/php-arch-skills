@@ -49,7 +49,7 @@ When a Remote Facade ([remote-facade.md](remote-facade.md)) is exposed as a REST
 
 - **One response envelope convention.** Decide whether resources are returned bare or wrapped (`{ "data": … }`) and apply it uniformly so clients write one parser.
 - **One JSON naming convention** (camelCase or snake_case) across the whole API; don't mix.
-- **Offer sparse fieldsets** (`?fields=id,name`) for heavy resources so bandwidth-constrained clients fetch only what they need. But be sure to sanitize the fieldset to prevent injection attacks.
+- **Offer sparse fieldsets** (`?fields=id,name`) for heavy resources so bandwidth-constrained clients fetch only what they need. Validate requested fields against an allowlist, never pass them through to a query.
 
 ## Versioning
 
@@ -66,7 +66,7 @@ When a Remote Facade ([remote-facade.md](remote-facade.md)) is exposed as a REST
 - **Authenticate and authorize** every request (who the caller is, then what they may do); never trust the client.
 - **Configure CORS with an explicit allowlist** — never `*` with credentials.
 - **Rate limit** to prevent abuse and protect availability; return `429` with a `Retry-After` hint.
-- **Never expose secrets or PII** in responses (passwords, tokens, internal IDs, raw personal data). Shape the response DTO to omit them.
+- **Never expose secrets or PII** in responses (passwords, tokens, internal-only identifiers such as database sequence numbers you have not chosen to publish, raw personal data). Shape the response DTO to omit them.
 
 ## Documentation
 

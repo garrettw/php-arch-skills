@@ -88,12 +88,12 @@ final class ContractTableModule
 
 Notes:
 - One class per table; instantiate it once and call methods that take/return recordsets.
-- Pair it with a [Table Data Gateway](../persistence-patterns/references/data-source-patterns.md) that returns the recordset, keeping SQL out of the module.
+- Pair it with a [Table Data Gateway](../../persistence-patterns/references/data-source-patterns.md) that returns the recordset, keeping SQL out of the module.
 - Behavior is row-set-oriented. If you find yourself needing per-row identity, relationships, or polymorphic behavior, that is the signal to move to a Domain Model.
 
 ## Relationship to the Rest of This Skill Set
 
 - Table Module is the middle column of the Transaction Script → Table Module → Domain Model spectrum, described in [transaction-script.md](transaction-script.md).
 - It still relies on a thin data gateway (see `persistence-patterns`); it just keeps data in table shape instead of mapping to rich objects.
-- When a table module's per-row behavior grows to need identity, invariants, and relationships, refactor those rows into active domain objects and let the Table Module become a Domain Model.
+- When a table module's per-row behavior grows to need identity, invariants, and relationships, refactor those rows into rich domain objects and let the Table Module become a Domain Model.
 - Table Module does not require repositories or mappers; add those only when the persistence structure diverges enough to warrant a Domain Model (see `persistence-patterns`).

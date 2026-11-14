@@ -32,11 +32,11 @@ Use a Transaction Script when the feature is a straightforward procedure: pull s
 |-------------------------------------------------------------|-----------------------------------------------------------|
 | Simple CRUD and request/response procedures                 | Complex business domain with many invariants              |
 | Few business rules, mostly read-then-write steps            | Complex state transitions or cross-entity policies        |
-| Prototype, MVP, throwaway code                              | Long-lived system maintained by a team for years          |
+| Prototype, MVP, throwaway code                              | Long-lived system maintained for years                    |
 | Single, linear path per request (validate → save → return)  | Behavior that changes based on the object's own state     |
 | Report-style or one-off operations                          | Shared rules that must stay consistent across many flows  |
 
-**Default to Transaction Script. Reach for a Domain Model only when the rules start repeating across scripts and drifting out of sync.** The trigger to upgrade is duplicated logic: when the same validation or calculation appears in several scripts and risks drifting, that behavior belongs on a domain object (see the main skill's "Deciding to Use a Rich Domain Model" step).
+**Default to Transaction Script. Reach for a Domain Model only when the rules start repeating across scripts and drifting out of sync.** The trigger to upgrade is duplicated logic: when the same validation or calculation appears in several scripts and risks drifting, that behavior belongs on a domain object (see the main skill's workflow 2, "Choosing Transaction Script vs a Rich Domain Model").
 
 ## Structure in PHP
 
@@ -60,7 +60,7 @@ final class RegisterUserScript
         $this->users->insert(new UserRow(
             $id,
             $request->email,
-            $this->hasher->hash($request->email, $request->password),
+            $this->hasher->hash($request->password),
         ));
 
         return $id;
@@ -77,5 +77,5 @@ Notes:
 
 - Transaction Script is the "simpler pattern" column of the main skill's DDD comparison table.
 - It is compatible with thin controllers (see `application-layer`): the controller adapts the HTTP edge, the script owns the procedure.
-- When a script's logic grows and starts duplicating across scripts, refactor the shared rule into an active domain object and keep the script as the orchestrator (the "Deciding to Use a Rich Domain Model" step).
+- When a script's logic grows and starts duplicating across scripts, refactor the shared rule into a rich domain object and keep the script as the orchestrator (workflow 2 in the main skill).
 - Transaction Script does not require DTOs, mappers, or repositories. Add those only when the persistence structure diverges from the domain language (see `persistence-patterns`).

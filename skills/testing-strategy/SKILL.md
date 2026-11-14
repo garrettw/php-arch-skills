@@ -35,7 +35,7 @@ If testing persistence boundaries:
 ### 3. Testing Application Handlers
 If testing use case orchestration:
 1. **Choose the testing style.** Use integration tests hitting a real test database, OR unit tests with fakes/mocks for infrastructure. (Integration tests often provide higher confidence with less brittle setup).
-2. **Assert coordination.** Verify the handler successfully loads data, calls the domain, saves state, and publishes events.
+2. **Assert coordination.** Verify the handler successfully loads data, calls the domain, saves state, and records its events in the outbox in the same transaction.
 
 ### 4. Testing Controllers and Adapters
 If testing framework edges and infrastructure adapters:

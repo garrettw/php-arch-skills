@@ -47,7 +47,7 @@ If implementing an aggregate that produces events:
 If passing events between bounded contexts:
 1. **Own and Publish in Source Context.** The bounded context that owns the fact publishes a versioned contract for it (e.g., `Billing` owns `SubscriptionPaid` and publishes `SubscriptionPaidV1`).
 2. **Consume in Target Context.** The consuming context consumes that published contract, not the source's domain event, and translates it into a local command (e.g., `Entitlements` consumes `SubscriptionPaidV1` and issues `GrantAccessCommand`).
-3. **Publish a contract, not the domain event.** The source context translates its internal domain event into a published, versioned contract that lives in the Shared Kernel or a `Contracts` namespace. Consumers depend only on that contract, never on the source context’s domain classes.
+3. **Place the contract where consumers can depend on it.** Published, versioned contracts live in the Shared Kernel or a `Contracts` namespace. The source translates its internal event into the contract (for example, in the outbox relay); consumers depend only on the contract, never on the source context’s domain classes.
 
 ## Boundaries
 

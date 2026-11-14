@@ -17,8 +17,8 @@ Intercept updates to system state and route **some** of them to a new component.
 ## Legacy Mimic
 The new system interacts with the legacy in a way that the **old system is not aware of any changes** — typically an adapter that keeps legacy side-effects (reports, warehouses, downstream consumers) working while you migrate.
 
-- In this skill set's terms it is a **Gateway/Adapter** at a boundary (see [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md)): isolate the new implementation from legacy quirks so future legacy changes don't ripple in.
-- Often required in surprising places (the article found KPI reports fed by a replicated legacy DB needed a Wire Tap mimic). Expect "archeology": hidden consumers surface only after go-live.
+- In this skill set's terms it is a **Gateway/Adapter** at a boundary (see [infrastructure-boundaries](../../infrastructure-boundaries/SKILL.md)): isolate the new implementation from legacy quirks so future legacy changes don't ripple in.
+- Often required in surprising places (the Patterns of Legacy Displacement article found KPI reports fed by a replicated legacy DB needed a Wire Tap mimic). Expect "archeology": hidden consumers surface only after go-live.
 
 ## Divert the Flow
 First divert cross-organization activities away from the legacy before replacing it. Establish the new path for traffic, prove it, then decommission the old one.
@@ -28,7 +28,7 @@ First divert cross-organization activities away from the legacy before replacing
 ## Revert to Source
 Identify the **originating source of data** and integrate to that, rather than to an intermediate legacy layer that merely passes data through.
 
-- Cuts a needless dependency: if legacy is just a passthrough, integrate the new component to the real source instead of mimicing the middleman.
+- Cuts a needless dependency: if legacy is just a passthrough, integrate the new component to the real source instead of mimicking the middleman.
 
 ## Feature Parity (Anti-Pattern)
 Replicate the existing functionality of a legacy system on a new stack, promising the business "exactly what you have today, just improved behind the covers."
@@ -36,10 +36,10 @@ Replicate the existing functionality of a legacy system on a new stack, promisin
 - **Why it's a trap:** defining current "as-is" behavior is huge effort, it leads to a large **big-bang cutover**, and much of that behavior isn't actually wanted — so you rebuild waste. This skill's "Never Do" already rejects big-bang rewrites; Feature Parity is the planning failure that produces them.
 - **Instead:** migrate by outcome and business capability (the four activities in [strangler-fig.md](strangler-fig.md)). Build the new slice to meet the *needed* behavior, not a 1:1 copy.
 
-## How They Fit Together (the article's example)
+## How They Fit Together (the article's worked example)
 Replace integration middleware by: (1) inserting **Event Interception** on the queue as a no-behavior-change refactor; (2) building the new component with **Legacy Mimics** to keep legacy reports/DB working — all part of the **Transitional Architecture**; (3) **Diverting the Flow** by product segment to roll out gradually; (4) decommissioning the legacy once 100% of traffic is on the new path.
 
 ## Related
 - [strangler-fig.md](strangler-fig.md): the umbrella pattern; these are its delivery mechanics.
-- [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md): Legacy Mimic is a Gateway/Adapter at a boundary.
+- [infrastructure-boundaries](../../infrastructure-boundaries/SKILL.md): Legacy Mimic is a Gateway/Adapter at a boundary.
 - Source: [Patterns of Legacy Displacement](https://martinfowler.com/articles/patterns-legacy-displacement/) (Transitional Architecture, Event Interception, Legacy Mimic, Divert the Flow, Revert to Source, Feature Parity).

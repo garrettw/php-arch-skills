@@ -1,6 +1,6 @@
-# Directory Structure Templates for CQRS
+# Directory Structure Templates
 
-Use this default shape for complex backend use cases in PHP applications to implement the Command/Query/Handler pattern.
+This is the canonical layout for PHP applications in these skills: bounded contexts first, then layers, with Command/Query objects and their handlers in each context's Application layer.
 
 ## Target Structure
 

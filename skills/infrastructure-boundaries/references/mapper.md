@@ -34,5 +34,5 @@ If business logic creeps into a mapper, the boundary has leaked: the rule now li
 
 ## Related
 - A Mapper is a boundary-translation object, the same seam family as a [Gateway](gateway.md): both isolate one side from the other's representation.
-- The persistence-specific form is the **Data Mapper** in [persistence-patterns](../persistence-patterns/references/data-mapper.md) — domain object ↔ database row. That is one instance of this general pattern; do not put mapping logic in the domain object or repository (see [persistence-patterns](../persistence-patterns/SKILL.md)).
-- Mapping *to* the wire shape is the domain→DTO direction covered in [distribution-patterns](../distribution-patterns/references/dto.md).
+- The persistence-specific form is the **Data Mapper** in [persistence-patterns](../../persistence-patterns/references/data-mapper.md) — domain object ↔ database row. That is one instance of this general pattern; do not put mapping logic in the domain object or repository (see [persistence-patterns](../../persistence-patterns/SKILL.md)).
+- Mapping *to* the wire shape is the domain→DTO direction covered in [distribution-patterns](../../distribution-patterns/references/dto.md).

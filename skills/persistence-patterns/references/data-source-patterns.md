@@ -57,5 +57,5 @@ The patterns above are about *structure*. Once an ORM is in play, a second famil
 ## In This Skill Set
 
 - The `domain-modeling` skill chooses *how business rules are organized*. This spectrum chooses *how persistence is structured*. They are orthogonal.
-- A [Table Module](../domain-modeling/references/table-module.md) is usually paired with a Table Data Gateway that returns the recordset it operates on.
-- The CQRS read side (Queries) is a natural home for Table Data Gateways; the write side leans toward Data Mapper + Repository once invariants matter.
+- A [Table Module](../../domain-modeling/references/table-module.md) is usually paired with a Table Data Gateway that returns the recordset it operates on.
+- The read side (query handlers and read models) is a natural home for Table Data Gateways; the write side leans toward Data Mapper + Repository once invariants matter.

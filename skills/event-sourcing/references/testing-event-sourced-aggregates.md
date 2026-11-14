@@ -66,7 +66,7 @@ For deciders, the same three tests become one shape: given events (folded with e
 
 ## Key Rules
 
-- Construct aggregates directly with `new` for command tests.
+- Construct aggregates directly for command tests, with `new` or a named constructor such as `Order::start()`; never through a repository or event store.
 - For state tests, use a `reconstituteFrom(array $events)` factory method that applies each event via the aggregate's `apply()` or `whenXxx()` methods.
 - Never boot a framework, database, or event store for domain tests.
 - Assert on event types and payloads, not on internal method calls.

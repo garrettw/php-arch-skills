@@ -11,8 +11,8 @@ This reference covers the main PHP libraries for implementing Event Sourcing and
 - Docs: https://eventsauce.io/docs
 
 EventSauce is a small, focused library. It does not require CQRS, a command bus, or a specific framework. Key ideas:
-- `AggregateRoot` base class with `recordThat()` and `apply()`
-- `AggregateChanged` events with `aggregateId()` and `messageName()`
+- An `AggregateRoot` interface, usually implemented with the `AggregateRootBehaviour` trait, which provides `recordThat()` and dispatches each event to an `apply{EventName}()` method
+- Events are plain PHP objects; serialization and message metadata (aggregate ID, version, timestamps) are handled by EventSauce's message layer, not by an event base class
 - Decoupled from any bus or dispatcher
 - Copy-able implementation — you can fork and own it
 
@@ -53,6 +53,6 @@ Features beyond basic snapshots and projections:
 - Schema management and migrations
 - CLI tooling and an admin UI
 - A PHPStan extension and PHPUnit helpers
-- DCB (Dynamic Consistency Boundary) support coming in 4.0
+- DCB (Dynamic Consistency Boundary) support planned for 4.0, which is not yet released
 
 **Trade-off:** The most batteries-included of the three libraries here (more than EventSauce *and* Ecotone), which means more to learn — but it stays out of your framework choice and your domain model. Ecotone bundles bus/CQRS glue; Patchlevel additionally ships the operational tooling (subscription engine, migrations, CLI, admin UI).

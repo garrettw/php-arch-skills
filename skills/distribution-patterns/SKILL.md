@@ -10,7 +10,7 @@ These are the patterns about communicating *across a boundary* (process, network
 - **Remote Facade** — the *operation contract* you expose to callers (coarse-grained, consumer-shaped).
 - **DTO (Data Transfer Object)** — the *data shape* that travels across the seam.
 
-Remote Facade is most often the **external**-facing contract (a REST endpoint, GraphQL mutation, gRPC method, CQRS command, message handler). A DTO is the **data shape** used both at that external boundary *and* at internal seams (between the application layer and the presentation layer, or across bounded contexts). The distinction is operation vs data, not strictly external vs internal — but the motivation in both cases is the same: don't drag the internal object model across the wire.
+Remote Facade is most often the **external**-facing contract (a REST endpoint, GraphQL mutation, gRPC method, command endpoint, message handler). A DTO is the **data shape** used both at that external boundary *and* at internal seams (between the application layer and the presentation layer, or across bounded contexts). The distinction is operation vs data, not strictly external vs internal — but the motivation in both cases is the same: don't drag the internal object model across the wire.
 
 ## Remote Facade
 
@@ -18,7 +18,7 @@ A Remote Facade is a coarse-grained facade over a web of fine-grained objects, a
 
 ## DTO (Data Transfer Object)
 
-A DTO is a simple structure for moving data across a boundary — deliberately *not* a domain object. It keeps the API contract independent from the persistence/domain model so each can evolve for its own reasons. See [dto.md](references/dto.md) for the full treatment, why domain objects don't belong on the wire, and the CQRS angle (Commands/Queries/Responses/Events are explicit DTOs).
+A DTO is a simple structure for moving data across a boundary — deliberately *not* a domain object. It keeps the API contract independent from the persistence/domain model so each can evolve for its own reasons. See [dto.md](references/dto.md) for the full treatment, why domain objects don't belong on the wire, and the command/query angle (Commands/Queries/Responses/Events are explicit DTOs).
 
 ## HTTP/REST contract
 
@@ -48,7 +48,7 @@ For authentication, authorization, tenant isolation, and sensitive-data handling
 Remote Facade and DTO are two members of a family of patterns whose job is to **protect a boundary** so internals don't leak across a seam. The same theme runs through Gateway (infrastructure), Mapper (model), Plugin (framework/extension), and Special Case (behavioral). See [boundary-protection-patterns.md](references/boundary-protection-patterns.md) for how these map onto Ports & Adapters / Hexagonal architecture — they are its intellectual foundation, not a rival to it.
 
 ## Related Skills
-- [application-layer](../application-layer/SKILL.md): a CQRS command/handler is the in-process expression of a use case; a Remote Facade is its remote-facing expression.
+- [application-layer](../application-layer/SKILL.md): a command and its handler are the in-process expression of a use case; a Remote Facade is its remote-facing expression.
 - [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md): that skill is about *consuming* external systems behind adapters; this one is about *exposing* your own remote interface. It also covers Gateway and Mapper — two more boundary-protection patterns.
 - [bounded-contexts](../bounded-contexts/SKILL.md): DTOs are the common currency when translating between contexts.
 - [dependency-injection](../dependency-injection/SKILL.md): its Plugin pattern is the framework/extension boundary; Hexagonal "Adapter" is the generalization of these patterns.

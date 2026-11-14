@@ -47,7 +47,7 @@ When analyzing an established codebase, these are signals of misplaced or missin
 
 - **"Infrastructure" contexts.** A context named after a transport or vendor — `Webhooks`, `Email`, `Salesforce` — instead of a business capability. Webhooks/integrations are infrastructure, not contexts; re-home them to the capability that owns the fact (e.g., a payment webhook belongs to Billing).
 - **Shared Kernel as a util dump.** The "common" namespace holds array helpers, base classes, and generic traits rather than identity references, stable shared value types, or published event contracts.
-- **Structure-by-layer, not by-capability.** Code is sliced by technical layer (`Controllers/`, `Models/`, `Repositories/`) across the whole app rather than grouped by business capability, so a single feature's logic is scattered.
+- **Structure-by-layer, not by-capability.** Code is sliced by technical layer (`Controllers/`, `Models/`, `Repositories/`) across the whole app rather than grouped by business capability, so a single feature's logic is scattered. The canonical context-first layout is in [directory-structure-templates.md](../application-layer/references/directory-structure-templates.md).
 - **Hidden ownership.** No context map or glossary; the same term means different things in different areas, or facts are owned by the consumer rather than their source.
 - **Circular dependencies between contexts.** Two contexts import each other to get a job done. Break the cycle with a port, an event, or by moving the shared concept into a Shared Kernel or down into the domain. Cyclic context coupling is a core *design debt* smell.
 - **Shotgun surgery.** One business change forces edits across many contexts because a single responsibility is scattered. Consolidate that responsibility into the context that owns the capability (this is Separation of Concerns at the context scale).
@@ -57,6 +57,7 @@ When analyzing an established codebase, these are signals of misplaced or missin
 
 ### Always Do
 - Always use the [Context Map Template](references/context-map-template.md) to document how contexts interact.
+- Always give each context its own top-level folder with its own layers, following the [directory structure templates](../application-layer/references/directory-structure-templates.md).
 - Always establish clear ownership for terms using the [Glossary Template](references/glossary-template.md).
 - Always treat the context map as a living document; revisit boundaries when new lifecycle behaviors emerge.
 

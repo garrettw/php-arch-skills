@@ -8,5 +8,5 @@ The **Factory** (Factory Method and Abstract Factory) encapsulates object creati
 - **Watch — don't reach for a Singleton:** a Factory is often misimplemented as a global Singleton/service locator. This skill set treats the **Singleton as an anti-pattern** — see the [Never Do](../SKILL.md) rules: use constructor injection and register the factory in the container at the edge, not a static global instance. A factory is a normal injectable object, not a global.
 
 ## Related
-- [Plugin](references/plugin.md): a factory is the natural way to supply the Adapter an extension point needs.
+- [Plugin](plugin.md): a factory is the natural way to supply the Adapter an extension point needs.
 - [dependency-injection](../SKILL.md): factories belong at the composition root, returning Ports the domain consumes.

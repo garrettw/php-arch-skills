@@ -38,6 +38,8 @@ A Gateway should represent an **external capability**, not an HTTP client.
 
 The first speaks the language of the business. The second leaks implementation details — and locks the name (and often the interface) to a vendor or protocol you may later replace.
 
+The rule applies to the **port**, the name the application depends on. The adapter behind it is the one vendor-specific class, so it may say so: `StripePaymentAdapter implements PaymentGateway` is fine. What it must not be is a thin, transport-shaped wrapper (`StripeHttpWrapper`) that the application calls directly.
+
 ## Related
-- This pattern is the Port/Adapter idea in [infrastructure-boundaries](../SKILL.md); see [Adapter Design Examples](adapter-design-examples.md) for the `PaymentGatewayInterface` / `StripePaymentAdapter` structure and the anti-patterns (leaking vendor objects, leaking vendor exceptions, passing framework globals).
-- The data crossing into or out of a Gateway is usually a [DTO](../distribution-patterns/references/dto.md) — primitive values, domain value objects, or a generic transfer object, never the raw vendor response.
+- This pattern is the Port/Adapter idea in [infrastructure-boundaries](../SKILL.md); see [Adapter Design Examples](adapter-design-examples.md) for the `PaymentGateway` / `StripePaymentAdapter` structure and the anti-patterns (leaking vendor objects, leaking vendor exceptions, passing framework globals).
+- The data crossing into or out of a Gateway is usually a [DTO](../../distribution-patterns/references/dto.md) — primitive values, domain value objects, or a generic transfer object, never the raw vendor response.

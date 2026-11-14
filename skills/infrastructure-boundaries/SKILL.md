@@ -43,33 +43,36 @@ If adding a new integration or third-party service:
 2. **Implement the Adapter.** Create the implementation class in the Infrastructure layer, using the specific vendor SDK.
 3. **Verify Imports.** Ensure the Domain/Application code only imports the interface, never the vendor SDK or HTTP client.
 
-### 1.5. Classifying the Adapter
+### 2. Classifying the Adapter
 If determining where a new adapter belongs:
-1. **Driver Adapters.** Does the adapter receive external input and trigger application logic (e.g., HTTP controllers, CLI commands, message queue consumers)? Place it in the context's `Interface/` folder (e.g., `Interface/Http`, `Interface/Console`, `Interface/Messaging`), or in `Infrastructure/Http` if the project keeps all adapters under Infrastructure.
+1. **Driver Adapters.** Does the adapter receive external input and trigger application logic (e.g., HTTP controllers, CLI commands, message queue consumers)? Place it in the context's `Interface/` folder (e.g., `Interface/Http`, `Interface/Console`, `Interface/Messaging`), or in `Infrastructure/Http` if the project keeps all adapters under Infrastructure. The full layout is in [directory-structure-templates.md](../application-layer/references/directory-structure-templates.md).
 2. **Driven Adapters.** Does the adapter implement an external concern called by the application (e.g., database repository, email sender, search engine client)? Place it in the context's `Infrastructure/` folder (e.g., `Infrastructure/Persistence`, `Infrastructure/Messaging`).
 3. **Composition Root.** Wire all adapter implementations to their ports in a single location (e.g., the DI configuration or the framework bootstrap) to keep the dependency rule intact.
 
-### 2. Designing a Provider Adapter
+### 3. Designing a Provider Adapter
 If building a new infrastructure adapter:
 1. **Define Inputs.** The adapter must take primitive values or domain value objects, not framework request objects.
-2. **Translate Exceptions.** Catch vendor-specific exceptions (e.g., `GuzzleHttp\Exception\ClientException`) and wrap them in domain-meaningful exceptions defined by the port (e.g., `PaymentFailedException`).
+2. **Translate Exceptions.** Catch vendor-specific exceptions (e.g., `GuzzleHttp\Exception\ClientException`) and wrap them in domain-meaningful exceptions defined by the port (e.g., `PaymentDeclinedException`, `GatewayUnavailableException`).
 3. **Format Outputs.** Return primitive values, generic DTOs, or domain objects—never the raw vendor response object (e.g., `Stripe\Charge`).
 4. **Reference Examples.** Check the [Adapter Design Examples](references/adapter-design-examples.md) for structural patterns.
 
-### 3. Handling Webhooks and Callbacks
+### 4. Handling Webhooks and Callbacks
 If building an endpoint to receive a vendor webhook:
-1. **Authenticate.** Verify the webhook signature in an HTTP middleware or controller.
-2. **Parse.** Extract the relevant data from the vendor-specific payload into a generic DTO or array.
-3. **Hand Off.** Pass the domain-neutral facts to an application handler to execute the business use case.
+1. **Authenticate.** Verify the provider signature over the raw request body (before any parsing or framework normalization) in an HTTP middleware or the Action, and enforce the provider's timestamp/replay window where it has one.
+2. **Deduplicate.** Providers redeliver. Record the provider's event ID durably, in the same transaction as the resulting state change, so a repeat delivery is a no-op (see `reliable-messaging`, workflow 2).
+3. **Parse.** Extract the relevant data from the vendor-specific payload into a generic DTO or array.
+4. **Hand Off.** Pass the domain-neutral facts to an application handler to execute the business use case. Acknowledge quickly; if the work is slow, record it and process it asynchronously rather than holding the provider's request open.
 
-### 4. Operational Signals
+See `security-architecture`, workflow 4, for the security side of callbacks.
+
+### 5. Operational Signals
 Emit logs, metrics, and traces at delivery and infrastructure boundaries, where request, dependency, and failure context is available. Propagate correlation through queued work, keep telemetry out of domain dependencies, and redact secrets and unnecessary personal data. See [operational-signals.md](references/operational-signals.md).
 
 ## Boundaries
 
 ### Always Do
 - Always treat third-party integrations (like a CRM) and infrastructure systems (like a search engine) as infrastructure adapters (Gateways), not bounded contexts.
-- Always name a Gateway after the business capability it provides (`PaymentGateway`, `SearchIndex`, `Mailer`), never the vendor or transport (`StripeHttpWrapper`, `ElasticsearchHttpClient`).
+- Always name the port (the interface the application depends on) after the business capability it provides (`PaymentGateway`, `SearchIndex`, `Mailer`), never the vendor or transport. The adapter that implements it may name the vendor alongside the capability (`StripePaymentAdapter`), because it is the one vendor-specific class.
 - Always limit a Mapper to representation conversion only — preserve meaning, never embed business rules or derivation (that belongs in the domain or an application-layer operation).
 - Always inject configuration values (like feature flags) into domain objects as simple scalar values (e.g., `bool $isNewFeatureEnabled`) via constructors.
 
@@ -82,4 +85,4 @@ Emit logs, metrics, and traces at delivery and infrastructure boundaries, where 
 - Never pass the entire configuration object or framework container into an adapter. Inject only the specific credentials or clients the adapter needs.
 - Never mix Domain code with infrastructure SDKs.
 - Never violate the dependency rule: Domain must not import database, HTTP, or messaging libraries. If it does, the boundary is broken (this is the classic *leaky abstraction* design-debt smell).
-- Never name an adapter after the transport or vendor (`StripeHttpWrapper`, `ElasticsearchHttpClient`); name it after the business capability it provides.
+- Never let application or domain code depend on a vendor- or transport-shaped abstraction (`StripeHttpWrapper`, `ElasticsearchHttpClient`). It depends on the capability-named port; only the adapter knows the vendor.

@@ -47,7 +47,7 @@ final class Order
 
 ## The Result pattern (typed alternative to exceptions)
 
-Some operations have an expected, non-exceptional "couldn't do it" outcome (validation failed, item out of stock, duplicate). Rather than throwing for a routine failure, return a `Result` that carries success or a typed error. This makes the failure path explicit in the signature instead of hiding it in a thrown type.
+Some operations have an expected, non-exceptional "couldn't do it" outcome (validation failed, item out of stock, duplicate). Rather than throwing for a routine failure, return a `Result` that carries either the value or an error. This makes the failure path explicit in the signature instead of hiding it in a thrown type.
 
 ```php
 /**
@@ -88,6 +88,7 @@ function placeOrder(Order $order): Result
 }
 ```
 
+- Keep the error as specific as callers need. A string is enough for display; when callers branch on the reason, use an enum or a small error class instead.
 - Use `Result` for **expected** failures that are part of the use case's normal flow — the caller must decide what to do, and the type forces them to check.
 - Use **exceptions** (or a Special Case) for *unexpected* or genuinely erroneous situations: broken invariants, infrastructure failure, a lookup that should never miss. Don't mask a real error behind a `Result::failure`.
 - Don't return `Result` from every method — that is the same over-engineering as throwing everywhere. Apply it at the boundary of an operation whose failure is a legitimate outcome (a handler returning to the controller, a domain service reporting a business rule rejection).
@@ -102,9 +103,8 @@ trait Timestampable
     private ?DateTimeImmutable $createdAt = null;
     private ?DateTimeImmutable $updatedAt = null;
 
-    public function touch(): void
+    public function touch(DateTimeImmutable $now): void
     {
-        $now = new DateTimeImmutable();
         $this->createdAt ??= $now;
         $this->updatedAt = $now;
     }

@@ -4,8 +4,8 @@ The recurring theme across the distribution and supporting patterns is simple: *
 
 | Pattern           | Boundary it protects                                                   | Lives in                                                                           |
 |-------------------|------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| **Remote Facade** | Process / network boundary (the *operation* contract)                  | [distribution-patterns](../references/remote-facade.md)                            |
-| **DTO**           | Representation boundary — the *data shape* on the wire                 | [distribution-patterns](../references/dto.md)                                      |
+| **Remote Facade** | Process / network boundary (the *operation* contract)                  | [distribution-patterns](remote-facade.md)                                     |
+| **DTO**           | Representation boundary — the *data shape* on the wire                 | [distribution-patterns](dto.md)                                               |
 | **Gateway**       | Infrastructure boundary — talking to an external system                | [infrastructure-boundaries](../../infrastructure-boundaries/references/gateway.md) |
 | **Mapper**        | Model boundary — translating between representations                   | [infrastructure-boundaries](../../infrastructure-boundaries/references/mapper.md)  |
 | **Plugin**        | Framework / extension boundary — supplying variable behavior           | [dependency-injection](../../dependency-injection/references/plugin.md)            |

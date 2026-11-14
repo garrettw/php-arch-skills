@@ -76,6 +76,6 @@ It has become a foundational idea of enterprise software. For software with subs
 The additional indirection is justified **only when it buys you something** — namely, a domain model that would otherwise be compromised by persistence concerns. For CRUD-heavy or small apps, [Active Record](active-record.md) is the better tradeoff.
 
 ### See also
-- The [Data Source spectrum & core philosophy](../data-source-patterns.md) — pick by the problem's complexity, not fashion.
-- The write side of a CQRS split leans toward Data Mapper + Repository once invariants matter (see the [Decision Flowchart](decision-flowchart.md)).
-- A Data Mapper is the persistence-specific instance of a general [Mapper](../infrastructure-boundaries/references/mapper.md) — translate between representations, preserve meaning, no business rules.
+- The [Data Source spectrum & core philosophy](data-source-patterns.md) — pick by the problem's complexity, not fashion.
+- The write side of a read/write split leans toward Data Mapper + Repository once invariants matter (see the [Decision Flowchart](decision-flowchart.md)).
+- A Data Mapper is the persistence-specific instance of a general [Mapper](../../infrastructure-boundaries/references/mapper.md) — translate between representations, preserve meaning, no business rules.

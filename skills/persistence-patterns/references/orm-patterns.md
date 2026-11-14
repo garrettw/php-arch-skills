@@ -21,7 +21,7 @@ Tracks all objects affected by a business transaction and orders the writes (and
 ### Identity Map
 Guarantees that a row fetched twice within a session returns the *same* object instance, so in-memory changes stay consistent.
 
-- **ORM feature:** Doctrine's `EntityManager` is an Identity Map by design (same PK → same object). Eloquent maintains a per-request identity cache keyed by class+PK.
+- **ORM feature:** Doctrine's `EntityManager` is an Identity Map by design (same PK → same object). Eloquent has no Identity Map: fetching the same row twice gives two independent model instances, so in-memory changes to one are invisible to the other.
 - **Tradeoff:** prevents duplicate/conflicting objects, but the map is *scoped to the session/EntityManager*. Holding a long-lived EntityManager (or request-scoped cache) silently grows memory and can serve stale state across requests — a common source of subtle bugs. Know the scope your ORM uses.
 
 ### Lazy Loading

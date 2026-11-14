@@ -75,7 +75,7 @@ The handler orchestrates: load, act, then save and record the events in the outb
 ```php
 namespace App\Billing\Application\Command;
 
-use App\Billing\Domain\SubscriptionRepositoryInterface;
+use App\Billing\Domain\SubscriptionRepository;
 use App\Platform\Outbox\Outbox;
 use App\Platform\Transaction\TransactionManager;
 use Psr\Clock\ClockInterface;
@@ -83,7 +83,7 @@ use Psr\Clock\ClockInterface;
 final class ProcessPaymentHandler
 {
     public function __construct(
-        private SubscriptionRepositoryInterface $repository,
+        private SubscriptionRepository $repository,
         private Outbox $outbox,
         private TransactionManager $transactions,
         private ClockInterface $clock,

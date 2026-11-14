@@ -8,16 +8,16 @@ description: Use this skill when refactoring legacy PHP code toward a cleaner ar
 ## When to Migrate (and When NOT to)
 Big-bang rewrites are risky and halt product momentum. Migrate only when actively building a feature or fixing a complex bug in an area. Do not migrate code that has not been touched in years solely for aesthetic reasons.
 
-| Good Migration Trigger                     | Poor Migration Trigger                     |
-|--------------------------------------------|--------------------------------------------|
-| Actively building a new feature            | "Cleaning up" untouched code               |
-| Fixing a complex bug in legacy code        | Compliant refactor of inactive code        |
-| Exposing a web feature as an API endpoint  | Preference for architecture purity         |
+| Good Migration Trigger                     | Poor Migration Trigger                         |
+|--------------------------------------------|------------------------------------------------|
+| Actively building a new feature            | "Cleaning up" untouched code                   |
+| Fixing a complex bug in legacy code        | Standards-compliance refactor of inactive code |
+| Exposing a web feature as an API endpoint  | Preference for architecture purity             |
 
-Evolutionary, touched-area migrations using vertical slices and temporary compatibility shims. This is the **Strangler Fig** approach: grow new behavior alongside the legacy system, move behavior across behind seams, and remove the legacy only once it carries nothing (see [strangler-fig.md](references/strangler-fig.md)). The delivery mechanics — transitional architecture, event interception, legacy mimics, diverting the flow — are catalogued in [legacy-displacement-patterns.md](references/legacy-displacement-patterns.md). It is the antidote to the big-bang rewrite, which fails because replacements take too long, users can't wait for features, and much of the old behavior isn't actually wanted.
+Migrate with evolutionary, touched-area changes using vertical slices and temporary compatibility shims. This is the **Strangler Fig** approach: grow new behavior alongside the legacy system, move behavior across behind seams, and remove the legacy only once it carries nothing (see [strangler-fig.md](references/strangler-fig.md)). The delivery mechanics — transitional architecture, event interception, legacy mimics, diverting the flow — are catalogued in [legacy-displacement-patterns.md](references/legacy-displacement-patterns.md). It is the antidote to the big-bang rewrite, which fails because replacements take too long, users can't wait for features, and much of the old behavior isn't actually wanted.
 
 ## System Overview
-This skill guides the process of moving PHP applications toward a cleaner architecture through incremental, touched-area migrations using vertical slices and temporary compatibility shims. When adopting layered DDD, follow this order: discover the domain, model aggregates and value objects, define ports, implement use cases, and add adapters last.
+This skill guides the process of moving PHP applications toward a cleaner architecture through incremental, touched-area migrations using vertical slices and temporary compatibility shims. Migration works from the edge inward: lock behavior with characterization tests, extract the use case into a handler behind the existing entry point, then push rules down into the domain (workflow 2). The inside-out order (discover the domain, model aggregates and value objects, define ports, implement use cases, add adapters last) is for designing new code, such as a new context or a greenfield slice, not for moving existing behavior.
 
 ## Numbered Workflows
 

@@ -33,7 +33,7 @@ Notice it returns arrays (rows), not `Contract` domain objects. That is the tell
 - Import / export tools
 - Administrative utilities
 - Microservices with minimal domain logic
-- Read models (CQRS query side)
+- Read models and query handlers
 - Anywhere the database schema already *is* the application model
 
 ORMs now generate much of this code automatically (e.g., CakePHP `Table`, Laminas `TableGateway`, Laravel's query builder / `DB` facade, raw Doctrine DBAL queries are all gateways in spirit).
@@ -49,5 +49,5 @@ As soon as business behavior becomes rich, gateways begin accumulating methods l
 Eventually they become giant procedural collections. **At that point you have started building a Repository without realizing it.** The fix is not to keep piling query methods onto the gateway — it is to move the behavior into a domain model and let a true Repository return domain objects, or to split into dedicated query services.
 
 ### See also
-- The [Gateway vs Repository](../data-source-patterns.md#the-crucial-distinction-gateway-vs-repository) distinction — a Table Data Gateway is *not* a Repository.
-- When you want behavior on the row, graduate to [Active Record](../active-record.md); when the domain should be fully decoupled, use a [Data Mapper](../data-mapper.md) with repositories.
+- The [Gateway vs Repository](data-source-patterns.md#the-crucial-distinction-gateway-vs-repository) distinction — a Table Data Gateway is *not* a Repository.
+- When you want behavior on the row, graduate to [Active Record](active-record.md); when the domain should be fully decoupled, use a [Data Mapper](data-mapper.md) with repositories.

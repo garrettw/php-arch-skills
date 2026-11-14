@@ -25,10 +25,10 @@ Encapsulates a query into a reusable, composable object. This is the **query bui
 Probably the **most misunderstood** pattern. A Repository is **not** a generic CRUD wrapper.
 
 - **Its purpose:** to provide the illusion that domain objects live in an in-memory collection, isolating the domain model from persistence.
-- **The biggest misconception:** a `UserRepository` with `find()`, `findAll()`, `save()`, `delete()` is usually just a **DAO with a nicer name** — not a true Repository. A true Repository exposes operations *meaningful to the domain* that describe business concepts, not persistence mechanics.
+- **The biggest misconception:** that any class with `find()`, `findAll()`, `save()`, `delete()` is a Repository. Collection-like `get`/`save`/`remove` for an aggregate root is exactly what a Repository should offer. It becomes a **DAO with a nicer name** when there is one per table rather than per aggregate, when it exposes persistence mechanics (`findBy(array $criteria)`, query builders, flush control), or when it returns rows instead of domain objects. Name any extra lookups in domain terms (`activeSubscribersFor($plan)`).
 - **Not every entity deserves its own Repository.** If an application is essentially CRUD, spraying repositories everywhere creates indirection without adding clarity. **The abstraction should earn its place.**
 - **DDD refinement:** Repository becomes a foundational DDD pattern when tied closely to *aggregate roots*. That refinement makes the pattern stronger.
-- **Related:** the [Gateway-vs-Repository distinction](../data-source-patterns.md#the-crucial-distinction-gateway-vs-repository) and repository-interface guidance in [SKILL.md](../SKILL.md).
+- **Related:** the [Gateway-vs-Repository distinction](data-source-patterns.md#the-crucial-distinction-gateway-vs-repository) and repository-interface guidance in [SKILL.md](../SKILL.md).
 
 ## Value Object
 
@@ -37,7 +37,7 @@ Some concepts carry meaning but **no identity**. Examples: Money, Address, Date 
 - This is one of the finest modeling ideas in software architecture.
 - Developers frequently model *everything* as an entity — which is a mistake. **Most business concepts are actually values.**
 - Treating them as values yields: immutability, simpler reasoning, fewer lifecycle concerns, and richer domain models. Value Objects are an indispensable modeling tool that encourages correctness, clarity, and immutability.
-- **Related:** Value Objects belong to the domain, not the ORM — see the [`domain-modeling`](../domain-modeling/SKILL.md) skill for where they sit in the model.
+- **Related:** Value Objects belong to the domain, not the ORM — see the [`domain-modeling`](../../domain-modeling/SKILL.md) skill for where they sit in the model.
 
 ### Money (a specialized Value Object)
 
@@ -55,6 +55,6 @@ The five most important patterns from the entire object-relational section for t
 - **Identity Map** — [see ORM patterns](orm-patterns.md)
 - **Repository** — above
 - **Value Object** — above
-- **Data Mapper** — [see data source spectrum](../data-source-patterns.md)
+- **Data Mapper** — [see data source spectrum](data-source-patterns.md)
 
 Those five continue to shape the design of modern persistence layers across languages and frameworks, even when developers rarely interact with them directly.

@@ -7,7 +7,7 @@ A focused set of patterns that earn their place in domain modeling: **Strategy, 
 Defines a family of interchangeable algorithms behind a common interface, so the caller picks (or injects) one without knowing the variant.
 
 - **When:** a business rule has several valid implementations that vary independently of the object holding them — pricing rules, tax calculators, discount strategies, shipping methods.
-- **In this skill set:** the strategy interface is a Port; each variant is an Adapter wired at the composition root (see [dependency-injection](../dependency-injection/SKILL.md) and [Plugin](../dependency-injection/references/plugin.md)). The domain depends on the interface, never the concrete algorithm.
+- **In this skill set:** the strategy interface is a Port; each variant is an Adapter wired at the composition root (see [dependency-injection](../../dependency-injection/SKILL.md) and [Plugin](../../dependency-injection/references/plugin.md)). The domain depends on the interface, never the concrete algorithm.
 - **Watch:** don't encode the variant as a string switch inside the domain — inject the strategy instead.
 
 ## Builder
@@ -46,11 +46,11 @@ Lets you define new operations over a heterogeneous object structure without cha
 
 Defines a one-to-many dependency so that when one object changes state, its dependents are notified automatically.
 
-- **In this skill set:** this is the *original* MVC mechanism (the model broadcasts changes to views/controllers) — see [action-domain-responder](../../action-domain-responder/references/web-mvc-is-not-mvc.md). In server-side PHP we rarely use live in-memory observers for UI; instead we use **domain events** ([domain-events](../domain-events/SKILL.md)) to achieve the same decoupling across a request or asynchronously. Treat Observer as the conceptual ancestor of the domain-event pattern.
+- **In this skill set:** this is the *original* MVC mechanism (the model broadcasts changes to views/controllers) — see [action-domain-responder](../../action-domain-responder/references/web-mvc-is-not-mvc.md). In server-side PHP we rarely use live in-memory observers for UI; instead we use **domain events** ([domain-events](../../domain-events/SKILL.md)) to achieve the same decoupling across a request or asynchronously. Treat Observer as the conceptual ancestor of the domain-event pattern.
 - **Watch:** an in-process Observer list inside a domain entity is fine for pure domain reactions, but cross-boundary side effects belong in the domain-event publisher, not a registered listener inside the entity.
 
 ## How these relate to the surrounding skills
-- **Strategy / State / Observer variants are Ports** wired at the composition root ([dependency-injection](../dependency-injection/SKILL.md)).
+- **Strategy / State / Observer variants are Ports** wired at the composition root ([dependency-injection](../../dependency-injection/SKILL.md)).
 - **Composite / State** often pair with [Special Case](special-case.md) (a degenerate node implements the same interface).
-- **Observer** is realized as **domain events** ([domain-events](../domain-events/SKILL.md)); the live-observer form is the original MVC idea ([action-domain-responder](../../action-domain-responder/references/web-mvc-is-not-mvc.md)).
+- **Observer** is realized as **domain events** ([domain-events](../../domain-events/SKILL.md)); the live-observer form is the original MVC idea ([action-domain-responder](../../action-domain-responder/references/web-mvc-is-not-mvc.md)).
 - **Builder / Composite** are creation/structure concerns kept in the domain as plain PHP.

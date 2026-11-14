@@ -9,34 +9,38 @@ This skill is about the **system-level** decision: which architecture style fits
 
 ## Decision Guide
 
-Answer in order; the first matching branch wins.
+These are three separate decisions. Answer each one on its own; a single application usually combines one answer from each.
+
+### 1. Deployment topology (first matching branch wins)
 
 ```
 START
   │
-  ├─ Team is small (< 10) and domain is simple/CRUD?  ──────→ Monolith (or Modular Monolith)
+  ├─ Need independent deploy/scale per business area,  ─────→ Microservices for those areas
+  │  with stable boundaries and clear owners?                 (only once boundaries are clear)
   │
-  ├─ Need independent deploy/scale per business area?  ─────→ Microservices (only once boundaries are clear)
+  ├─ Variable / unpredictable, bursty, stateless work?  ────→ Serverless for those parts
+  │                                                           (alongside the rest of the system)
   │
-  ├─ Audit trail / temporal query required?  ───────────────→ Event Sourcing
-  │   (see `event-sourcing`, `domain-events`)
-  │
-  ├─ Variable / unpredictable load, bursty work?  ──────────→ Serverless (for the bursty parts)
-  │
-  ├─ Complex business logic with many invariants?  ─────────→ Clean / Hexagonal + DDD
-  │   (see `domain-modeling`, `application-layer`, `infrastructure-boundaries`)
-  │
-  ├─ High-read workload, reads and writes diverge?  ────────→ CQRS (often with Event Sourcing)
-  │   (see `application-layer`, `distribution-patterns`)
-  │
-  └─ Default  ──────────────────────────────────────────────→ Modular Monolith
+  └─ Otherwise  ────────────────────────────────────────────→ Modular Monolith (the default)
 ```
 
-### How to read the branches
+### 2. Internal structure (per bounded context, under any topology)
 
-- **Monolith / Modular Monolith** is the right default for most teams. A *modular* monolith organizes code by business capability (feature folders) with explicit module boundaries, so you can later extract a service without a rewrite. Prefer this unless a branch above clearly applies.
+- **Simple CRUD or linear procedures:** Transaction Script or lean ORM entities behind thin controllers (see `domain-modeling`).
+- **Complex business logic with many invariants:** Clean / Hexagonal + DDD (see `domain-modeling`, `application-layer`, `infrastructure-boundaries`).
+
+### 3. Optional patterns (per context, only for a concrete need)
+
+- **Event Sourcing:** state at a past point in time, replay, or history as the source of truth (see `event-sourcing`). A plain audit log is not enough reason.
+- **CQRS:** read and write models that genuinely diverge (see `application-layer`). Command/query handlers alone are not CQRS.
+- **Domain events and reliable messaging:** asynchronous reactions within or across contexts (see `domain-events`, `reliable-messaging`).
+
+### How to read the decisions
+
+- **Monolith / Modular Monolith** is the right default for most teams. A *modular* monolith organizes code by business capability, one folder per bounded context (see [directory-structure-templates.md](../application-layer/references/directory-structure-templates.md)), with explicit module boundaries, so you can later extract a service without a rewrite. Choose it unless the microservices or serverless branch clearly applies, and then split off only the areas it applies to.
 - **Microservices** earn their cost only when you have (a) clear, stable bounded contexts and (b) a real need to deploy or scale them independently. Without both, they add distributed-systems complexity for no benefit.
-- **Event-Driven / Event Sourcing / CQRS** are patterns for *specific* needs (auditability, temporal queries, read/write divergence) — not a default. See `event-sourcing` and `domain-events` before reaching for them.
+- **Event-Driven / Event Sourcing / CQRS** are patterns for *specific* needs (temporal queries, replay, read/write divergence) — not a default. See `event-sourcing` and `domain-events` before reaching for them.
 - **Clean / Hexagonal + DDD** is about *internal* structure (dependencies point inward, domain at the center, ports & adapters at the edge). It pairs with any of the above deployment styles. The boundary-protection patterns that realize it are catalogued in `distribution-patterns` ([boundary-protection-patterns.md](../distribution-patterns/references/boundary-protection-patterns.md)).
 - **Serverless** suits bursty, stateless work; it is rarely the whole system. Keep functions small and push state to external stores.
 
@@ -64,7 +68,7 @@ START
 
 ## Related Skills
 - [domain-modeling](../domain-modeling/SKILL.md): the internal modeling decision (Transaction Script → Table Module → Domain Model) and when DDD pays off.
-- [application-layer](../application-layer/SKILL.md): the use-case/Service Layer boundary; home of CQRS command/query handling.
+- [application-layer](../application-layer/SKILL.md): the use-case/Service Layer boundary; home of command/query handlers, and of CQRS when read and write models genuinely diverge.
 - [distribution-patterns](../distribution-patterns/SKILL.md): Remote Facade + DTO — the contract shape that makes a service boundary real; boundary-protection pattern mapping.
 - [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md): ports & adapters / hexagonal realized at the infrastructure edge.
 - [bounded-contexts](../bounded-contexts/SKILL.md): discovering the boundaries that microservices and data ownership depend on.

@@ -1,6 +1,6 @@
 # Action-Domain-Responder by Framework
 
-How to get as close to a proper **Action-Domain-Responder** implementation as each PHP framework allows. This is the web-presentation companion to the [framework-integration](../framework-integration/SKILL.md) skill: that skill covers ports/adapters and thin controllers in general; this one focuses on the three Action-Domain-Responder roles (Action, Domain, Responder) and how each framework's native pieces map onto them.
+How to get as close to a proper **Action-Domain-Responder** implementation as each PHP framework allows. This is the web-presentation companion to the [framework-integration](../../framework-integration/SKILL.md) skill: that skill covers ports/adapters and thin controllers in general; this one focuses on the three Action-Domain-Responder roles (Action, Domain, Responder) and how each framework's native pieces map onto them.
 
 The universal goal, regardless of framework:
 
@@ -29,7 +29,7 @@ The universal goal, regardless of framework:
 
 ## CakePHP 5.x
 
-- **Action.** Cake's `Controller` + `ControllerAction` model groups many actions per controller and encourages fat controllers. To approximate Action-Domain-Responder, keep each action method to input → handler → responder and resist putting logic in the controller. CLI `Command` classes are driver adapters that should delegate the same way (see [cakephp-5.md](../../framework-integration/references/cakephp-5.md)).
+- **Action.** Cake's `Controller` groups many actions per controller and encourages fat controllers. To approximate Action-Domain-Responder, keep each action method to input → handler → responder and resist putting logic in the controller. CLI `Command` classes are driver adapters that should delegate the same way (see [cakephp-5.md](../../framework-integration/references/cakephp-5.md)).
 - **Domain.** Delegate to Application Handlers; do not let `Table`/Entity objects become the domain.
 - **Responder.** Cake renders views from the controller (`$this->set()` + `$this->viewBuilder()`). Extract a Responder that sets view vars, status, headers, and cookies, and returns the response. For JSON, a Responder that calls `$this->viewBuilder()->setClassName('Json')` (or builds the body directly) keeps presentation out of the action.
 
@@ -41,9 +41,9 @@ The universal goal, regardless of framework:
 
 ## Yii 3
 
-- **Action.** Yii controllers tend to be multi-action and AR-centric (see [yii-3.md](../../framework-integration/references/yii-3.md)). To get close to Action-Domain-Responder, treat each controller action as an Action: input → handler → responder, no business logic inside.
-- **Domain.** Application Services / handlers; domain logic does not belong in ActiveRecord models.
-- **Responder.** Yii's `render()` and response helpers live in the controller. Move full response construction (status, headers, body, content-type) into a Responder the action invokes.
+- **Action.** Yii 3 routes can target controller methods, single-action classes, closures, or PSR-15 middleware (see [yii-3.md](../../framework-integration/references/yii-3.md)). Prefer a single-action class or PSR-15 handler per route; each is already an Action. If you keep multi-method controllers, treat each method as an Action: input → handler → responder, no business logic inside.
+- **Domain.** Application handlers. With ActiveRecord, keep domain logic out of the models; with Cycle ORM (a Data Mapper), an entity can serve as the aggregate if its mapping stays outside it, as with Doctrine.
+- **Responder.** Build the PSR-7 response (status, headers, body, content-type) in a Responder the Action invokes, using the view renderer or a JSON encoder for the body, rather than inline in the Action.
 
 ## Laminas / Mezzio
 
@@ -56,8 +56,8 @@ The universal goal, regardless of framework:
 The frameworks differ in how much they fight Action-Domain-Responder:
 
 - **Closest out of the box:** Slim and Mezzio (single-responsibility request handlers, PSR-7). Action-Domain-Responder is almost native.
-- **Close with discipline:** Symfony (thin controllers, invokable actions) and Laravel (invokable controllers, responder extraction).
-- **Requires the most enforcement:** CakePHP, CodeIgniter, Yii, full Laminas MVC — they default to multi-action controllers that mix Action + Responder. You must extract the Responder and keep the Domain out of the controller yourself.
+- **Close with discipline:** Symfony (thin controllers, invokable actions), Laravel (invokable controllers, responder extraction), and Yii 3 (single-action classes or PSR-15 handlers instead of multi-method controllers).
+- **Requires the most enforcement:** CakePHP, CodeIgniter, Yii 1.1/2, full Laminas MVC — they default to multi-action controllers that mix Action + Responder. You must extract the Responder and keep the Domain out of the controller yourself.
 
 In every case the milestone is the same: the **Action** knows nothing about presentation, the **Domain** knows nothing about HTTP, and the **Responder** owns the whole response.
 
@@ -65,5 +65,5 @@ In every case the milestone is the same: the **Action** knows nothing about pres
 
 - [web-mvc-is-not-mvc.md](web-mvc-is-not-mvc.md): why "Web MVC" mislabels these roles and why Action-Domain-Responder is the honest reframing.
 - [classic-web-patterns.md](classic-web-patterns.md): the original Fowler patterns (Page/Front Controller, Template/Transform/Two Step View, Application Controller) that these framework mechanisms implement.
-- [framework-integration](../framework-integration/SKILL.md): ports/adapters, composition roots, and per-framework anti-patterns. Its references ([laravel.md](../../framework-integration/references/laravel.md), [symfony.md](../../framework-integration/references/symfony.md), etc.) cover the boundary/Domain side; this file covers the Action/Responder side.
+- [framework-integration](../../framework-integration/SKILL.md): ports/adapters, composition roots, and per-framework anti-patterns. Its references ([laravel.md](../../framework-integration/references/laravel.md), [symfony.md](../../framework-integration/references/symfony.md), etc.) cover the boundary/Domain side; this file covers the Action/Responder side.
 - [application-layer](../../application-layer/SKILL.md): the Domain role in Action-Domain-Responder spans both the application/Service layer and the DDD domain layer.

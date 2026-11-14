@@ -73,15 +73,15 @@ Every piece of knowledge should have a single, authoritative representation. Dup
 
 - When the same validation, calculation, or policy appears in more than one place, move it to one shared, named location (a domain method, a small service, or a value object).
 - Be precise about "knowledge": two pieces of code that *look* similar but encode different rules are not duplication. DRY the rule, not the shape.
-- The Repository pattern ([persistence-patterns](../persistence-patterns/SKILL.md)) is DRY applied to data access: one place knows how to load/save an aggregate.
+- The Repository pattern ([persistence-patterns](../../persistence-patterns/SKILL.md)) is DRY applied to data access: one place knows how to load/save an aggregate.
 
 ### When a little repetition is fine
 
 DRY is easy to over-apply: collapsing two pieces of merely *similar* code into one shared unit couples them and forces conditional logic that neither needed on its own. Tolerate some duplication rather than create over-abstracted, highly coupled code to save a few keystrokes.
 
-1. **Wait for the Rule of Three.** Use the Write Everything Twice (WET) approach: do not abstract the moment you copy a snippet. Tolerating the duplication until a third use case appears lets the two existing ones diverge naturally, and a clearer, more fitting abstraction usually emerges the third time. Abstracting at two is often guessing.
+1. **Wait for the Rule of Three for similar code.** Use the Write Everything Twice (WET) approach: do not abstract the moment you copy a snippet. Tolerating the duplication until a third use case appears lets the two existing ones diverge naturally, and a clearer, more fitting abstraction usually emerges the third time. Abstracting at two is often guessing. This applies to code that merely *looks* alike. The same business rule in two places is different: centralize it at the second occurrence (see point 2 and `domain-modeling`, workflow 2).
 
-2. **Duplicate knowledge over syntax.** DRY is about the duplication of *intent*, not lines. If a shipping module and a billing module both hard-code the same tax-rate constant, that is duplicated knowledge worth centralizing. If two unrelated features happen to share an identical `for` loop, that is incidental similarity and should not be unified.
+2. **Deduplicate knowledge, not syntax.** DRY is about the duplication of *intent*, not lines. If a shipping module and a billing module both hard-code the same tax-rate constant, that is duplicated knowledge worth centralizing. If two unrelated features happen to share an identical `for` loop, that is incidental similarity and should not be unified.
 
 3. **Ask "do these parts always change together?"** The guiding test: if it changes together, it stays together; otherwise keep it separate. A single shared "super-function" for two slightly different workflows forces `if` branches and boolean flags the moment one diverges, making the code rigid and error-prone.
 

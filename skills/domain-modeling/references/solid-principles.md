@@ -73,8 +73,8 @@ Subtypes must be substitutable for their base type without breaking correctness.
 
 Clients should not depend on methods they do not use. Keep interfaces small and role-specific.
 
-- Split fat interfaces into focused ones. A `WorkerInterface` with `work()` / `eat()` / `sleep()` forces a `Robot` to implement methods it cannot honor. Prefer `Workable`, `Feedable`, `Sleepable`.
-- At the boundary this means narrow ports: an outbound `PaymentGateway` interface should expose only what the application needs, not a grab-bag of every gateway's capabilities. This also keeps adapters thin (see [adapter-design-examples.md](../infrastructure-boundaries/references/adapter-design-examples.md)).
+- Split fat interfaces into focused ones. A `Worker` interface with `work()` / `eat()` / `sleep()` forces a `Robot` to implement methods it cannot honor. Prefer `Workable`, `Feedable`, `Sleepable`.
+- At the boundary this means narrow ports: an outbound `PaymentGateway` interface should expose only what the application needs, not a grab-bag of every gateway's capabilities. This also keeps adapters thin (see [adapter-design-examples.md](../../infrastructure-boundaries/references/adapter-design-examples.md)).
 - Interface Segregation is why a Repository interface should match the aggregate's real needs (find/save/remove), and not become a generic CRUD kitchen-sink.
 
 ## Dependency Inversion Principle (DI)
@@ -86,7 +86,7 @@ High-level policy should not depend on low-level details; both depend on abstrac
 
 ```php
 // Depends on the abstraction, not on MySQL/Stripe/Smtp
-final class OrderService
+final class PlaceOrderHandler
 {
     public function __construct(
         private OrderRepository $orders,   // port
