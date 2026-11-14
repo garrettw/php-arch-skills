@@ -12,12 +12,12 @@ This template helps you define the bounded contexts for your application using b
 
 ## Target PHP Path Segments
 
-Use these paths for new or meaningfully refactored Domain/Application code. The canonical context name remains the business-language name above; the context path is only the filesystem/namespace segment.
+Use these paths for new or meaningfully refactored code. The canonical context name remains the business-language name above; the path segment is only the filesystem/namespace segment. Each context owns its own `Domain`, `Application`, `Infrastructure`, and `Interface` folders (see [directory-structure-templates.md](../../application-layer/references/directory-structure-templates.md)).
 
-| Bounded Context   | Domain Path                     | Application Path                     |
-|-------------------|---------------------------------|--------------------------------------|
-| [Context Name 1]  | `src/Domain/[PathSegment1]/`    | `src/Application/[PathSegment1]/`    |
-| [Context Name 2]  | `src/Domain/[PathSegment2]/`    | `src/Application/[PathSegment2]/`    |
+| Bounded Context   | Path                                                            |
+|-------------------|-----------------------------------------------------------------|
+| [Context Name 1]  | `src/[PathSegment1]/{Domain,Application,Infrastructure,Interface}/` |
+| [Context Name 2]  | `src/[PathSegment2]/{Domain,Application,Infrastructure,Interface}/` |
 
 ## Relationships
 
@@ -31,8 +31,8 @@ Use these paths for new or meaningfully refactored Domain/Application code. The 
 *(List the minimal, intentional shared concepts)*
 
 - `[IdentityReferenceId]` identity references
-- `[ValueObject]` value concept (e.g., Money, DateRange)
-- Domain event contracts used for asynchronous integration between contexts
+- `[ValueObject]` stable value type with no context-specific rules, needed by more than one context (e.g., Money, DateRange)
+- Published, versioned event contracts used for asynchronous integration between contexts
 
 ## Boundary Clarifications
 

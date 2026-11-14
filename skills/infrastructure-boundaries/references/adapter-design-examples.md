@@ -11,9 +11,9 @@ The Application or Domain layer defines what it needs (the Port). The Infrastruc
 Define an interface using your business language, not the vendor's language.
 
 ```php
-namespace App\Application\Billing\Port;
+namespace App\Billing\Application\Port;
 
-use App\Domain\Billing\ValueObject\Money;
+use App\Billing\Domain\ValueObject\Money;
 
 interface PaymentGatewayInterface
 {
@@ -30,12 +30,12 @@ interface PaymentGatewayInterface
 Implement the interface using the specific vendor SDK. Catch their exceptions and throw yours.
 
 ```php
-namespace App\Infrastructure\Stripe;
+namespace App\Billing\Infrastructure\Payment;
 
-use App\Application\Billing\Port\PaymentGatewayInterface;
-use App\Application\Billing\Port\PaymentDeclinedException;
-use App\Application\Billing\Port\GatewayUnavailableException;
-use App\Domain\Billing\ValueObject\Money;
+use App\Billing\Application\Port\PaymentGatewayInterface;
+use App\Billing\Application\Port\PaymentDeclinedException;
+use App\Billing\Application\Port\GatewayUnavailableException;
+use App\Billing\Domain\ValueObject\Money;
 use Stripe\StripeClient;
 use Stripe\Exception\CardException;
 use Stripe\Exception\ApiConnectionException;

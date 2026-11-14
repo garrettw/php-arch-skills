@@ -21,12 +21,13 @@ There is a progression of separation between business logic and storage (see [da
 
 **Structure**:
 ```text
-src/Domain/[BoundedContext]/
-  [EntityName].php (Pure PHP domain object)
-  [EntityName]RepositoryInterface.php (Optional, if required by criteria)
-src/Infrastructure/Persistence/
-  [EntityName]Repository.php (Implements interface, uses mapper)
-  [EntityName]Mapper.php (Converts ORM <-> Domain)
+src/[BoundedContext]/
+  Domain/
+    [EntityName].php (Pure PHP domain object)
+    [EntityName]RepositoryInterface.php (Optional, if required by criteria)
+  Infrastructure/Persistence/
+    [EntityName]Repository.php (Implements interface, uses mapper)
+    [EntityName]Mapper.php (Converts ORM <-> Domain)
 ```
 
 **Testing**:
@@ -40,11 +41,12 @@ src/Infrastructure/Persistence/
 
 **Example Structure**:
 ```text
-src/Application/[BoundedContext]/
-  [CommandOrQuery]Handler.php (Uses ORM directly)
-src/Infrastructure/Persistence/
-  OrmEntity.php (Framework-specific active record or entity)
-  OrmTable.php (Framework-specific table gateway/repository)
+src/[BoundedContext]/
+  Application/
+    [CommandOrQuery]Handler.php (Uses ORM directly)
+  Infrastructure/Persistence/
+    OrmEntity.php (Framework-specific active record or entity)
+    OrmTable.php (Framework-specific table gateway/repository)
 ```
 
 **Testing**:

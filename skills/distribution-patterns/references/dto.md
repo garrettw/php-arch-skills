@@ -60,10 +60,10 @@ If the consumer is **in-process and inside the same bounded context**, the objec
 ### Rule of thumb
 **Same process + same context + same language → reuse the existing object** (domain object, read model, value object). **Different process, different context, or different change cadence → DTO.**
 
-In a monolith, in-process cross-context sharing is usually handled by a **Shared Kernel** — shared value objects like `UserId` and `Money`, and domain-event contracts (see [bounded-contexts](../bounded-contexts/SKILL.md)) — not by DTOs. Reach for a DTO only when the boundary is remote or the contract must be explicitly versioned and owned separately.
+In a monolith, in-process cross-context sharing is usually handled by a **Shared Kernel** — identity references like `UserId`, stable value types like `Money`, and published event contracts (see [bounded-contexts](../bounded-contexts/SKILL.md)) — not by DTOs. Reach for a DTO only when the boundary is remote or the contract must be explicitly versioned and owned separately.
 
 ## Related
 - A [Remote Facade](remote-facade.md) is the operation; a DTO is the data that crosses it. They are the two halves of this skill.
 - The [application-layer](../application-layer/SKILL.md) skill treats Commands/Queries/Responses/Events as explicit DTOs (the CQRS angle).
-- The [bounded-contexts](../bounded-contexts/SKILL.md) skill handles in-process cross-context sharing via a Shared Kernel (shared value objects and domain events) — an alternative to DTOs when the contexts share a process.
+- The [bounded-contexts](../bounded-contexts/SKILL.md) skill handles in-process cross-context sharing via a Shared Kernel (identity references, stable value types, and published event contracts) — an alternative to DTOs when the contexts share a process.
 - Mapping *to* a DTO (domain object → DTO) is a translation job for a [Mapper](../infrastructure-boundaries/references/mapper.md) — preserve meaning, keep business rules out of the mapper.

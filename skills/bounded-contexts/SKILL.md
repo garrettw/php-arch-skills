@@ -35,16 +35,18 @@ If passing data between contexts:
 
 ### 3. Designing the Shared Kernel
 If extracting code to share across multiple contexts:
-1. **Evaluate Necessity.** Is this concept intentionally shared to reduce coupling?
-2. **If it is an identity reference** (`UserId`), a core value object (`Money`), or a domain event contract, place it in the Shared Kernel.
-3. **If it is generic utility code** (e.g., array helpers), do not place it in the Shared Kernel.
+1. **Evaluate Necessity.** Share a concept only once a second context needs it. Until then it stays in its owning context's `Domain/`.
+2. **If it is an identity reference** (`UserId`), a published, versioned event contract, or a stable value type with no context-specific rules (`Money`, `DateRange`), place it in the Shared Kernel. Every context that uses it owns it jointly, so changes need their agreement; keep the set small, and prefer a well-known library (e.g., `brick/money`) when one fits.
+3. **If its meaning or rules differ between contexts** (`Address`, `Price`, `Customer`), do not share it. Each context models its own version and translates at the boundary; tax, discounting, and context-specific rounding stay in the context that has them.
+4. **Keep event contracts plain.** Published contracts carry primitive values (`amountMinor: int`, `currency: string`), not Shared Kernel value objects, so consumers and the message format do not depend on PHP classes.
+5. **If it is generic utility code** (e.g., array helpers), do not place it in the Shared Kernel.
 
 ## Recognizing Boundary Problems in an Existing Codebase
 
 When analyzing an established codebase, these are signals of misplaced or missing boundaries (judge against real business capabilities; do not reshuffle folders for tidiness):
 
 - **"Infrastructure" contexts.** A context named after a transport or vendor — `Webhooks`, `Email`, `Salesforce` — instead of a business capability. Webhooks/integrations are infrastructure, not contexts; re-home them to the capability that owns the fact (e.g., a payment webhook belongs to Billing).
-- **Shared Kernel as a util dump.** The "common" namespace holds array helpers, base classes, and generic traits rather than identity references, core value objects, or event contracts.
+- **Shared Kernel as a util dump.** The "common" namespace holds array helpers, base classes, and generic traits rather than identity references, stable shared value types, or published event contracts.
 - **Structure-by-layer, not by-capability.** Code is sliced by technical layer (`Controllers/`, `Models/`, `Repositories/`) across the whole app rather than grouped by business capability, so a single feature's logic is scattered.
 - **Hidden ownership.** No context map or glossary; the same term means different things in different areas, or facts are owned by the consumer rather than their source.
 - **Circular dependencies between contexts.** Two contexts import each other to get a job done. Break the cycle with a port, an event, or by moving the shared concept into a Shared Kernel or down into the domain. Cyclic context coupling is a core *design debt* smell.

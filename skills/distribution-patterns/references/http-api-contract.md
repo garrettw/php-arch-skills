@@ -33,7 +33,7 @@ When a Remote Facade ([remote-facade.md](remote-facade.md)) is exposed as a REST
     "requestId": "…"
   }
   ```
-- **Machine-readable `code` + human `message`.** `type` (or a `code` extension member) is the stable value clients branch on; `title` and `detail` are for humans and may change. Never recycle the HTTP status as the only signal.
+- **Machine-readable `type`/`code` + human `title`/`detail`.** `type` (or a `code` extension member) is the stable value clients branch on; `title` and `detail` are for humans and may change. Never recycle the HTTP status as the only signal.
 - **Field-level validation details.** On `422`, return an `errors` extension member listing which fields failed and why so the client can map back to the form.
 - **Include a `requestId`** in every error response (and log it) so support can correlate a client report with server logs.
 - **Never leak stack traces, internal paths, or secret state** in production error bodies. Return a safe message plus the `requestId`; log the detail server-side.

@@ -7,10 +7,10 @@ Examples of appropriate testing styles for different architectural layers.
 Notice the lack of mocks, databases, or frameworks. Just objects and behavior.
 
 ```php
-namespace App\Test\TestCase\Domain\Billing;
+namespace App\Test\TestCase\Billing\Domain;
 
-use App\Domain\Billing\Subscription;
-use App\Domain\Billing\ValueObject\Money;
+use App\Billing\Domain\Subscription;
+use App\Billing\Domain\ValueObject\Money;
 use PHPUnit\Framework\TestCase;
 
 class SubscriptionTest extends TestCase
@@ -39,10 +39,10 @@ class SubscriptionTest extends TestCase
 Verify the translation between the framework's data structure and the pure domain object.
 
 ```php
-namespace App\Test\TestCase\Infrastructure\Persistence\Billing;
+namespace App\Test\TestCase\Billing\Infrastructure\Persistence;
 
-use App\Infrastructure\Persistence\Billing\SubscriptionMapper;
-use App\Domain\Billing\Subscription;
+use App\Billing\Infrastructure\Persistence\SubscriptionMapper;
+use App\Billing\Domain\Subscription;
 use PHPUnit\Framework\TestCase;
 
 class SubscriptionMapperTest extends TestCase
@@ -73,10 +73,11 @@ class SubscriptionMapperTest extends TestCase
 For handlers, using a real database and real domain objects provides much higher confidence than mocking every repository call.
 
 ```php
-namespace App\Test\TestCase\Application\Billing\Handler;
+namespace App\Test\TestCase\Billing\Application\Command;
 
-use App\Application\Billing\Handler\ProcessPaymentHandler;
-use App\Application\Billing\Command\ProcessPaymentCommand;
+use App\Billing\Application\Command\ProcessPaymentHandler;
+use App\Billing\Application\Command\ProcessPaymentCommand;
+use App\Billing\Domain\Event\SubscriptionPaid;
 use App\Test\Fixture\SubscriptionFixture; // Framework-specific fixture builder
 use PHPUnit\Framework\TestCase;
 

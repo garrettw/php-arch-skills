@@ -50,7 +50,7 @@ Detect and report errors as early as possible: validate at the boundary, check p
 
 Build only what the current requirement demands. Do not add speculative fields, flags, or branches "in case we need them later."
 
-- Do not create an abstraction (interface, base class, strategy hierarchy) until a second concrete need exists. An interface should be introduced only when inner-layer code depends on an outer-layer implementation, a second implementation is real, or a decorator is needed. Never add one “for flexibility”. One interface with one implementation is dead weight within a layer, not across one. See `dependency-injection`, workflow 1.
+- Do not create base classes or strategy hierarchies until a second concrete need exists. For interfaces, follow `dependency-injection`, workflow 1: an interface should be introduced only when inner-layer code depends on an outer-layer implementation, a second implementation is real, or a decorator is needed. Never add one “for flexibility”. One interface with one implementation is dead weight within a layer, not across one.
 - Resist speculative configuration, plug-in points, and generic "framework" scaffolding for a one-off feature. Add them when the second use case arrives.
 
 ## Composition Over Inheritance

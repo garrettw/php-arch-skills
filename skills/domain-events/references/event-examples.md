@@ -7,12 +7,11 @@ This document demonstrates the Record-Then-Publish pattern and how to structure 
 Keep it simple, immutable, and strictly typed.
 
 ```php
-namespace App\Domain\Billing\Event;
+namespace App\Billing\Domain\Event;
 
-use App\Domain\Shared\EventInterface;
 use DateTimeImmutable;
 
-final class SubscriptionPaid implements EventInterface
+final class SubscriptionPaid
 {
     public function __construct(
         public readonly string $accountId,
@@ -28,9 +27,9 @@ final class SubscriptionPaid implements EventInterface
 The domain object (aggregate root) makes the decision and records the fact, but does not publish it to the framework.
 
 ```php
-namespace App\Domain\Billing;
+namespace App\Billing\Domain;
 
-use App\Domain\Billing\Event\SubscriptionPaid;
+use App\Billing\Domain\Event\SubscriptionPaid;
 use DateTimeImmutable;
 
 class Subscription
@@ -58,7 +57,7 @@ class Subscription
     }
 
     /**
-     * @return EventInterface[]
+     * @return list<object>
      */
     public function releaseEvents(): array
     {
@@ -74,9 +73,9 @@ class Subscription
 The handler orchestrates: load, act, then save and record the events in the outbox in one transaction. A relay publishes them after commit.
 
 ```php
-namespace App\Application\Billing\Handler;
+namespace App\Billing\Application\Command;
 
-use App\Domain\Billing\SubscriptionRepositoryInterface;
+use App\Billing\Domain\SubscriptionRepositoryInterface;
 use App\Platform\Outbox\Outbox;
 use App\Platform\Transaction\TransactionManager;
 use Psr\Clock\ClockInterface;
@@ -90,10 +89,10 @@ final class ProcessPaymentHandler
         private ClockInterface $clock,
     ) {}
 
-    public function handle(string $subscriptionId): void
+    public function handle(ProcessPaymentCommand $command): void
     {
-        $this->transactions->run(function () use ($subscriptionId): void {
-            $subscription = $this->repository->get($subscriptionId);
+        $this->transactions->run(function () use ($command): void {
+            $subscription = $this->repository->get($command->subscriptionId);
 
             // 1. Act: the domain decides and records the event
             $subscription->markAsPaid($this->clock->now());
@@ -130,7 +129,7 @@ final class SubscriptionPaidV1
 namespace App\Entitlements\Interface\Messaging;
 
 use App\Entitlements\Application\Command\GrantAccessCommand;
-use App\Entitlements\Application\Handler\GrantAccessHandler;
+use App\Entitlements\Application\Command\GrantAccessHandler;
 use App\SharedKernel\Contract\Billing\SubscriptionPaidV1;
 
 final class GrantAccessOnSubscriptionPaid

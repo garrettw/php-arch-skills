@@ -18,10 +18,10 @@ Worse, Model 2 prescribes putting **business logic in the Controller** — a UI 
 Reframe the framework "controller" using **Action-Domain-Responder** (Paul M. Jones):
 
 - **Action** — receives the HTTP request, invokes the domain, and builds (not renders) the response. HTTP glue only.
-- **Domain** — "whatever does the domain work": the application/Service layer (orchestration, use cases) *and* the DDD domain layer beneath it (entities, policies, invariants). In ADR the Domain is the entry point into all of that, not just one layer.
+- **Domain** — "whatever does the domain work": the application/Service layer (orchestration, use cases) *and* the DDD domain layer beneath it (entities, policies, invariants). In Action-Domain-Responder the Domain is the entry point into all of that, not just one layer.
 - **Responder** — builds the *entire* HTTP response: status, headers, cookies, content-type, and body. A view/template is only one mechanism the Responder may use for the body; the Responder owns all response construction, not just rendering.
 
-A framework "controller" is really an **Action + Responder** pair; the "model" is really the **Domain** plus the persistence behind it. Not every framework that claims MVC actually separates these — many controllers still mix request handling, domain calls, and response building. Use ADR as the *placement* rule, not a guarantee of the scaffold. See the caveat in [web-mvc-is-not-mvc.md](references/web-mvc-is-not-mvc.md). For per-framework guidance on getting as close to proper ADR as each framework allows, see [action-domain-responder-by-framework.md](references/action-domain-responder-by-framework.md). The classic patterns these build on — Page Controller, Front Controller, Template/Transform/Two Step View, Application Controller — are catalogued in [classic-web-patterns.md](references/classic-web-patterns.md) as vocabulary for recognizing what the framework already gives you.
+A framework "controller" is really an **Action + Responder** pair; the "model" is really the **Domain** plus the persistence behind it. Not every framework that claims MVC actually separates these — many controllers still mix request handling, domain calls, and response building. Use Action-Domain-Responder as the *placement* rule, not a guarantee of the scaffold. See the caveat in [web-mvc-is-not-mvc.md](references/web-mvc-is-not-mvc.md). For per-framework guidance on getting as close to proper Action-Domain-Responder as each framework allows, see [action-domain-responder-by-framework.md](references/action-domain-responder-by-framework.md). The classic patterns these build on — Page Controller, Front Controller, Template/Transform/Two Step View, Application Controller — are catalogued in [classic-web-patterns.md](references/classic-web-patterns.md) as vocabulary for recognizing what the framework already gives you.
 
 Paul M. Jones abbreviates the pattern “ADR”; these skills spell it out, because ADR usually means an Architecture Decision Record (as in `docs/adr/`).
 
@@ -50,7 +50,7 @@ If adding a route/endpoint/controller in a PHP framework:
 - Never build the HTTP response directly inside the action (setting status, headers, or rendering the body) when a separate Responder keeps the seam clean.
 
 ## Related Skills
-- [application-layer](../application-layer/SKILL.md): the Domain in ADR includes the Application/Service layer (the Action delegates to it), but it also spans the DDD Domain layer — entities, policies, and invariants.
+- [application-layer](../application-layer/SKILL.md): the Domain in Action-Domain-Responder includes the Application/Service layer (the Action delegates to it), but it also spans the DDD Domain layer — entities, policies, and invariants.
 - [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md): the domain must stay free of framework and HTTP concerns; adapters sit at the same edge as the web layer.
 - [framework-integration](../framework-integration/SKILL.md): framework-specific mappings for keeping controllers thin across Laravel, Symfony, Slim, CakePHP, CodeIgniter, Yii, Laminas, Mezzio.
 - [distribution-patterns](../distribution-patterns/SKILL.md): a Remote Facade is the cross-process cousin of a web Action; both define an inbound boundary and must hold no domain logic.

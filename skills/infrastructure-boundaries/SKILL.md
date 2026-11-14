@@ -45,8 +45,8 @@ If adding a new integration or third-party service:
 
 ### 1.5. Classifying the Adapter
 If determining where a new adapter belongs:
-1. **Driver Adapters.** Does the adapter receive external input and trigger application logic (e.g., HTTP controllers, CLI commands, message queue consumers)? Place it in `Infrastructure/Http` or the equivalent driver layer.
-2. **Driven Adapters.** Does the adapter implement an external concern called by the application (e.g., database repository, email sender, search engine client)? Place it in `Infrastructure/Persistence`, `Infrastructure/Messaging`, or the equivalent driven layer.
+1. **Driver Adapters.** Does the adapter receive external input and trigger application logic (e.g., HTTP controllers, CLI commands, message queue consumers)? Place it in the context's `Interface/` folder (e.g., `Interface/Http`, `Interface/Console`, `Interface/Messaging`), or in `Infrastructure/Http` if the project keeps all adapters under Infrastructure.
+2. **Driven Adapters.** Does the adapter implement an external concern called by the application (e.g., database repository, email sender, search engine client)? Place it in the context's `Infrastructure/` folder (e.g., `Infrastructure/Persistence`, `Infrastructure/Messaging`).
 3. **Composition Root.** Wire all adapter implementations to their ports in a single location (e.g., the DI configuration or the framework bootstrap) to keep the dependency rule intact.
 
 ### 2. Designing a Provider Adapter
@@ -75,7 +75,7 @@ Emit logs, metrics, and traces at delivery and infrastructure boundaries, where 
 
 ### Ask First
 - Ask before passing a `ConfigResolver` or `FeatureFlagClient` directly into a domain object or application handler.
-- Ask before introducing a vendor-type wrapper class that only delegates to the SDK once. Name the adapter after the business capability and inject the SDK directly unless a second implementation or a test double is real.
+- Ask before introducing a vendor-type wrapper class that only delegates to the SDK once. Name the adapter after the business capability and inject the SDK directly.
 
 ### Never Do
 - Never let vendor-specific exceptions bubble up to the application layer.

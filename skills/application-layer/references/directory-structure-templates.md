@@ -5,40 +5,36 @@ Use this default shape for complex backend use cases in PHP applications to impl
 ## Target Structure
 
 ```text
-src/Application/[BoundedContext]/
-  Command/
-    [ActionName]Command.php
-    Handler/
+src/[BoundedContext]/
+  Domain/            entities, value objects, domain events, repository ports
+  Application/       Command/ and Query/ objects with their handlers; ports for outbound adapters
+    Command/
+      [ActionName]Command.php
       [ActionName]Handler.php
-  Query/
-    [ReadOperation]Query.php
-    Handler/
+    Query/
+      [ReadOperation]Query.php
       [ReadOperation]Handler.php
+  Infrastructure/    driven adapters: persistence, gateways
+  Interface/         driver adapters: HTTP actions/responders, console commands, message consumers
+src/SharedKernel/    identity references, published versioned event contracts, a few stable shared value types — never utilities
+src/Platform/        cross-context technical infrastructure with no domain model (outbox, transaction manager, message bus wiring)
 ```
 
-Alternatively, Handlers can live in the same folder as their Command/Query object:
+Group by bounded context first, then by layer, so one capability's code stays together and the boundary is visible in the tree. A layer-first layout (`src/Domain/[Context]/`, `src/Application/[Context]/`) is acceptable for small applications with one or two contexts — choose one and use it consistently.
 
-```text
-src/Application/[BoundedContext]/
-  Command/
-    [ActionName]Command.php
-    [ActionName]Handler.php
-  Query/
-    [ReadOperation]Query.php
-    [ReadOperation]Handler.php
-```
+- **`src/SharedKernel/`** holds identity references, published versioned event contracts, and a small set of stable value types with no context-specific rules (e.g., `Money`, `DateRange`) that more than one context needs. Never utilities. See [bounded-contexts](../../bounded-contexts/SKILL.md), workflow 3, for what qualifies.
+- **`src/Platform/`** holds cross-context technical infrastructure that has no domain model: the outbox, the transaction manager, message bus wiring.
 
 ### Example
 
 ```text
-src/Application/Bootcamps/
-  Command/
-    CompleteEnrollmentCommand.php
-    Handler/
+src/Bootcamps/
+  Application/
+    Command/
+      CompleteEnrollmentCommand.php
       CompleteEnrollmentHandler.php
-  Query/
-    GetLearnerScheduleQuery.php
-    Handler/
+    Query/
+      GetLearnerScheduleQuery.php
       GetLearnerScheduleHandler.php
 ```
 
