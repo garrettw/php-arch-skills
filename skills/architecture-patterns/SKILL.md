@@ -27,8 +27,8 @@ START
 
 ### 2. Internal structure (per bounded context, under any topology)
 
-- **Simple CRUD or linear procedures:** Transaction Script or lean ORM entities behind thin controllers (see `domain-modeling`).
-- **Complex business logic with many invariants:** Clean / Hexagonal + DDD (see `domain-modeling`, `application-layer`, `infrastructure-boundaries`).
+- **Simple CRUD or linear procedures:** Transaction Script or lean ORM entities behind thin controllers (see `php-domain-modeling`).
+- **Complex business logic with many invariants:** Clean / Hexagonal + DDD (see `php-domain-modeling`, `application-layer`, `infrastructure-boundaries`).
 
 ### 3. Optional patterns (per context, only for a concrete need)
 
@@ -60,14 +60,14 @@ START
 
 ### 4. Forcing DDD Where It Doesn't Pay
 **Problem:** Applying rich aggregates, repositories, and mappers to simple CRUD or a prototype. The ceremony costs more than the rules it protects.
-**Solution:** Default to lean ORM entities or a Transaction Script for simple areas; reach for a Domain Model only where the invariants justify it. See `domain-modeling` ("Start simple. Evolve complexity only when needed.").
+**Solution:** Default to lean ORM entities or a Transaction Script for simple areas; reach for a Domain Model only where the invariants justify it. See `php-domain-modeling` ("Start simple. Evolve complexity only when needed.").
 
 ### 5. Big-Bang Rewrite to a "Better" Architecture
 **Problem:** Rebuilding the whole system on a new architecture to gain purity. It stalls product delivery and usually fails (see `architecture-migration`).
 **Solution:** Migrate incrementally, one touched area at a time (Strangler Fig), and only at a trigger (active feature, complex bug, new endpoint).
 
 ## Related Skills
-- [domain-modeling](../domain-modeling/SKILL.md): the internal modeling decision (Transaction Script → Table Module → Domain Model) and when DDD pays off.
+- [php-domain-modeling](../php-domain-modeling/SKILL.md): the internal modeling decision (Transaction Script → Table Module → Domain Model) and when DDD pays off.
 - [application-layer](../application-layer/SKILL.md): the use-case/Service Layer boundary; home of command/query handlers, and of CQRS when read and write models genuinely diverge.
 - [distribution-patterns](../distribution-patterns/SKILL.md): Remote Facade + DTO — the contract shape that makes a service boundary real; boundary-protection pattern mapping.
 - [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md): ports & adapters / hexagonal realized at the infrastructure edge.

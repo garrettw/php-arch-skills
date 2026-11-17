@@ -1,6 +1,6 @@
 ---
 name: persistence-patterns
-description: Use this skill when implementing database persistence, choosing a data source pattern, managing repository interfaces, writing mappers, or splitting large repositories. Assumes the decision between a rich domain model and a lean ORM model has already been made by the domain-modeling skill.
+description: Use this skill when implementing database persistence, choosing a data source pattern, managing repository interfaces, writing mappers, or splitting large repositories. Assumes the decision between a rich domain model and a lean ORM model has already been made by the php-domain-modeling skill.
 ---
 
 # Persistence, Mappers & Repositories in PHP
@@ -39,7 +39,7 @@ A clear persistence strategy separates the domain model from database storage me
 If implementing persistence for a use case:
 1. **For Writes (Commands):** If the feature uses a rich domain model, use a Mapper and a Repository to load the aggregate, mutate it, and save it. This protects invariants.
 2. **For Reads (Queries):** Bypass mappers entirely. Use the ORM, Query Builder, or raw SQL to fetch data directly into lean DTOs or arrays for performance and simplicity.
-3. **For Lean Features:** If the `domain-modeling` skill determined the feature is just CRUD, use the ORM directly for both reads and writes.
+3. **For Lean Features:** If the `php-domain-modeling` skill determined the feature is just CRUD, use the ORM directly for both reads and writes.
 
 This split is not CQRS: it reads and writes the same model and store, and is fine from the start. CQRS (separate read and write models, often projections) is a later, opt-in step; see `application-layer`.
 
@@ -77,7 +77,7 @@ When analyzing persistence code, these are the smells to look for (signals, not 
 - **Repository per entity.** One repo per entity instead of per aggregate root, which lets callers bypass aggregate consistency boundaries.
 - **Gateway wearing a Repository's name.** A class called `XRepository` that returns rows and speaks persistence language is really a Table Data Gateway. Call it what it is and keep business behavior in the domain.
 
-The Repository pattern is DRY applied to data access (one authoritative place knows how to load/save an aggregate) and an expression of Separation of Concerns; see [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md).
+The Repository pattern is DRY applied to data access (one authoritative place knows how to load/save an aggregate) and an expression of Separation of Concerns; see [clean-code-foundations.md](../php-domain-modeling/references/clean-code-foundations.md).
 
 ## Boundaries
 

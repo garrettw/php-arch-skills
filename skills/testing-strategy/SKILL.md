@@ -16,7 +16,7 @@ Different architectural layers have different responsibilities, and tests should
 - **Assert behavior, not internals.** Assert on the resulting state, returned value, or recorded events — not on private methods or the exact internal call sequence. A test that survives a legitimate refactor is a test worth keeping.
 - **Coverage is a guide, not a target.** Aim for meaningful coverage of business logic and unhappy paths; 100% is not the goal and can incentivize worthless assertions.
 
-See [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md) for the encapsulation/DRY lenses that apply here.
+See [clean-code-foundations.md](../php-domain-modeling/references/clean-code-foundations.md) for the encapsulation/DRY lenses that apply here.
 
 ## Numbered Workflows
 

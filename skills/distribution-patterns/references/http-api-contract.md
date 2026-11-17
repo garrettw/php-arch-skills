@@ -62,7 +62,7 @@ When a Remote Facade ([remote-facade.md](remote-facade.md)) is exposed as a REST
 ## Security (transport & input)
 
 - **HTTPS only.** Redirect/refuse plaintext; never transmit API traffic unencrypted.
-- **Validate and constrain all input** at the boundary — reject malformed/oversized data before it reaches the domain (this is also Fail Fast; see [clean-code-foundations.md](../../domain-modeling/references/clean-code-foundations.md)).
+- **Validate and constrain all input** at the boundary — reject malformed/oversized data before it reaches the domain (this is also Fail Fast; see [clean-code-foundations.md](../../php-domain-modeling/references/clean-code-foundations.md)).
 - **Authenticate and authorize** every request (who the caller is, then what they may do); never trust the client.
 - **Configure CORS with an explicit allowlist** — never `*` with credentials.
 - **Rate limit** to prevent abuse and protect availability; return `429` with a `Retry-After` hint.

@@ -37,7 +37,7 @@ Some concepts carry meaning but **no identity**. Examples: Money, Address, Date 
 - This is one of the finest modeling ideas in software architecture.
 - Developers frequently model *everything* as an entity — which is a mistake. **Most business concepts are actually values.**
 - Treating them as values yields: immutability, simpler reasoning, fewer lifecycle concerns, and richer domain models. Value Objects are an indispensable modeling tool that encourages correctness, clarity, and immutability.
-- **Related:** Value Objects belong to the domain, not the ORM — see the [`domain-modeling`](../../domain-modeling/SKILL.md) skill for where they sit in the model.
+- **Related:** Value Objects belong to the domain, not the ORM — see the [`php-domain-modeling`](../../php-domain-modeling/SKILL.md) skill for where they sit in the model.
 
 ### Money (a specialized Value Object)
 

@@ -52,5 +52,5 @@ Remote Facade and DTO are two members of a family of patterns whose job is to **
 - [infrastructure-boundaries](../infrastructure-boundaries/SKILL.md): that skill is about *consuming* external systems behind adapters; this one is about *exposing* your own remote interface. It also covers Gateway and Mapper — two more boundary-protection patterns.
 - [bounded-contexts](../bounded-contexts/SKILL.md): DTOs are the common currency when translating between contexts.
 - [dependency-injection](../dependency-injection/SKILL.md): its Plugin pattern is the framework/extension boundary; Hexagonal "Adapter" is the generalization of these patterns.
-- [domain-modeling](../domain-modeling/SKILL.md): its Special Case pattern protects the behavioral boundary (no more `null` checks across the domain seam).
-- [domain-modeling/references/clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md): input validation at the boundary and Fail Fast are what the API contract's validation and error rules operationalize.
+- [php-domain-modeling](../php-domain-modeling/SKILL.md): its Special Case pattern protects the behavioral boundary (no more `null` checks across the domain seam).
+- [php-domain-modeling/references/clean-code-foundations.md](../php-domain-modeling/references/clean-code-foundations.md): input validation at the boundary and Fail Fast are what the API contract's validation and error rules operationalize.

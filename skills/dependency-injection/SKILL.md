@@ -20,7 +20,7 @@ A [**Plugin**](references/plugin.md) is the purpose this wiring serves: define e
 
 ## Principles Behind the Wiring
 
-- **Dependency Inversion (DI).** High-level modules depend on abstractions, not on low-level details. The application defines ports (interfaces); infrastructure supplies the adapters. This is the principle that makes a DI container useful and is the backbone of Hexagonal / Ports-and-Adapters architecture. See [solid-principles.md](../domain-modeling/references/solid-principles.md).
+- **Dependency Inversion (DI).** High-level modules depend on abstractions, not on low-level details. The application defines ports (interfaces); infrastructure supplies the adapters. This is the principle that makes a DI container useful and is the backbone of Hexagonal / Ports-and-Adapters architecture. See [solid-principles.md](../php-domain-modeling/references/solid-principles.md).
 - **Narrow ports (Interface Segregation).** Each port should expose only the behavior its clients actually use. A port with methods no caller needs forces adapters to implement dead code and couples clients to irrelevant surface area. Keep ports role-specific.
 - **When an interface is warranted.** Create an interface when inner-layer code depends on an outer-layer implementation, when there is a real second implementation (including a widely shared fake), or when there is a decorator to add. Do not introduce one for a concrete class in the same layer “for flexibility” or for a single mock. See workflow 1.
 
@@ -71,4 +71,4 @@ If modifying a legacy class that uses a service locator (`Container::getInstance
 
 ## Related Patterns
 - The **Factory** pattern (variant selection, composition-root wiring, Singleton as anti-pattern) is covered in [creation-patterns.md](references/creation-patterns.md).
-- The five SOLID principles and the clean-code foundations that motivate this wiring are in [solid-principles.md](../domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md).
+- The five SOLID principles and the clean-code foundations that motivate this wiring are in [solid-principles.md](../php-domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../php-domain-modeling/references/clean-code-foundations.md).

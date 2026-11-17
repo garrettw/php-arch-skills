@@ -38,7 +38,7 @@ $this->eventStore->append($orderId, $events, expectedVersion: count($history));
 ```
 
 ## Rules
-- `decide` makes every business decision and enforces invariants. It may refuse by throwing a domain exception or by returning a Result (see [php-domain-idioms.md](../../domain-modeling/references/php-domain-idioms.md)).
+- `decide` makes every business decision and enforces invariants. It may refuse by throwing a domain exception or by returning a Result (see [php-domain-idioms.md](../../php-domain-modeling/references/php-domain-idioms.md)).
 - `evolve` never decides and never fails on a valid stream: an event is a fact that already happened.
 - Neither function performs I/O, reads a clock, or generates random IDs. Time, IDs, and external answers are passed in as arguments.
 - The handler, not the decider, persists events and hands them to the outbox. This is record-then-publish with the "record" step returning values instead of mutating an object.

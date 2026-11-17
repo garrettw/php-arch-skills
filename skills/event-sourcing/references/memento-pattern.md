@@ -9,4 +9,4 @@ The **Memento** pattern captures and externalizes an object's internal state so 
 
 ## Related
 - [event-sourcing](../../event-sourcing/SKILL.md): events vs snapshots as two ways to recover state.
-- [domain-modeling](../../domain-modeling/references/behavioral-structural-patterns.md): Memento pairs with **State** when you need to save/restore a lifecycle state.
+- [php-domain-modeling](../../php-domain-modeling/references/behavioral-structural-patterns.md): Memento pairs with **State** when you need to save/restore a lifecycle state.

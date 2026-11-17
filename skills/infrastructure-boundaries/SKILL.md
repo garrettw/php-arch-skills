@@ -33,7 +33,7 @@ These two are boundary-protection patterns: a **Gateway** protects the *infrastr
 - **Single Responsibility (SRP) + Separation of Concerns.** A Gateway owns "talk to this one external system"; a Mapper owns "translate between two representations." Keep them separate and free of business rules.
 - **No speculative abstraction, but honor the dependency rule.** You never need an interface “in case we switch vendors”. You do need one when application or domain code calls the adapter, because the port must belong to the inner layer (see `dependency-injection`, workflow 1). In a lean area without ports and adapters, inject the concrete adapter at the composition root.
 
-See [solid-principles.md](../domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md).
+See [solid-principles.md](../php-domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../php-domain-modeling/references/clean-code-foundations.md).
 
 ## Numbered Workflows
 

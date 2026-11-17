@@ -15,7 +15,7 @@ A service (or handler, or operation) is one business use case. It:
 - **Isolates presentation technology** — the same service is called by HTTP controllers, CLI commands, and queue workers.
 
 ### A Service is NOT the business rules
-The single most useful thing to understand about a service: **it does not make business decisions.** A service is a *workflow*, not a *business rule*. The actual decisions — "can this customer be invoiced?", "what is the discount?" — belong in the domain: rich domain objects, policies, or the table module, depending on the domain-logic style you chose (see the `domain-modeling` skill's Transaction Script → Table Module → Domain Model spectrum).
+The single most useful thing to understand about a service: **it does not make business decisions.** A service is a *workflow*, not a *business rule*. The actual decisions — "can this customer be invoiced?", "what is the discount?" — belong in the domain: rich domain objects, policies, or the table module, depending on the domain-logic style you chose (see the `php-domain-modeling` skill's Transaction Script → Table Module → Domain Model spectrum).
 
 ### Related terms
 These all name the same concept (a use-case-level coordinator) in different dialects:
@@ -75,6 +75,6 @@ The Service Layer coordinates *whichever* domain-logic style you chose. A use ca
 ## In This Skill Set
 
 - The `application-layer` skill (this one) is the Service Layer. Use it to give every use case a single entry point and to keep delivery mechanisms thin.
-- The `domain-modeling` skill chooses *how* business rules are organized (Transaction Script, Table Module, or Domain Model). The Service Layer sits above that choice and coordinates it.
+- The `php-domain-modeling` skill chooses *how* business rules are organized (Transaction Script, Table Module, or Domain Model). The Service Layer sits above that choice and coordinates it.
 - The `persistence-patterns` skill decides how the service's repository/adapter talks to storage.
 - The `testing-strategy` skill verifies service workflows at the application boundary and domain rules at the domain boundary — never blur the two.

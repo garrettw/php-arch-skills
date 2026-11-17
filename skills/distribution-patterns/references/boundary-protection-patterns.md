@@ -9,7 +9,7 @@ The recurring theme across the distribution and supporting patterns is simple: *
 | **Gateway**       | Infrastructure boundary — talking to an external system                | [infrastructure-boundaries](../../infrastructure-boundaries/references/gateway.md) |
 | **Mapper**        | Model boundary — translating between representations                   | [infrastructure-boundaries](../../infrastructure-boundaries/references/mapper.md)  |
 | **Plugin**        | Framework / extension boundary — supplying variable behavior           | [dependency-injection](../../dependency-injection/references/plugin.md)            |
-| **Special Case**  | Behavioral boundary — the "nothing here" / exceptional-but-valid state | [domain-modeling](../../domain-modeling/references/special-case.md)                |
+| **Special Case**  | Behavioral boundary — the "nothing here" / exceptional-but-valid state | [php-domain-modeling](../../php-domain-modeling/references/special-case.md)                |
 
 These patterns have stayed relevant because they address *enduring sources of complexity* (coupling across seams, leaking internals, conditional sprawl) rather than transient implementation details. They are not a menu to apply all at once — each one answers a specific question: *which seam am I crossing, and what must not leak through it?*
 

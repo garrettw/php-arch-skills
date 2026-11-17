@@ -155,7 +155,7 @@ If something recorded or derived from events is wrong:
 | Skill | Relationship |
 |-------|--------------|
 | `domain-events` | Domain events are individual facts. Event Sourcing is a persistence strategy that *uses* domain events as its storage format. All event-sourced systems use domain events; not all systems using domain events need Event Sourcing. |
-| `domain-modeling` | Event-sourced aggregates are still aggregates. The same rules apply: one aggregate per transaction, invariants protected at the aggregate root, reference by ID only. |
+| `php-domain-modeling` | Event-sourced aggregates are still aggregates. The same rules apply: one aggregate per transaction, invariants protected at the aggregate root, reference by ID only. |
 | `persistence-patterns` | The event store is an infrastructure adapter. Repository interfaces for event-sourced aggregates look different (find by stream, append events), but the dependency rule still applies. |
 | `application-layer` | Command handlers for event-sourced aggregates follow the same pattern: load aggregate, execute command, append events (with the outbox, or a subscription that reads the stream), then let subscribers publish after commit. The difference is in the repository implementation. |
 

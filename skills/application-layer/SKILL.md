@@ -29,14 +29,14 @@ The application layer orchestrates use cases while keeping framework adapters th
 
 ## Principles That Shape This Layer
 
-These cross-cutting principles explain *why* the rules below exist. Full detail in the `domain-modeling` references.
+These cross-cutting principles explain *why* the rules below exist. Full detail in the `php-domain-modeling` references.
 
 - **Dependency Inversion (DI).** High-level use-case code depends on ports (interfaces), never on concrete databases, mailers, or gateways. Concrete adapters are supplied at the composition root. This is what lets a handler run against in-memory doubles in a test and is the backbone of Hexagonal architecture.
 - **Single Responsibility (SRP) + Separation of Concerns.** A handler owns *one* use case; it coordinates, it does not decide. Business rules belong in the domain, persistence in a repository, delivery in the controller. A class with 5+ unrelated collaborators usually violates this.
 - **Interface Segregation.** Ports should be narrow and role-specific (e.g., `PaymentGateway` exposes only what the use case needs), so adapters stay thin and clients are not forced to depend on methods they ignore.
 - **Layer direction.** Dependencies point inward: delivery → application → domain; infrastructure implements domain ports but is never depended on by domain. Reversing this direction (framework types leaking into the domain) is the core *design debt* smell — see below.
 
-See [solid-principles.md](../domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md).
+See [solid-principles.md](../php-domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../php-domain-modeling/references/clean-code-foundations.md).
 
 ## Numbered Workflows
 
@@ -100,4 +100,4 @@ When analyzing an established codebase, look for these application-layer smells 
 - [action-domain-responder](../action-domain-responder/SKILL.md): the framework "controller" is an Action-Domain-Responder **Action** that delegates to this Application Layer (the **Domain** in Action-Domain-Responder) and hands off to a Responder. That skill corrects the "Web MVC" misnomer.
 - [distribution-patterns](../distribution-patterns/SKILL.md): the same use case exposed remotely as a coarse-grained Remote Facade.
 - [coordination-patterns.md](references/coordination-patterns.md): the **Template Method** and **Mediator** patterns as they shape use-case flows and inter-object coordination (Mediator realized as domain events).
-- [solid-principles.md](../domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../domain-modeling/references/clean-code-foundations.md): the SOLID and clean-code lenses that motivate the boundaries above.
+- [solid-principles.md](../php-domain-modeling/references/solid-principles.md) and [clean-code-foundations.md](../php-domain-modeling/references/clean-code-foundations.md): the SOLID and clean-code lenses that motivate the boundaries above.

@@ -8,7 +8,7 @@ Defines the skeleton of an algorithm in a method, deferring one or more steps to
 
 - **When:** several use cases share the same overall flow but differ in one or two steps — e.g., "load → validate → execute → persist → publish" where only `execute` differs. The application handler already embodies this shape ([application-layer](../../application-layer/SKILL.md)).
 - **In this skill set:** a base handler/service defines the sequence; subclasses or strategy collaborators fill the variable step. Use it only when several handlers genuinely share the same flow. Keep the invariant flow in the base; never put business *decisions* in the template — only the *ordering*.
-- **Watch:** avoid deep inheritance hierarchies; if only one step varies, prefer injecting a [Strategy](../../domain-modeling/references/behavioral-structural-patterns.md) for that step rather than subclassing the whole handler.
+- **Watch:** avoid deep inheritance hierarchies; if only one step varies, prefer injecting a [Strategy](../../php-domain-modeling/references/behavioral-structural-patterns.md) for that step rather than subclassing the whole handler.
 
 ## Mediator
 

@@ -8,7 +8,7 @@ Table Data Gateway  →  Row Data Gateway  →  Active Record  →  Data Mapper
   lightest)             per row)              in one object)    isolated from DB)
 ```
 
-This is a *different* axis from the domain-logic spectrum discussed in the `domain-modeling` skill. The data-source spectrum is purely about **how persistence is structured**, independent of how business rules are organized. A rich Domain Model can sit on top of a Data Mapper; a Transaction Script can sit on top of a Table Data Gateway.
+This is a *different* axis from the domain-logic spectrum discussed in the `php-domain-modeling` skill. The data-source spectrum is purely about **how persistence is structured**, independent of how business rules are organized. A rich Domain Model can sit on top of a Data Mapper; a Transaction Script can sit on top of a Table Data Gateway.
 
 ## The core philosophy
 
@@ -56,6 +56,6 @@ The patterns above are about *structure*. Once an ORM is in play, a second famil
 
 ## In This Skill Set
 
-- The `domain-modeling` skill chooses *how business rules are organized*. This spectrum chooses *how persistence is structured*. They are orthogonal.
-- A [Table Module](../../domain-modeling/references/table-module.md) is usually paired with a Table Data Gateway that returns the recordset it operates on.
+- The `php-domain-modeling` skill chooses *how business rules are organized*. This spectrum chooses *how persistence is structured*. They are orthogonal.
+- A [Table Module](../../php-domain-modeling/references/table-module.md) is usually paired with a Table Data Gateway that returns the recordset it operates on.
 - The read side (query handlers and read models) is a natural home for Table Data Gateways; the write side leans toward Data Mapper + Repository once invariants matter.

@@ -5,9 +5,9 @@ description: Use this skill when applying clean-architecture, DDD, or hexagonal 
 
 # Framework Integration for Clean Architecture & DDD
 
-This skill assumes familiarity with the framework-agnostic skills (`domain-modeling`, `application-layer`, `infrastructure-boundaries`, etc.). It provides framework-specific mappings for ports, adapters, DI wiring, and common anti-patterns.
+This skill assumes familiarity with the framework-agnostic skills (`php-domain-modeling`, `application-layer`, `infrastructure-boundaries`, etc.). It provides framework-specific mappings for ports, adapters, DI wiring, and common anti-patterns.
 
-Note that not every feature needs full DDD wiring. The [`domain-modeling`](../domain-modeling/SKILL.md) skill defines lighter defaults — a **Transaction Script** (one procedure per request) or a **Table Module** (one class per table operating on a recordset) — for simple or data-centric features. This skill still applies to those patterns: keep the framework controller thin and delegate to the script/module, and keep the framework ORM in an adapter rather than treating it as the domain. Reach for the full DDD port/adapter wiring below only when the feature's rules justify it.
+Note that not every feature needs full DDD wiring. The [`php-domain-modeling`](../php-domain-modeling/SKILL.md) skill defines lighter defaults — a **Transaction Script** (one procedure per request) or a **Table Module** (one class per table operating on a recordset) — for simple or data-centric features. This skill still applies to those patterns: keep the framework controller thin and delegate to the script/module, and keep the framework ORM in an adapter rather than treating it as the domain. Reach for the full DDD port/adapter wiring below only when the feature's rules justify it.
 
 ## When to Apply This Guidance
 Use this skill when the project already decided which framework to use and needs to apply clean architecture patterns *within* that framework. Do not use it to choose a framework.
@@ -59,12 +59,12 @@ The in-process event row is only for best-effort reactions inside one context, w
 
 ### Ask First
 - Ask before using a framework's built-in "magic" (Facades, Service Locators, Gii, Behaviors) in a new codebase. Is there a cleaner explicit alternative?
-- Ask before deciding to fight the framework's conventions if the project is small and short-lived. Sometimes the convention is the right trade-off. For simple or data-centric features, prefer a [Transaction Script](../domain-modeling/references/transaction-script.md) or [Table Module](../domain-modeling/references/table-module.md) over either full DDD wiring or dumping logic in the controller.
+- Ask before deciding to fight the framework's conventions if the project is small and short-lived. Sometimes the convention is the right trade-off. For simple or data-centric features, prefer a [Transaction Script](../php-domain-modeling/references/transaction-script.md) or [Table Module](../php-domain-modeling/references/table-module.md) over either full DDD wiring or dumping logic in the controller.
 
 ### Never Do
 - Never import framework base classes, facades, or static service locators into domain or application code.
 - Never use framework-specific exceptions or response objects as return types from handlers.
-- In an area with a rich domain model, never treat an Active Record model (Eloquent, CakePHP Table/Entity, Yii ActiveRecord) as your aggregate root; it is an adapter, not the domain. In lean CRUD areas, using the model directly is the intended choice (see `domain-modeling`). A Data Mapper ORM entity (Doctrine, etc.) may serve as the aggregate if its mapping stays outside the domain logic and its invariants live in its own methods. See [symfony.md](references/symfony.md).
+- In an area with a rich domain model, never treat an Active Record model (Eloquent, CakePHP Table/Entity, Yii ActiveRecord) as your aggregate root; it is an adapter, not the domain. In lean CRUD areas, using the model directly is the intended choice (see `php-domain-modeling`). A Data Mapper ORM entity (Doctrine, etc.) may serve as the aggregate if its mapping stays outside the domain logic and its invariants live in its own methods. See [symfony.md](references/symfony.md).
 - Never assume that "the framework does it" is a reason to skip clean-architecture boundaries in a complex, long-lived application.
 - Never put business logic directly in a framework controller, even for lighter patterns. Delegate to a Transaction Script or Table Module and keep the controller as a thin adapter.
 

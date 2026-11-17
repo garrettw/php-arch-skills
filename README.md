@@ -8,7 +8,7 @@ To install, run:
 
 `npx skills add garrettw/php-arch-skills`
 
-**Install all the skills.** They are designed to inter-relate and cross-link heavily — a migration decision in one skill points to a boundary pattern in another, and an application-layer use case relies on concepts from the domain-modeling and persistence skills. Installing the full set gives your agent the complete mental model rather than a fragment of it.
+**Install all the skills.** They are designed to inter-relate and cross-link heavily — a migration decision in one skill points to a boundary pattern in another, and an application-layer use case relies on concepts from the php-domain-modeling and persistence skills. Installing the full set gives your agent the complete mental model rather than a fragment of it.
 
 And **don't forget to periodically update your skills**, by running:
 `npx skills update`
@@ -31,6 +31,10 @@ This is different from a skill like `grill-with-docs`, which is an **explicit, o
 
 Because they operate at different moments, they complement each other: let the architecture skills keep the code clean as you go, and pull in `grill-with-docs` when you hit a design decision worth challenging against your project's documented language.
 
+## Renamed Skills
+
+- **`domain-modeling` → `php-domain-modeling`**: renamed to make the skill's PHP focus explicit and to avoid name collisions with generic domain-modeling skills from other collections. If you installed an earlier version, run `npx skills update` and remove the old `domain-modeling` skill so you do not end up with both. Any of your own notes, prompts, or configs that reference `domain-modeling` by name should be updated.
+
 ## When to Use These Skills
 
 This collection helps in two distinct situations:
@@ -43,7 +47,7 @@ In both cases the value is the same: the agent applies Domain-Driven Design (DDD
 ## The Skills
 
 The collection includes 16 inter-related skills, each focused on a specific architectural layer or concept:
-- **`domain-modeling`**: Guides the agent to identify real business objects, default to Transaction Script (or Table Module for row-set logic) for simple procedures, determine when to upgrade to rich domain models versus lean ORM entities, and protect business invariants using pure PHP. Its [php-domain-idioms.md](skills/domain-modeling/references/php-domain-idioms.md) reference covers optional PHP idioms that serve the domain — enums as value objects, the Result pattern as a typed alternative to exceptions, and using traits for cross-cutting concerns.
+- **`php-domain-modeling`**: Guides the agent to identify real business objects, default to Transaction Script (or Table Module for row-set logic) for simple procedures, determine when to upgrade to rich domain models versus lean ORM entities, and protect business invariants using pure PHP. Its [php-domain-idioms.md](skills/php-domain-modeling/references/php-domain-idioms.md) reference covers optional PHP idioms that serve the domain — enums as value objects, the Result pattern as a typed alternative to exceptions, and using traits for cross-cutting concerns.
 - **`bounded-contexts`**: Teaches the agent to define system boundaries using business capabilities rather than code folders, establishing clear ownership and preventing tightly-coupled monoliths.
 - **`application-layer`**: Defines the Application (or Service) Layer as the boundary above the domain-logic spectrum, instructing the agent to orchestrate use cases via the Command/Query/Handler pattern, keep framework controllers extremely thin, and avoid the anemic-domain overuse anti-pattern.
 - **`distribution-patterns`**: Guides the agent to design remote interfaces as coarse-grained Remote Facades (REST/GraphQL/gRPC/command endpoints) shaped around consumer needs rather than the internal object model, and to carry data across boundaries with DTOs — keeping ORM entities and domain objects off the wire.
@@ -71,7 +75,7 @@ The distribution and supporting patterns share one job — **protecting a bounda
 | Gateway       | Infrastructure (talking to an external system)            | `infrastructure-boundaries` |
 | Mapper        | Model (translating between representations)               | `infrastructure-boundaries` |
 | Plugin        | Framework / extension (supplying variable behavior)       | `dependency-injection`      |
-| Special Case  | Behavioral (the valid "nothing here" / exceptional state) | `domain-modeling`           |
+| Special Case  | Behavioral (the valid "nothing here" / exceptional state) | `php-domain-modeling`      |
 
 These patterns have stayed relevant because they address enduring sources of complexity, not transient implementation details. They also form the **intellectual foundation of Ports & Adapters (Hexagonal) architecture**: a Gateway *is* an outbound Port+Adapter, a Remote Facade defines an inbound boundary, DTOs are the messages crossing those boundaries, and a Plugin is just a structured way to supply the Adapters. Hexagonal doesn't replace these ideas — it reframes and generalizes them. See [`distribution-patterns/references/boundary-protection-patterns.md`](skills/distribution-patterns/references/boundary-protection-patterns.md) for the full mapping.
 

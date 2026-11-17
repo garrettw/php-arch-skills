@@ -1,5 +1,5 @@
 ---
-name: domain-modeling
+name: php-domain-modeling
 description: Use this skill when deciding whether to use rich domain objects vs lean ORM entities, choosing Transaction Script vs Table Module vs a Domain Model, identifying real business objects, or evaluating the cost-benefit of full DDD vs lean structure in a PHP application.
 ---
 

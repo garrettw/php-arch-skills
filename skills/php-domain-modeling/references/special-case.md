@@ -47,5 +47,5 @@ Both implement the same interface; the difference is intent. A `NoDiscount` is n
 If the situation is exceptional in the sense of *broken* (lookup failed, invariant violated, upstream timeout), surface it as an exception or an explicit error result. Reserve Special Case for states the domain genuinely recognizes.
 
 ## Related
-- This is a domain-modeling tactic — define the Special Case as a class implementing the same interface/abstract type as the real object (see the [domain-modeling](../SKILL.md) skill, workflow 5, "Modeling Exceptional-but-Valid States"). Define it next to the type it stands in for, in the context that owns that type: `NoDiscount` lives with `Discount`, `GuestCustomer` with `Customer`.
+- This is a domain-modeling tactic — define the Special Case as a class implementing the same interface/abstract type as the real object (see the [php-domain-modeling](../SKILL.md) skill, workflow 5, "Modeling Exceptional-but-Valid States"). Define it next to the type it stands in for, in the context that owns that type: `NoDiscount` lives with `Discount`, `GuestCustomer` with `Customer`.
 - It pairs with a [Repository](../../persistence-patterns/references/data-source-patterns.md) that may return a Special Case instead of `null` for "not found" when that is a valid domain state.
